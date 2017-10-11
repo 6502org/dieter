@@ -1,0 +1,66 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>GAL ALU: carry chain</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>GAL ALU: carry chain</H2></CENTER>
+<HR>
+
+<P>Now for the complicated part:<BR>
+the carry chain.
+
+<P>Don't get confused, C0 is the carry input.
+
+<P><IMG SRC="a6_c1.png">
+
+<P>It's only a modification of the carry chain<BR>
+we already know from toying with JK flipflops.
+
+<P>The AND OR combination gate on the left<BR>
+generates B0'. When taking a look at page 4 of<BR>
+this article, the control signal U now is named S0,<BR>
+and the control signal V now is named S1.
+
+<P>Problem is, that this schematic takes two levels<BR>
+of AND OR combination gates.
+
+<P>To make efficient use of the ressources in our GAL,<BR>
+we have to convert said schematic into a one level<BR>
+AND OR combination:
+
+<P><IMG SRC="a6_c2.png">
+
+<HR>
+
+<P>A two Bit carry chain is faster,<BR>
+but looks a lot more complicated:
+
+<P><IMG SRC="a6_c3.png">
+
+<P>Converting this into a single AND OR combination:
+
+<P><IMG SRC="a6_c4.png">
+
+<HR>
+
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="a6_0.htm">[UP]</A>/
+<A HREF="a6_5.htm">[BACK]</A>
+<A HREF="a6_1.htm">[1]</A>
+<A HREF="a6_2.htm">[2]</A>
+<A HREF="a6_3.htm">[3]</A>
+<A HREF="a6_4.htm">[4]</A>
+<A HREF="a6_5.htm">[5]</A>
+[6]
+<A HREF="a6_7.htm">[7]</A>
+<A HREF="a6_8.htm">[8]</A>
+
+<A HREF="a6_7.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2012
+</BODY>
+</HTML>
+

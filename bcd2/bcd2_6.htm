@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>The 100181 ALU</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>The 100181 ALU</H2></CENTER>
+<HR>
+
+<P>The 100181 ALU (National Semiconductor)<BR>
+was a 4 Bit ALU which featured BCD arithmetic.<BR>
+It was ECL, and very different from the 74181.
+
+<P><IMG SRC="bcd2_181_ds.jpg">
+<P><IMG SRC="bcd2_181_ds1.jpg">
+
+<P>Unfortunately, the datasheet doesn't go deep enough<BR>
+into the details of the innards of this IC for my taste.
+
+<HR>
+
+<P>Spent some thoughts about how BCD addition/subtraction<BR>
+is handled inside this IC, and I don't know if they are correct.
+
+<P>Here we go.
+
+<P>For BCD A+B, the IC adds +6 to B.<BR>
+So Q=A +B+6.
+
+<P>Means, if A+B is greater than 9, the adder output<BR>
+A+B+6 is greater than (or equal to) hexadecimal 0x10...<BR>
+what means that the adder output is a valid 4 Bit BCD number,<BR>
+and that no BCD correction is necessary.
+
+<P>Downside is, that if A+B is 0..9,<BR>
+A+B+6 is 6..15, and in that case we have to subtract 6<BR>
+to turn the adder output into a valid result.
+
+<P><IMG SRC="bcd2_181_add.png">
+
+<HR>
+
+<P>Now for Q=A-B.
+
+<P><IMG SRC="bcd2_181_sub.png">
+
+<P>C_IN now works as a low_active borrrow.
+
+<P>Let's suppose, that A=9, B=0, C_IN=1.<BR>
+B' is the 1s complement of B, means decimal 15.<BR>
+Q=A+B'+C_IN, means Q=9+15+1.<BR>
+So Q=25... or hexadecimal 0x19.<BR>
+Means, the 4 Bit binary adder sets the low_active<BR>
+borrow output to 1, and the adder output turns into 9...<BR>
+a correct BCD result, so the multiplexer routes the<BR>
+adder outputs directly to Q.
+
+<P>Suppose, that A=1, B=2, C_IN=1.<BR>
+Since B is 2 (binary 0010), B' is 13 (binary 1101).<BR>
+Q=A+B+C_IN, means Q=1+13+1.<BR>
+So Q=15, and the adder output carry C_OUT is 0.<BR>
+The output multiplexer then places the -6 circuitry<BR>
+between adder output and Q... and 15-6=9.<BR>
+C_OUT=0, since we have a low_active borrow,<BR>
+so Q is interpreted as -9.<BR>
+It really works.
+
+<HR>
+
+<P>Actually, the 100181 datasheet might tell you a story<BR>
+that in case of BCD Q=A-B, B is turned into a 9s complement<BR>
+and then incremented by 6 for generating B'.
+
+<P><IMG SRC="bcd2_181_compl.png">
+
+<P>But for better readability, I decided to use the<BR>
+1s complement in my example.
+
+<HR>
+
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="bcd2_0.htm">[UP]</A>/
+<A HREF="bcd2_5.htm">[BACK]</A>
+<A HREF="bcd2_1.htm">[1]</A>
+<A HREF="bcd2_2.htm">[2]</A>
+<A HREF="bcd2_3.htm">[3]</A>
+<A HREF="bcd2_4.htm">[4]</A>
+<A HREF="bcd2_5.htm">[5]</A>
+[6]
+<A HREF="bcd2_7.htm">[7]</A>
+<A HREF="bcd2_8.htm">[8]</A>
+
+<A HREF="bcd2_7.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2012
+</BODY>
+</HTML>
+

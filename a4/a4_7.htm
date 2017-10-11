@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Three majority gates adder</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Three majority gates adder</H2></CENTER>
+<HR>
+
+<P>Zhang et al, 2004:
+
+<P><IMG SRC="a4_add2.png">
+
+<P>Only three majority gates...<BR>
+and two inverters.
+
+<P>But when feeding through an inverted<BR>
+and a non_inverted carry, one inverter<BR>
+per Bit should do:
+
+<P><IMG SRC="a4_add2_inv.png">
+
+<HR>
+
+<P>Now to analyze what happens inside the<BR>
+circuitry (like we did on the previous page).
+
+<P>If we assume, that the carry input C_IN<BR>
+is 0, we can replace the majority gates<BR>
+with simple logic gates:
+
+<P><IMG SRC="a4_add2_c0.png">
+
+<P>The NAND gate emits 0, when A=1 and B=1.<BR>
+The OR gate emits 0, when A=0 and B=0.<BR>
+So we have the well known XOR functionality<BR>
+at the Q output.
+
+<HR>
+
+<P>Now for what happens, if C_IN=1:
+
+<P><IMG SRC="a4_add2_c1.png">
+
+<P>The NOR gate emits 1, if A=0 and B=0.<BR>
+The AND gate emits 1, if A=1 and B=1.<BR>
+What gives us an XNOR functionality on Q.
+
+<HR>
+
+<P>Now for some thoughts on how to build<BR>
+our small ALU:
+
+<P><IMG SRC="a4_add2_alu.png">
+
+<P><I>Feeding the inputs of two logic gates with<BR>
+one resistor network sure won't improve the<BR>
+propagation delay of the carry chain, maybe<BR>
+you want to change this...</I>
+
+<P><B>Arithmetic mode: X=1, Y=1, Z=0.</B><BR>
+It will work like the adder described above.
+
+<P>For logic mode, we have to turn of the<BR>
+carry chain by setting X to 0.
+
+<P><B>Q = A XOR B: X=0, Y=1, Z=0.</B><BR>
+Nothing news here.
+
+<P><B>Q = A OR B: X=0, Y=0, Z=1.</B><BR>
+Y=0 forces one input of the majority gate to 1.<BR>
+Said gate then passes through A OR B.
+
+<P><B>Q = A NAND B: X=0, Y=1, Z=1.</B><BR>
+Z=1 forces one input of the majority gate to 1.<BR>
+So the majority gate passes through the output<BR>
+from the NAND gate to Q.<BR>
+<I>Problem is, that there isn't an AND function,<BR>
+looks like you would have to perform A AND B<BR>
+in two steps: first A NAND B, second to invert<BR>
+the result, maybe by performing a logic XOR<BR>
+with "-1" (0xff for an 8 Bit ALU).</I>
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="a4_0.htm">[UP]</A>/
+<A HREF="a4_6.htm">[BACK]</A>
+<A HREF="a4_1.htm">[1]</A>
+<A HREF="a4_2.htm">[2]</A>
+<A HREF="a4_3.htm">[3]</A>
+<A HREF="a4_4.htm">[4]</A>
+<A HREF="a4_5.htm">[5]</A>
+<A HREF="a4_6.htm">[6]</A>
+[7]
+<A HREF="a4_8.htm">[8]</A>
+
+<A HREF="a4_8.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2009
+</BODY>
+</HTML>
+

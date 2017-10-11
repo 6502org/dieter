@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Foreword</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Foreword</H2></CENTER>
+<HR>
+
+
+<P>Wanted to start this article with a comparison between<BR>
+instruction sets of different CPUs/microcontrollers.
+
+<P>But for some reasons, I decided against it.<BR>
+<I>There already were enough boring "RISC versus CISC" debates.</I>
+
+<P>And some of you may already have figured out, that the <I>commercial</I><BR>
+success of a specific CPU design isn't directly coupled to the<BR> 
+beauty/simplicity of its architecture.<BR>
+It's hard/difficult to be honest/more_specific without instantly being<BR>
+sued into a smoking crater.
+
+<HR>
+<P>So we better skip that part, and focus on MT15.<BR>
+<B>MT15</B> is a mostly transistorised CPU for architecture exploration,<BR>
+but the concept described also could be used for building a 74xx<BR>
+TTL CPU.
+
+<P>It appeared, that transistorised flipflops show a tendency to take<BR>
+a lot of PCB space, so the decision was clear: to go with as few<BR>
+flipflops as possible...<BR>
+<I>resulting in only a few CPU registers.</I>
+
+<P>One of the simplest concepts of a CPU is an accumulator machine.<BR>
+Means, there are two registers, visible to the "end user":
+
+<P><B>ACC:</B> <I>accumulator, basically a scratch_pad area.</I><BR>
+Data calculation usually happens between ACC and memory,<BR>
+the result is written back into ACC.
+
+<P><B>PC:</B> <I>program counter (also known as IP, instruction
+pointer)</I><BR>
+points to the next instruction in program memory to be executed.<BR>
+It usually is incremented after reading an instruction from memory.
+
+<P>Note, that there could also be two additional registers, <I>not visible</I><BR>
+to the "end user": temporary registers, holding data/address for<BR>
+memory read/write cycles.
+
+<HR>
+<P><B>PDP8</B> is a nice example of such a design, but I decided for a<BR>
+different approach.<BR>
+Wanted to have a linear 64kWord address space, more addressing modes,<BR>
+and the chance to increment/decrement/shift/clear a location in memory,<BR>
+without changing the value in ACC (like with the 65C02).
+
+<P>Stack operations (push/pull) could be emulated by software,<BR>
+using two instructions, one of them a "indirect move from/to memory",<BR>
+while the other instruction increments/decrements the StackPointer<BR>
+(a location in memory, pointing at the "top" of the stack).<BR>
+Problem is, that those increments/decrements should not affect<BR>
+the status register.
+
+<P>Decided for a write_back strategy as with PIC microcontrollers.<BR>
+The ALU result from a data calculation between ACC/PC and memory<BR>
+can be dropped (the "compare" instruction), written back to memory<BR>
+(doesn't happen often), into ACC, or into PC.
+
+<P>Note, that writing into PC should be considered as "jump" or "branch",<BR>
+causing to send program memory execution into a rather different direction.
+
+<P>To simplify implementation of conditional branches, the CPU is able<BR>
+to execute or skip an instruction, depending on some Flags in the<BR>
+status register.
+
+<P>Since we basically have some sort of accumulator machine,<BR>
+most instructions would contain an OpCode and a parameter.<BR>
+<I>Thus, all MT15 instructions take two words of memory<BR>
+(4 Bytes).</I>
+
+<P>Here we go.
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="mt15i_0.htm">[UP]</A>/
+<A HREF="mt15i_0.htm">[BACK]</A>
+[1]
+<A HREF="mt15i_2.htm">[2]</A>
+<A HREF="mt15i_3.htm">[3]</A>
+<A HREF="mt15i_4.htm">[4]</A>
+<A HREF="mt15i_5.htm">[5]</A>
+<A HREF="mt15i_6.htm">[6]</A>
+<A HREF="mt15i_7.htm">[7]</A>
+<A HREF="mt15i_8.htm">[8]</A>
+
+<A HREF="mt15i_2.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2005
+</BODY>
+</HTML>

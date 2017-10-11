@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE> EPROM based 8 Bit ALU </TITLE>
+</HEAD>
+<BODY>
+
+<P><CENTER><H2>8 Bit ALU with EPROMs</H2></CENTER>
+<HR>
+
+<P>When "only" building a simple 8 Bit CPU,<BR>
+connecting two EPROMs together like 74181<BR>
+is the simplest way to go.
+
+<P>However, some care must be taken for shifting Bits,<BR>
+especially to the right.
+
+<P>The lower EPROM that emits Q3..0 must have<BR>
+at least one additional Bit at one input_Bus<BR>
+(A4..0 or B4..0, for instance).
+
+<P>The upper EPROM with Q7..4 requires to be connected<BR>
+to the Carry input <B>and</B> output from the lower EPROM.
+
+<P>Also note, that we need a logic AND between the<BR>
+Zero_Flag outputs from both EPROMs.<BR>
+(ALU_control lines not shown.)
+
+<P><IMG SRC="a1_ealu1.png">
+
+<P>One more word to the C_sourcecode that generates the bitmaps:<BR>
+While arithmetic and logic operations are programmed<BR>
+in more or less the same way for both EPROMS,<BR>
+shift operations will always look different.
+
+<P>Unfortunately, carry has to go through both EPROMs,<BR>
+so for arithmetic operations this ALU shows <B>twice</B><BR>
+the delay time of one EPROM.<BR>
+<I>(180 ns when using 27512/90ns, plus the delay<BR>
+of the AND detecting the Zero Flag)</I>
+
+
+<P>A trick to speed things up is to use three EPROMs.<BR>
+One for Bit 3..0, two for Bit 7..4.
+
+<P>Two different lookup tables for the two upper EPROMs are needed,<BR>
+assuming that c_out from Bit 3..0 may be 0, or 1.
+
+<P>The carry output of Bit 3..0 from the lower EPROM<BR>
+controls 2:1 Multiplexers (74ACT157), for switching<BR>
+between both of the upper EPROMs.<BR>
+<I>So we could reach 100 ns with 27512/90ns,<BR>
+plus the delay of the AND detecting Zero.</I>
+
+<P><IMG SRC="a1_ealu2.png">
+
+<HR>
+
+<P>Since EPROMs have a three state output, another<BR>
+(but more expensive) approach is to place some big EPROMs<BR>
+(like 27040) in parallel, wired as we normally do<BR>
+with EPROM (program) memory in computers.
+
+<P>Each operating as an 8 Bit wide part of the ALU.<BR>
+Lookup tables are split up: one chip for logic/shift,<BR>
+one for add/sub, one for mul/div etc. 
+
+<P>But what about the Flag signals ?<BR>
+All output pins of the EPROMs are used.<BR>
+<BR>Can we get around using two banks of EPROMs,<BR>
+one for data output, one for generating the Flags ?
+
+<P>One EPROM has 8 output pins,<BR>
+but there are only a few flag signals.
+
+<P>So we can reserve one output for ZeroFlag_logic/shift,<BR>
+one output for ZeroFlag_add/sub... and so on, and give them<BR>
+to a multiplexer (controlled by the chip selects of the other EPROMs)<BR>
+that gives us finally the ZeroFlag.
+
+<P>Same thing with all the other Flag signals.
+
+<P>A very good implementation of this example<BR>
+can be found in Dennis Kuschel's "mycpu".
+
+<HR>
+
+<P><I>
+Note, that when mumbling words like "homebrew DSP"<BR>
+while looking at advertisements for flash memory<BR>
+sticks/modules, people around you will get confused.</I>
+
+<P><I>Also keep in mind, that members of the<BR>
+"puritan TTL Nerd faction" may sneer at you<BR>
+for juggling with lookup tables beyond 1MB.
+</I>
+
+<HR>
+
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="a1_0.htm">[UP]</A>/
+<A HREF="a1_2.htm">[BACK]</A>
+<A HREF="a1_1.htm">[1]</A>
+<A HREF="a1_2.htm">[2]</A>
+[3]
+<A HREF="a1_4.htm">[4]</A>
+<A HREF="a1_5.htm">[5]</A>
+<A HREF="a1_6.htm">[6]</A>
+<A HREF="a1_7.htm">[7]</A>
+<A HREF="a1_8.htm">[8]</A>
+<A HREF="a1_4.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2004
+</BODY>
+</HTML>
+

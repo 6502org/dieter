@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>PLA2: ALU address calculation/carry_in</TITLE>
+</HEAD>
+
+<BODY>
+<P><H2 ALIGN=CENTER>PLA2: ALU address calculation/carry_in</H2>
+
+<HR>
+
+<P><B>PLA2</B> controls the ALU for incrementing PC,<BR>
+and during address calculation (for the addressing modes).
+
+<P>It also works as ALU carry input multiplexer during<BR>
+data calculation (step 3)
+
+<P>For this table, SHR is always 0.
+
+<P>Note: if all ALU control lines are 0, ALU output is $0000.<BR>
+<I>That's how we set PC to $0000 after a RESET in step 1.</I>
+
+<P><I>Note:</I><BR>
+<B>+</B> means, no transistor.<BR>
+<B>O</B> means, transistor (BC847 or BC857) at this location.
+
+<P><PRE>
+    !S0-O+++++O+++++++++
+     S0-+OOOOO++OO++++++
+    !S1-OOOOOO++++++++++
+     S1-++++++O+OO++++++
+    !S2-OOOOOOO+OO++++++
+     S2-+++++++O++++++++
+   CMD4-+++++++++O++++++
+   CMD5-++++++++O+++++++
+ !CMD11-+++O+O++++++++++
+  CMD11-++O+O+++++++++++
+ !CMD12-++++OO++++++++++
+  CMD12-++OO++++++++++++
+ C_FLAG-+++++++++O++++++
+ !RES_F-+OOOOO++++++++++
+  !TRUE-+O++++++++++++++
+   TRUE-++OOOO++++++++++
+       -++++++++++++++++
+       -++++++++++++++++
+        ||||||||||||||||
+        ++++++++++++++++-PS0
+        OO+OO++O++++++++-PS1
+        ++OOOOO+++++++++-PS2
+        OOO++OOO++++++++-PS3
+        ++++++++++++++++-GS0
+        ++++++++++++++++-GS1
+        ++++++++++++++++-GS2
+        +++OO+++++++++++-GS3
+        ++++++++++++++++-SHR
+        OO++O++OOO++++++-Cin
+</PRE>
+
+<HR>
+
+<P>ALU control for address calculation and incrementing PC:<BR>
+<PRE>
+ S   CMD11 CMD12 !RES_FLAG TRUE  Cin PS3..0 GS3..1 // ALU
+
+ 000 x     x     x         x     1   1010   000    // Q = reg+1
+ 001 x     x     1         0     1   1010   000    // Q = reg+1
+ 001 1     1     1         1     0   1100   000    // Q = mem
+ 001 0     1     1         1     0   0110   100    // Q = reg+mem  
+ 001 1     0     1         1     1   0110   100    // Q = reg+mem+1
+ 001 0     0     1         1     0   1100   000    // Q = mem
+ 010 x     x     x         x     0   1100   000    // Q = mem
+ 1xx x     x     x         x     1   1010   000    // Q = reg+1
+</PRE>
+
+<HR>
+
+<P>ALU carry input multiplexer for data calculation (step 3)<BR>
+<PRE>
+ Cin  = !S2 & S1 & S0 & CMD4 & C_FLAG
+ Cin |= !S2 & S1 & S0 & CMD5
+</PRE>
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="mt15b_0.htm">[UP]</A>/
+<A HREF="mt15b_3.htm">[BACK]</A>
+<A HREF="mt15b_1.htm">[1]</A>
+<A HREF="mt15b_2.htm">[2]</A>
+<A HREF="mt15b_3.htm">[3]</A>
+[4]
+<A HREF="mt15b_5.htm">[5]</A>
+<A HREF="mt15b_6.htm">[6]</A>
+<A HREF="mt15b_7.htm">[7]</A>
+<A HREF="mt15b_8.htm">[8]</A>
+
+<A HREF="mt15b_5.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2005
+</BODY>
+</HTML>

@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Logic design</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Logic design</H2></CENTER>
+<HR>
+
+<P>Now to describe, what to do with such a gate.
+<HR>
+
+<P><IMG SRC="a4_maj1.png">
+<P>Take the table of logic states on the right,<BR>
+and imagine to have a binary full adder,<BR>
+with the inputs A, B, and C like "carry input".
+
+<P>The output of our majority gate exactly<BR>
+works like the carry output of a full adder.
+
+<P>Interesting, isn't it ?
+
+<HR>
+
+<P><B>Remember: if at least two inputs of our three_input<BR>
+majority gate are 1, the output Q is 1.</B>
+
+<P>If you happen to have a signal 'A', and you want<BR>
+to "force" it to 0 or 1, maybe with control signals,<BR>
+it looks like this:
+
+<P><IMG SRC="a4_maj_feed.png">
+
+<P>...is it possible to use this effect for<BR>
+turning a majority gate into a flipflop ?
+
+<HR>
+
+<P>Two more cases, where Q = A:
+
+<P><IMG SRC="a4_minimize.png">
+
+<HR>
+
+<P>Now for another thing:<BR>
+If you take a three input majority gate,<BR>
+and force one of the inputs to 0 or 1,<BR>
+<I>It will turn into a two input AND gate,<BR>
+or a two input OR gate.</I>
+
+<P><IMG SRC="a4_andor.png">
+
+<P><BR><B>To illustrate the effect:</B>
+
+<P><IMG SRC="a4_andor_sw.png">
+
+<P>...this could be neat for ALU design.
+
+<P>Be aware, that it's possible to swap the<BR>
+inputs of a majority gate. So you could as<BR>
+well draw the picture above with B and C<BR>
+connected to the AND/OR gates, while A<BR>
+throws the switch... for instance.
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="a4_0.htm">[UP]</A>/
+<A HREF="a4_3.htm">[BACK]</A>
+<A HREF="a4_1.htm">[1]</A>
+<A HREF="a4_2.htm">[2]</A>
+<A HREF="a4_3.htm">[3]</A>
+[4]
+<A HREF="a4_5.htm">[5]</A>
+<A HREF="a4_6.htm">[6]</A>
+<A HREF="a4_7.htm">[7]</A>
+<A HREF="a4_8.htm">[8]</A>
+
+<A HREF="a4_5.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2009
+</BODY>
+</HTML>
+

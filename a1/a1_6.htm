@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE> ALU build around an Adder </TITLE>
+</HEAD>
+<BODY>
+<P><CENTER><H2>ALU with Adder</H2></CENTER>
+<HR>
+
+<P>And here we go.<BR>
+We take an Adder, and add the results from two of our Logic Units.
+
+<P><IMG SRC="a1_adalu.png">
+
+<P>
+Logic: Y is set to 0x00, what is added to the result X<BR>
+from the upper logic unit, and then put out on Q.<BR>
+<I>For logic operations, we have to force the Adder carry input to 0,<BR>
+to prevent it from unintentionally incrementing Q.</I>
+
+<P>Incrementing is simple.<BR>
+Keep Y at 0x00, pass A (or B) into X,<BR>
+<I>and force the Adder carry input to 1.</I>
+
+<P>
+For shifting something left, both Logic Units are configurated<BR>
+to the same logic function.<BR>
+When X=Y, the Adder multiplies the Logic Unit result by two,<BR>
+<I>what is identical to shifting it left.</I>
+
+<P>For shifting something right, X is connected to the output multiplexer<BR>
+in a way to shift all Bits one place to the right,<BR>
+as explained in the previous ALU example.
+
+<P>For Arithmetic, both Logic Units can be set so that<BR>
+X = 0x00, 0xff, A, NOT A<BR>
+Y = 0x00, 0xff, B, NOT B<BR>
+What allows us to add, subtract or decrement,<BR>
+as we already know.
+
+<P>
+Not shown in this block diagram is a 4:1 carry input multiplexer<BR>
+(switches between 0, 1, Carry_Flag),<BR>
+and a 2:1 carry output multiplexer<BR>
+(switching between X0 during SHR and Adder carry output<BR>
+for everything else).
+
+<P>
+Half as many components as the previous ALU,<BR>
+a better/cleaner structure,
+faster, and more functionality.
+
+<P>The ideal choice for bread board experiments.<BR>
+When using 74ACT, this design should be nearly as fast<BR>
+as the venerable 74F181/74S181, but cheaper,<BR>
+with a lower power consumption,<BR>
+and an increased functionality.
+
+<P>The only "Black Box" left that we don't know<BR>
+from the inside at gate level is the adder.
+
+<P>Now to dissect it.
+
+<HR>
+
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="a1_0.htm">[UP]</A>/
+<A HREF="a1_5.htm">[BACK]</A>
+<A HREF="a1_1.htm">[1]</A>
+<A HREF="a1_2.htm">[2]</A>
+<A HREF="a1_3.htm">[3]</A>
+<A HREF="a1_4.htm">[4]</A>
+<A HREF="a1_5.htm">[5]</A>
+[6]
+<A HREF="a1_7.htm">[7]</A>
+<A HREF="a1_8.htm">[8]</A>
+<A HREF="a1_7.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2004
+</BODY>
+</HTML>

@@ -1,0 +1,147 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>PC/LR swap, predecoder</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>PC/LR swap, predecoder</H2></CENTER>
+<HR>
+
+<P>Now a short, simplified description about what happens when loading<BR>
+a literal value into PC/R7, when Bit 31 of the instruction word is zero:
+
+<P><IMG SRC="tarch_loadpc.png">
+
+<P>First, the contents of PC/R7 are placed on the address bus, and PC/R7<BR>
+is incremented to point to the next instruction word.<BR>
+The 32 Bit value from the data bus is sampled into a 74573 based latch.
+
+<P>Second, in the next cycle the value from the latch is loaded into LR/R6,<BR>
+which worked as a temporary storage.
+
+<P>Third, PC/R7 and LR/R6 are swapped.
+
+<P>Fourth, the next instruction word is fetched from the new PC/R7 address,<BR>
+while LR/R6 contains the "return address" of the instruction word which<BR>
+follows the JMP/JSR instruction. It's easy.
+
+<HR>
+
+<P><I>"Oh my god, it takes three cycles and maybe an additional temporary register<BR>
+when swapping the contents of PC/R7 and LR/R6 with that architecture !"</I><BR>
+some of you might say.
+
+<P>In fact, I'm not swapping the contents of those registers, but the registers<BR>
+themselves. The trick is to re_assign the control signals for both registers,<BR>
+what basically takes four 2:1 multiplexers (74157), one D_Flipflop (7474),<BR>
+and one XOR gate (7486)...<BR>
+if I wouldn't have taken some GALs for building the control circuitry.
+
+<P><IMG SRC="tarch_swap.png">
+
+<P>LR6, LR7 are control signals for loading R6, R7.<BR>
+/OR6, /OR7 is the low_active output enable for both registers.
+
+<P>If SWAP is 0, R7' is R7/PC and R6' is R6/LR.<BR>
+If SWAP is 1, R7' is R6/LR and R6' is R7/PC.<BR>
+We are just throwing the switches, that's all.
+
+<P>If DOSWAP is 1, the flipflop which generates SWAP toggles with the start<BR>
+of the next machine cycle, so swapping both registers takes no time at all.
+
+<HR>
+
+<P>The instruction register is directly fed by the external databus, so fetching<BR>
+a 32 Bit instruction word while incrementing PC takes one machine cycle.
+
+<P>If Bit 31 of the instruction word is zero, the word is directly loaded into PC<BR>
+in the next cycle, and the interrupts will be disabled when fetching the next<BR>
+instruction word, to make sure that there is a chance to save the return address<BR>
+on stack when calling a subroutine.
+
+<P>If Bit 31 is 1, Bit 30 is used to enable/disable the interrupts when fetching<BR>
+the next 32 Bit instruction word.<BR>
+Bit 29..0 break into three 10 Bit instructions (or instruction triples).<BR>
+Basically, there are three latches 10 Bit with output enable, which connect<BR>
+to a 10 Bit CPU internal "instruction bus" which feeds the instruction decoder.<BR>
+(there also is a 10 Bit shift register for "forging" an instruction from the<BR>
+debugging interface into the instruction stream.)
+
+<P>We call each of the 10 Bit instructions a Slot. Slots are executed left to right,<BR>
+starting with Slot 1 (Bit 29..20).<BR>
+Slot 2 and Slot 3 have a predecoder, but from the timing diagram,<BR>
+adding a predecoder to Slot 1 didn't make sense.
+
+<P><IMG SRC="tarch_ireg.png">
+
+<P>A predecoder has the purpose to strip some info from an instruction before it<BR>
+enters the instruction decoder itself, the idea is to extract info if an instruction<BR>
+might use the CPU external bus, or cause a change in program flow.
+
+<P>In our case, we use NAND gates to identify a MVM (move from/to memory)<BR>
+which will cause a bus access to support bus arbitration, and a 74688 to<BR>
+identify a NOP.<BR>
+A NOP is defined as a register/register move which doesn't modify flags.
+
+<HR>
+
+<P>Detecting a NOP in Slot 2:
+
+<P><IMG SRC="tarch_pre1.png">
+
+<P>Detecting a MVM in SLOT 2:
+
+<P><IMG SRC="tarch_pre2.png">
+
+<P>...same thing for Slot 3 with /NOP3 and /MVM3.
+
+<HR>
+
+<P>While analyzing code, it appeared that when using assembler macros, there is<BR>
+a high chance that Slot 3 (and sometimes Slot 2) may contain a NOP, so if the<BR>
+CPU detects a NOP in Slot 2 or Slot 3, that slot is skipped.<BR>
+(If you want to have a NOP which won't be skipped, maybe for programming<BR>
+short time delays, use an OR instruction like R1|=R1 with "flag modify"<BR>
+turned off.)
+
+<P>Since there is no predecoder for Slot 1, the CPU assumes that the bus is used<BR>
+during instruction fetch and in Slot 1, so if you have a system with more than one<BR>
+TREX CPU, try to optimize the code in a way that a memory access happens<BR>
+in Slot 1 to make bus arbitration a little bit more efficient.
+
+<HR>
+
+<P>One final word about the instruction decoder:<BR>
+we have two 7410 NAND gates.
+
+<P><IMG SRC="tarch_idec1.png">
+
+<P>The /SGRP signal indicates, that the instruction might be a single operand<BR>
+instruction (please take a look into the "TREX instruction set" article for<BR>
+more details).
+
+<P>/WPC indicates, that the destination register is PC.<BR>
+So a MVM, MVR, ADD (INC/DEC) with this signal active will trigger<BR>
+the PC/LR swap mechanism.
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="tarch_0.htm">[UP]</A>/
+<A HREF="tarch_6.htm">[BACK]</A>
+<A HREF="tarch_1.htm">[1]</A>
+<A HREF="tarch_2.htm">[2]</A>
+<A HREF="tarch_3.htm">[3]</A>
+<A HREF="tarch_4.htm">[4]</A>
+<A HREF="tarch_5.htm">[5]</A>
+<A HREF="tarch_6.htm">[6]</A>
+[7]
+<A HREF="tarch_8.htm">[8]</A>
+
+<A HREF="tarch_8.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2007, 2008
+</BODY>
+</HTML>
+

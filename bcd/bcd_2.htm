@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>A simple implementation</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>A simple implementation</H2></CENTER>
+<P><CENTER>...The low_performance approach</CENTER>
+<HR>
+
+<P><IMG SRC="bcd_basic.png">
+
+<P>Basically, BCD arithmetic works in two steps:<BR>
+<B>First</B>, the ALU performs a <I>binary</I> A+B or A-B.<BR>
+<B>Second</B>, we need some circuitry, to determine,<BR>
+if we have to add/subtract 6 for correcting the result.
+
+<P><B>For decimal A+B: BCD_ADD = 1.</B><BR>
+C_IN is the (high active) carry from the next lower digit.<BR>
+For a result that doesn't fit into 4 Bit (> decimal 15),<BR>
+the ALU forces C_OUT to 1, incrementing the next higher digit.<BR>
+<I>And as a correction, we have to add 6 to the result.</I><BR>
+With results from (decimal) 10..15, we have either<BR>
+<B>Q3=1 AND Q2=1</B>, or <B> Q3=1 AND Q1=1... </B>or both.<BR>
+<I>In that case, we also need to add 6 and to set C_OUT active.</I>
+
+<P><B>For decimal A-B: BCD_SUB = 1.</B><BR>
+C_IN works as a low_active borrow, means that C_IN = 0 whould set Q
+to A-B-1.<BR>
+For results < 0, like 8-9, C_OUT will be 0 (active),<BR>
+<I>we have to subtract 6 from the result, and to decrement the next
+higher digit.</I>
+
+<P>
+When BCD_ADD = 0 and BCD_SUB = 0, the BCD correction is turned off,<BR>
+and the ALU will work in binary mode as usual.
+
+<P>That's all.
+<HR>
+
+<P>
+A lot of older CPU designs have to do BCD arithmetic in two steps:<BR>
+<B>First</B> a normal binary add/sub, that writes the result into the
+accumulator.<BR>
+<B>Second</B> a decimal correction, what means OpCodes like DAA/DAS.
+
+<P>
+Basically, it works as described above, except that we may have more than<BR>
+one digit (4 Bits) as CPU data_word length.
+
+<P>
+<B>Examples:</B> 8080/8085, Z80, 80X86, 6802/6809/68HC11, the 8031 family,
+PIC, etc.
+
+<P>
+The 68000 and it's successors (like 68332) have special opcodes like<BR>
+<B>ABCD</B> <I>(add BCD)     </I><BR>
+<B>SBCD</B> <I>(subtract BCD)</I><BR>
+for decimal arithmetic.
+
+<P>
+The 6502 features a <B>D_Flag</B> inside the status_register.<BR>
+(Decimal_Flag, set/cleared with SED/CLD.)<BR>
+When active, the CPU does ADC/SBC in decimal arithmetic.<BR>
+Else, it adds/subtracts in binary (hexadecimal).<BR>
+<I>Needless to say, that the operating system of a 6502 based computer<BR>
+may act confused/unpredictable, when forgetting to clear that flag.</I>
+
+
+<P>Newer RISC processors don't seem to have any hardware_support for
+decimal arithmetic.<BR>
+In fact, BCD arithmetic doesn't seem to be used often with modern
+software.
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="bcd_0.htm">[UP]</A>/
+<A HREF="bcd_1.htm">[BACK]</A>
+<A HREF="bcd_1.htm">[1]</A>
+[2]
+<A HREF="bcd_3.htm">[3]</A>
+<A HREF="bcd_4.htm">[4]</A>
+<A HREF="bcd_5.htm">[5]</A>
+<A HREF="bcd_6.htm">[6]</A>
+<A HREF="bcd_7.htm">[7]</A>
+
+<A HREF="bcd_3.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2006
+</BODY>
+</HTML>
+
+

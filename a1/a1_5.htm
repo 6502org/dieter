@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE> ALU as seen from the human brain </TITLE>
+</HEAD>
+<BODY>
+
+<P><CENTER><H2>ALU as seen from the human brain</H2></CENTER>
+<HR>
+
+<P>Now for something different.
+
+<P><IMG SRC="a1_stdalu.png" >
+
+<P>This kind of ALU sometimes shows up in school books<BR>
+and in HDL/VHDL source code.<BR>
+It's the best approach to give the human brain a clue<BR>
+about the inputs, the outputs, and the little things<BR>
+that may happen between.
+
+<BR>The big multiplexer at the right selects one of the functions:<BR>
+<B>A'&B', A'|B', A'+B', A' shiftet left/right, B' shiftet left/right.</B><BR>
+Shifting is simply done by connecting A' and B' to the multiplexer,<BR>
+for instance:<BR>
+SHL (shift left) A' has carry_in->I5.0 A0->I5.1 A1-I5.2 A2->I5.3,<BR>
+SHR (shift right) A' has A1->I7.0 A2 ->I7.1 A3->I7.2... carry_in->I7.7,<BR>
+and so on.<BR>
+Not shown in the schematic is the 8:1 carry output multiplexer,<BR>
+that switches the carry output line to Adder, A0', A7', B0', B7',<BR>
+according to the selected ALU function.
+
+<P>Note the AND/XOR gates between A and A', B and B'.<BR>
+(The very obsolete 7487 had a 4 Bit AND/XOR combination,<BR>
+for exactly that purpose.)
+
+<P>When inverting A and B, the logic functions change: <BR>
+AND turns into NOR, OR turns into NAND.
+
+<P>A AND NOT B is done by choosing 'AND',<BR>
+while inverting B with the XORs.
+
+<P>Arithmetic: when inverting A, A' becomes the one's complement of A,<BR>
+and the Adder subtracts A from B. The high_active carry input/output<BR>
+of the adder turns into a low_active borrow, as seen on the 6502 CPU.
+
+<P>Forcing the Adder carry input to 1 and setting A' to 0x00 will increment B.<BR>
+Forcing the Adder carry input to 0 and setting A' to 0xff will decrement B.
+
+<P>There is nothing wrong with this block diagram.<BR>
+But any attempt to wire/solder something like that with TTL chips<BR>
+on bread board may always end up as a chaotic monstrousity.
+
+<P>For building an ALU with that functionality,<BR>
+there is a more efficient approach.<BR> 
+Now to throw our Logic Unit into this game.
+
+<HR>
+
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="a1_0.htm">[UP]</A>/
+<A HREF="a1_4.htm">[BACK]</A>
+<A HREF="a1_1.htm">[1]</A>
+<A HREF="a1_2.htm">[2]</A>
+<A HREF="a1_3.htm">[3]</A>
+<A HREF="a1_4.htm">[4]</A>
+[5]
+<A HREF="a1_6.htm">[6]</A>
+<A HREF="a1_7.htm">[7]</A>
+<A HREF="a1_8.htm">[8]</A>
+<A HREF="a1_6.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2004
+</BODY>
+</HTML>

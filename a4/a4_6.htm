@@ -1,0 +1,164 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Five majority gates adder</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Five majority gates adder</H2></CENTER>
+<HR>
+
+<P>Now to take a closer look at what I found<BR>
+when searching for publications related to<BR>
+<I>quantum dot cellular automata</I>.
+
+<P>Tougaw and Lent, 1994:
+
+<P><IMG SRC="a4_add1.png">
+
+<P>Five majority gates...<BR>
+and maybe three inverters.
+
+<HR>
+
+<P><B>Now to explain, how it works.</B>
+
+<P>The carry chain isn't any different from<BR>
+what we already know.
+
+<P>Now to dissect the rest which generates Q.
+
+<P>Remember: when one input of a three_input<BR>
+majority gate is tied to 0, it turns into a<BR>
+two_input AND, and when one of the three inputs<BR>
+is tied to 1, it turns into a two_input OR.
+
+<P>We now assume, that the carry input C_IN<BR>
+is 0, and replace the first row of majority<BR>
+gates with standard logic gates:
+
+<P><IMG SRC="a4_add1_c0.png">
+
+<P>The first AND gate senses A=0 and B=1,<BR>
+the second AND gate senses A=1 and B=0.
+
+<P>Since at least two inputs of the majority gate<BR>
+have to be 1 to make it emitting 1 on Q,<BR>
+we have this little OR gate attached,<BR>
+which "enables" the majority gate if<BR>
+A=0 and B=1, or A=1  and B=0.
+
+<P><I>The OR gate also produces 1 if A=1 and B=1,<BR>
+but because the outputs of both ANDs are 0<BR>
+in that case, we simply can ignore this fact.</I>
+
+<P>When further simplifying the schematic,<BR>
+the result is our well known XOR gate.
+
+<HR>
+
+<P>Now we assume that C_IN is 1...<BR>
+and that the result will behave like<BR>
+an XNOR gate, an <B>inverted</B> XOR.
+
+<P><IMG SRC="a4_add1_c1.png">
+
+<P>First to say, when you take an OR gate,<BR>
+and replace it with an AND gate, you have<BR>
+to invert all inputs and the output.
+
+<P><IMG SRC="a4_replace.png">
+
+<P><I>The schematic just looks more simple when<BR>
+replacing the two OR gates with NANDs.</I>
+
+<P>Now for the three gates in front of our<BR>
+majority gate.
+
+<P>The first gate emits 0 when A=1 and B=0,<BR>
+the second gate emits 0 when A=0 and B=1.
+
+<P>The third gate (AND) only emits 1,<BR>
+when A=1 and B=1.
+
+<P>Because at least two inputs of our majority<BR>
+gate have to be 1, the two NANDs force Q to 0<BR>
+when A and B are not equal.
+
+<P>When simplifying this schematic further,<BR>
+the end result is the XNOR gate we<BR>
+expected from the start.
+
+<HR>
+
+<P><B>Now to describe, how to turn this into an ALU.</B><BR>
+One Bitslice would look like this:
+
+<P><IMG SRC="a4_add1_alu.png">
+
+<P>The blue boxes X, Y and Z are our control signals.
+
+<P><B>Arithmetic mode:</B><BR>
+X=1, Y=1, Z=0<BR>
+makes sure, that the circuitry works exactly<BR>
+like the adder we have seen above.
+
+<P><B>Logic mode:</B><BR>
+First, X=0 turns off the carry chain.
+(Make sure, that the carry input of the<BR>
+ALU is 0 in that case.)
+
+<P>Now to ignore the carry chain, and to focus<BR>
+on the three majority gates, feeding the majority<BR>
+gate at the Q output.
+
+<P>Since C_IN is 0, we remember the example we already<BR>
+had on this page, and imagine that those three gates<BR>
+behave like simple logic gates:
+
+<P><IMG SRC="a4_add1_logic.png">
+
+<P><B>Q = A XOR B: X=0, Y=1, Z=0.</B><BR>
+We already discussed on this page, why.
+
+<P><B>Q = A OR B: X=0, Z=1.</B><BR>
+Z=1 forces one input of the majority gate to 1.<BR>
+Said gate then passes through A OR B.<BR>
+What happens in the circuitry around Y<BR>
+doesn't matter, so Y could be 0 or 1.
+
+<P><B>Q = A AND /B: X=0, Y=0, Z=0.</B><BR>
+Y=0 forces one input of the majority gate to 0.<BR>
+So if the AND gate which senses A AND /B emits 1,<BR>
+Q is 1 (because of the OR gate which senses<BR>
+A OR B, two inputs of the majority gate are<BR>
+1 in that case).
+
+<P>You sure noticed, that Q = A AND <B>/B</B>,<BR>
+but because you would have some circuitry<BR>
+outside the ALU for negating B when calculating<BR>
+Q = A - B, it's simple to compensate this...
+
+<P><I>Now for another example.</I>
+
+<HR>
+
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="a4_0.htm">[UP]</A>/
+<A HREF="a4_5.htm">[BACK]</A>
+<A HREF="a4_1.htm">[1]</A>
+<A HREF="a4_2.htm">[2]</A>
+<A HREF="a4_3.htm">[3]</A>
+<A HREF="a4_4.htm">[4]</A>
+<A HREF="a4_5.htm">[5]</A>
+[6]
+<A HREF="a4_7.htm">[7]</A>
+<A HREF="a4_8.htm">[8]</A>
+
+<A HREF="a4_7.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2009
+</BODY>
+</HTML>
+

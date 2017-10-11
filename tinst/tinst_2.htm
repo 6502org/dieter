@@ -1,0 +1,124 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Registers</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Registers</H2></CENTER>
+<HR>
+
+<P><PRE>
+
+TREX register set: all registers are 32 Bit wide.
+
+    --------------------------------
+R0 | O31..O16     | I15..I4    |NVZC| SR, Status Register
+    --------------------------------
+R1 |                                | SP, Stack Pointer
+    --------------------------------
+R2 |                                |
+    --------------------------------
+R3 |                                |
+    --------------------------------
+R4 |                                |
+    --------------------------------
+R5 |                                | LA, Loop Address
+    --------------------------------
+R6 |                                | LR, Link Register
+    --------------------------------
+R7 |                                | PC, Program Counter
+    -------------------------------- 
+
+</PRE>
+
+<HR>
+
+
+<P><B>PC/R7</B>, the <I>Program Counter</I>,<BR>
+points at the next instruction word to be fetched.
+
+<P>So any instruction which writes PC causes a change in program flow.
+
+<P>For instance, moving a literal value into PC with PC=[PC++] is equivalent<BR>
+to a JMP or JSR instruction, like known from other CPUs.
+
+<HR>
+
+<P><B>LR/R6</B>, the <I>Link Register</I>,<BR>
+basically is a scratchpad area for address and data calculations.
+
+<P>If an instruction writes a value into PC, the old contents of PC are<BR>
+always saved into LR, so a called subroutine is able to save "return address"<BR>
+in LR on stack for restoring it into PC later.
+
+<P>(Some care must be taken to prevent interrupts from corrupting LR.)
+
+<HR>
+
+<P><B>LA/R5</B>, the <I>Loop Address</I>,<BR>
+is written into PC when the CONT instruction is true.
+
+<P>A feature, which might be useful for building small/tight loops.
+
+<P>Besides that, LA/R5 can be used as a general purpose register.
+
+<HR>
+
+<P><B>R4, R3, R2</B> are general purpose registers.<BR>
+
+<HR>
+
+<P><B>SP/R1</B> is used as <I>Stackpointer</I>.
+
+<P>From the hardware point of view, R1 is nothing more/less than just<BR>
+another general purpose register.
+
+The assembler/compiler uses R1 as SP by definition, so it's only<BR>
+a software thing.
+
+<HR>
+
+<P><B>SR/R0</B> is the <I>Status Register</I>.
+
+<P>As with other CPUs (like 68k), Bits 0..3 represent the Flags N,V,Z,C.
+
+<P>Bits 4..15 are twelve input lines from outside the CPU, which might<BR>
+be checked by the SKIP/CONT instruction.
+
+<P>Bits 16..32 are sixteen output lines, available outside the CPU.
+
+<P><I>You may see Bit 4..31 as sort of a very fast I/O port.</I><BR>
+If the CPU doesn't support interrupts, it's possible to poll signals<BR>
+from the peripherals fast by software.<BR>
+When adding sort of a MMU to the design, 16 Bits are supposed to be<BR>
+enough to select/identify a program/task, and to support something like<BR>
+a user/supervisor mode, as known from the 68k.
+
+<P>For better MMU support, there are two control signals which can block<BR>
+a software write to Bit 16..23 and Bit 24..31.
+
+<P><B>Bug warning: TREX CPU rev.1 is unable to write the contents of SR<BR>
+directly into memory. Thou shalt transfer SR into another register,<BR>
+then write said register to memory instead.</B>
+
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="tinst_0.htm">[UP]</A>/
+<A HREF="tinst_1.htm">[BACK]</A>
+<A HREF="tinst_1.htm">[1]</A>
+[2]
+<A HREF="tinst_3.htm">[3]</A>
+<A HREF="tinst_4.htm">[4]</A>
+<A HREF="tinst_5.htm">[5]</A>
+<A HREF="tinst_6.htm">[6]</A>
+<A HREF="tinst_7.htm">[7]</A>
+<A HREF="tinst_8.htm">[8]</A>
+
+<A HREF="tinst_3.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2007, 2008
+</BODY>
+</HTML>

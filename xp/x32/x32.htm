@@ -1,0 +1,176 @@
+<HTML>
+<HEAD><TITLE>...4C D2 FF</TITLE>
+</HEAD>
+<BODY>
+<CENTER><H1>X32 &lt; 6532</H1></CENTER>
+
+<P>An experimental attempt of building something like a 6532<BR>
+with 74XX TTL chips.
+
+<P>The design might have some issues,<BR>
+try reading the schematics at your own risk...<BR>
+you better check, if the circuitry which detects timer overflow<BR>
+works as intended...<BR>
+and the prescaler isn't set to :1 by the timer interrupt.
+
+<P>I\O and bus connectors are supposed to be compatible<BR>
+to Daryl Rictor's SBC-2...<BR>
+but X32 also has a bus connector that is supposed to fit<BR>
+to the Elektor Junior Computer.
+
+<P><IMG SRC="junior.jpg">
+
+<P><HR>
+
+<P><B>Test setup:</B>
+<P>Bottom: my DRC2 SBC, which is supposed to be compatible to the SBC-2.<BR>
+X32 backplane is plugged into DRC2.<BR>
+
+<P>Plugged into the X32 backplane, we are supposed to have:     <BR>
+1* 1PA22, Port A module                                         <BR>
+1* 1PB22, Port B module                                         <BR>
+1* T32, timer module                                            <BR>
+1* I32, timer control and interrupt module                      <BR>
+4* R32, 4* 32 Bytes of RAM that is... (only 1 module was built) <BR>
+1* B32, bus interface <BR>
+
+<P><IMG SRC="x_32_drc2.jpg">
+
+<P><HR>
+
+<P><B>X32 backplane:</B>
+<P><IMG SRC="x32.jpg">
+
+<P>Jumper\switch in the lower left area is for enabling the blinkenlights.<BR>
+
+<P>The jumpers in the right upper area are for handling chip select signals,<BR>
+and for connecting the interrupt output either to NMI or IRQ.
+
+<P>The jumpers in the right lower area are for selecting<BR>
+if X32 works with a DRC2, or with the Elektor Junior Computer.<BR>
+
+<P>Please consult the X32 schematics,<BR>
+to see which jumper does what,<BR>
+and how the X32 shows up in the DRC2 memory map.
+
+<P><B>Warning:<BR>
+That 31 pin female connector at the left was supposed<BR>
+to resemble the Junior Computer I\O port pinout,<BR>
+but something went wrong:<BR>
+pinout is reversed.</B>
+
+<P>I suggest to correct the package of the connector,
+the schematics, the PCB layout...<BR>
+or to solder the connector into the bottom of the PCB instead.
+
+<P>When making a redesign, maybe you should include a SRAM socket<BR>
+into the backplane because not everybody might like soldering<BR>
+a 128 Bytes SRAM from 74574 chips...
+
+<P>About that connector at the right for plugging X32<BR>
+into the Junior computer:<BR>
+Note, that like with the Junior Computer,<BR>
+the connector is at the bottom of the PCB !
+
+<P>I only had a female 96 pin 90 deg connector in the drawer,<BR>
+not a 64 pin connector as required...<BR>
+that's why the layout shows a 96 in connector.<BR>
+The row of pins in the middle of the connector is unused.
+
+<P><B>One more thing: be very careful</B> when plugging X32<BR>
+into a Junior Computer, because at the connector of said computer<BR>
+we have -5V and +12 V present.<BR>
+One little mistake there could be going to be quite expensive.
+
+<P><HR>
+
+<P><B>B32 bus interface</B>
+<P><IMG SRC="b32.jpg">
+
+<P><HR>
+
+<P><B>1PA22 Port A module</B>
+<P><IMG SRC="1pa22.jpg">
+
+<P>Port A has open collector outputs.
+
+<P>There is a pullup resistor network for the port lines<BR>
+in the schematic and layout of the port lines.<BR>
+
+<P>I suggest to solder a single row precision socket into the PCB,<BR>
+to make sure that you are able to try different resistor values,<BR>
+or to go without pullup resistors if necessary.
+
+<P><HR>
+
+<P><B>1PB22 Port B module</B>
+<P><IMG SRC="1pb22.jpg">
+
+<P>Port B has three state outputs.
+
+<P>There is a pullup resistor network for the port lines<BR>
+in the schematic and layout of the port lines.<BR>
+
+<P>I suggest to solder a single row precision socket into the PCB,<BR>
+to make sure that you are able to try different resistor values,<BR>
+or to go without pullup resistors if necessary.
+
+<P>BTW: Port A module and Port B module have identical pinouts.
+
+<P><HR>
+
+<P><B>T32 8 Bit timer module with prescaler</B>
+<P><IMG SRC="t32.jpg">
+
+<P>BTW: failed to buy synchronous down counters.
+
+<P>So I just took 74163 synchronous up counters<BR>
+and inverted their inputs and outputs with 7404,<BR>
+to make them up_counters look like down_counters<BR>
+for the CPU...
+
+<P><HR>
+
+<P><B>I32 timer control and interrupt module</B>
+<P><IMG SRC="i32.jpg">
+
+<P>This module controls the timer, does edge detection,<BR>
+and generates the interrupt.
+
+<P><HR>
+
+<P><B>R32, 32 Bytes of SRAM...</B><BR>
+This PCB has ICs at both sides,<BR>
+similar to the register section of my old TREX CPU project.
+
+<P>Top:
+<P><IMG SRC="r32_top.jpg">
+
+<P>Bottom:
+<P><IMG SRC="r32_bot.jpg">
+
+<P>Soldering something like that sure isn't for beginners...
+
+<P>Don't worry about that pullup resistor,<BR>
+I have already integrated it into the schematic and layout...<BR>
+I think.
+
+<P>BTW: when buying a few hundred 74HCT574 at a big distributor,<BR>
+price for them chips goes down pretty much.
+
+<P>Sure, it would have been possible to use a single SRAM chip instead.<BR>
+But hey... that's your chance to build your own Atari 2600 from TTL chips.<BR>
+
+<P><HR>
+
+<P><A HREF="x32.zip">x32 project files</A>
+
+<P><HR>
+<P>
+<A HREF="../xp.htm">[UP]</A>
+
+<HR>
+<P>(c) Dieter Mueller 2015
+
+</BODY>
+</HTML>

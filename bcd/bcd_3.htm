@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>A simple pseudo_tetrade detection</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>A simple pseudo_tetrade detection</H2></CENTER>
+<HR>
+
+<P>
+Now a simple schematic, how to detect results from (decimal) 10..15:
+
+
+<P><IMG SRC="bcd_simple.png">
+
+<P>BCD_ADD enables the BCD correction for A+B.
+
+<P><B>For A+B:</B><BR>
+<I>C_OUT=1</I> indicates a result greater than (decimal) 10.
+<P>Note the three_input OR gate, that produces the C_OUT output carry:<BR>
+One if its inputs goes active, when A+B is greater than (decimal) 15.<BR>
+For detecting results from (decimal) 10..15, we use two AND gates,<BR>
+that are enabled during a BCD add.
+<P>The AND gate connected to Q3,Q1 detects (decimal) 10,11,14,15.<BR>
+The other AND connected to Q3,Q2 detects (decimal) 12,13,14,15.
+
+<P><B>For A-B (or B-A):</B>C_OUT=1 indicates a positive result.
+<P>Means, when subtracting BCD numbers, C_OUT=0 indicates a negative result,<BR>
+and we need to do a BCD correction...
+
+
+<HR>
+
+<P>We could also use NANDs instead of an AND/OR combination:
+
+<P><IMG SRC="bcd_andor.png">
+
+<HR>
+
+<P>Another trick would be using a 74151 8:1 multiplexer:
+
+<P><IMG SRC="bcd_74151.png">
+
+<P>If the ALU carry output is active, the !OE (low_active output enable)<BR>
+of the 74151 is 1, forcing the !Q output (and C_OUT) to 1.
+
+<P>If the ALU carry output is inactive:<BR>
+If Q is 0..9, C_OUT is always 0.<BR>
+For results from (decimal) 10..15, BCD_ADD=1 sets C_OUT to 1.
+
+<HR>
+
+<P>Now that we know, how to detect positive results greater than 10<BR>
+or negative results, the next step is implementing the BCD correction.
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="bcd_0.htm">[UP]</A>/
+<A HREF="bcd_2.htm">[BACK]</A>
+<A HREF="bcd_1.htm">[1]</A>
+<A HREF="bcd_2.htm">[2]</A>
+[3]
+<A HREF="bcd_4.htm">[4]</A>
+<A HREF="bcd_5.htm">[5]</A>
+<A HREF="bcd_6.htm">[6]</A>
+<A HREF="bcd_7.htm">[7]</A>
+
+<A HREF="bcd_4.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2006
+</BODY>
+</HTML>
+
+

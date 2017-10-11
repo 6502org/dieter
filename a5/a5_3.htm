@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>The 7480 full adder</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>The 7480 full adder</H2></CENTER>
+<HR>
+
+<P>The 7480 was a one Bit binary full adder.<BR>
+A similar device with identical pinout and functionality<BR>
+was the Signetics 8268.
+
+<P><IMG SRC="a5_7480.png">
+
+<P>It sure looks a bit odd, especially the low_active<BR>
+carry output.<BR>
+Also note the inverted and non_inverted sum outputs<BR>
+Q and /Q.
+
+<P>Depending on how we connect those funny NAND<BR>
+gates at the A,B inputs, it is possible to configurate<BR>
+the adder inputs to be high_ or low_active.<BR>
+(inverted or non_inverted, that is).
+
+<P>There is a reason for all this, but we are discussing<BR>
+that later. Now for the two different input configurations:
+
+<P><IMG SRC="a5_7480nb.png">
+<P><IMG SRC="a5_7480b.png">
+
+<P>(Same thing for the A input.)
+
+<P>The first NAND (fed from B1, B2) is an open collector<BR>
+type (like 7401), and the Signetics datasheet mentions<BR>
+that the pullup resistor at the NAND output is 4.3 kOhm.
+
+<P>Now to take a look at the circuitry inside the adder box:
+
+<P><IMG SRC="a5_7480l.png">
+
+<P>And when taking a closer look to the truth table<BR>
+of the adder, it turns out that our adder also works<BR>
+well if we change polarity of all the input/output<BR>
+signals.
+
+<P>Two Bit adder example with inverted and non_inverted<BR>
+carry signal. Note the /C1 signal:
+
+<P><IMG SRC="a5_7480c.png">
+
+<P>Side note:<BR>
+The Bit_serial EDUC8 computer used the 7480 and some logic<BR>
+gates as ALU, but for best performance I would recommend<BR>
+taking two 74151 multiplexers as ALU for building Bit_serial<BR>
+machines... like described in "ALU design Part 3, CM-1".
+
+<P>The first implementations of the 7483 four Bit adder contained<BR>
+four 7480_like full adders.<BR>
+Later versions of the 7483 started to use a fast lookahead carry...<BR>
+until the 7483 eventually went obsolete by the invention of the<BR>
+74283.
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="a5_0.htm">[UP]</A>/
+<A HREF="a5_2.htm">[BACK]</A>
+<A HREF="a5_1.htm">[1]</A>
+<A HREF="a5_2.htm">[2]</A>
+[3]
+<A HREF="a5_4.htm">[4]</A>
+<A HREF="a5_5.htm">[5]</A>
+<A HREF="a5_6.htm">[6]</A>
+<A HREF="a5_7.htm">[7]</A>
+<A HREF="a5_8.htm">[8]</A>
+
+<A HREF="a5_4.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2012
+</BODY>
+</HTML>
+

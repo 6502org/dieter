@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>9s complement circuits</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>9s complement circuits</H2></CENTER>
+<HR>
+
+<P>Now a small collection of schematics from<BR>
+<I>Fairchild Fast Applications Handbook,<BR>
+1987, Page 5-45:</I>
+
+<P><B>Warning</B>:<BR>
+For an input range of 0..9, all of the 9s complementer<BR>
+schematics are supposed to return 9..0.<BR>
+But when sending 10..15 into those 9s complementers,<BR>
+the output is <B>undefined</B>.<BR>
+Clear text: In that case, don't expect two schematics<BR>
+to give you identical results...<BR>
+<I>or correct results, that is.</I>
+
+<HR>
+<P><IMG SRC="bcd2_9c_f1.png">
+
+<HR>
+<P><IMG SRC="bcd2_9c_f2.png">
+
+<HR>
+<P><IMG SRC="bcd2_9c_f3.png">
+
+<HR>
+
+<P><IMG SRC="bcd2_9c_f4.png">
+
+<P><B>COM=0</B>: B' = B.<BR>
+<B>COM=1</B>: B' = 9s complement of B.
+
+<HR>
+<P>The 9s complementer which is used inside the<BR>
+74582 adder/subtractor.
+<P><IMG SRC="bcd2_9c_582.png">
+
+<P>Ok, my notation is a bit different from the original.<BR>
+Warning: for COM=0:<BR>
+B' is supossed to be B... for input values from 0..9.<BR>
+<B>Input values of 10..15 at B may be turned into garbage at B'</B>.
+
+<HR>
+
+<P>Just toying with the equations, ignore this picture.<BR>
+Don't know, if this here really works...
+
+<P><IMG SRC="bcd2_9c_own.png">
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="bcd2_0.htm">[UP]</A>/
+<A HREF="bcd2_1.htm">[BACK]</A>
+<A HREF="bcd2_1.htm">[1]</A>
+[2]
+<A HREF="bcd2_3.htm">[3]</A>
+<A HREF="bcd2_4.htm">[4]</A>
+<A HREF="bcd2_5.htm">[5]</A>
+<A HREF="bcd2_6.htm">[6]</A>
+<A HREF="bcd2_7.htm">[7]</A>
+<A HREF="bcd2_8.htm">[8]</A>
+
+<A HREF="bcd2_3.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2012
+</BODY>
+</HTML>                            

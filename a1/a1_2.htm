@@ -1,0 +1,198 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>4 Bit ALU</TITLE>
+</HEAD>
+
+<BODY>
+
+<P><CENTER><H2>4 Bit ALU with EPROM</H2></CENTER>
+<HR>
+
+<P>An example of a simple ALU.<BR>
+Two input_busses, 4 bit each.<BR>
+4 Bit command.<BR>
+Carry and Zero_Flag.
+
+
+<P><IMG SRC="a1_4bitalu.png">
+
+<P><PRE>
+/*                                                                       
+ *                                                                       
+ * 4bitalu.c V1.0 (c) Dieter Mueller 08/2004                             
+ *                                                                       
+ * example: 4 Bit ALU inside the 27512 EPROM. Some Pins unused.          
+ *                                                                       
+ * WARNING: this code is intended for demonstration                      
+ * only, and was never testet in a real/existing CPU.                    
+ *                                                                       
+ * Don't really expect it to work at all.                                
+ *                                                                       
+ */                                                                      
+                                                                         
+#include &lt;stdio.h&gt;                                                       
+#include &lt;stdlib.h&gt;                                                      
+                                                                         
+//definition of ALU_commands                                             
+                                                                         
+#define ALU_PASS_A  0x00                                                 
+#define ALU_PASS_B  0x01                                                 
+                                                                         
+#define ALU_ROL_A   0x02                                                 
+#define ALU_ROR_A   0x03                                                 
+#define ALU_LSL_A   0x04                                                 
+#define ALU_LSR_A   0x05                                                 
+                                                                         
+#define ALU_ADD     0x06                                                 
+#define ALU_SUB     0x07                                                 
+#define ALU_ADC     0x08                                                 
+#define ALU_SBC     0x09                                                 
+                                                                         
+#define ALU_AND     0x0a                                                 
+#define ALU_OR      0x0b                                                 
+#define ALU_XOR     0x0c                                                 
+                                                                         
+#define ALU_CONST_0 0x0d                                                 
+#define ALU_CONST_1 0x0e                                                 
+#define ALU_CONST_F 0x0f                                                 
+                                                                         
+                                                                         
+int main(void);                                                          
+char do_rom(long addr);                                                  
+                                                                         
+int main(void)                                                           
+{                                                                        
+  FILE *outstream;                                                       
+                                                                         
+  long i;                                                                
+                                                                         
+  outstream=fopen("4bitalu.bin","wb");                                   
+  if(outstream==NULL)                                                    
+  {                                                                      
+    printf("\nFile open error.\n");                                      
+    return(-1);                                                          
+  }                                                                      
+                                                                         
+  for(i=0; i&lt;0x10000; i++) //try all possible input_patterns, 64 kBytes   
+  {                                                                      
+    fputc(do_rom(i),outstream); //write one EPROM Byte                   
+  }                                                                      
+                                                                         
+  fclose(outstream);                                                     
+  return(0);                                                             
+}                                                                        
+                                                                         
+char do_rom(long addr)                                                   
+{                                                                        
+  char out;                                                              
+  char cmd,a,b;                                                          
+  char cin;       //carry input                                          
+  char cout,zout; //flags                                                
+                                                                         
+ //default: clear flags, clear result                                    
+  out=0;                                                                 
+  cin=0; cout=0; zout=0;                                                 
+                                                                         
+ //EPROM:                                                                
+ //A0..3=A, A4..7=B,   A8..11=ALU_command, A12=Carry_in                  
+ //Q0..3=Q, Q4=Z_Flag, Q7 =C_Flag                                        
+  a  = addr     & 0x0f;                                                  
+  b  =(addr>>4) & 0x0f;                                                  
+  cmd=(addr>>8) & 0x0f;                                                  
+                                                                         
+  if((long)addr & 0x1000) cin=-1; //carry input                          
+                                                                         
+  switch(cmd)                                                            
+  {                                                                      
+    case ALU_PASS_A: out=a; break;                                       
+    case ALU_PASS_B: out=b; break;                                       
+                                                                         
+    case ALU_ROL_A:  if(cin) out=0x01; //the rest like LSL               
+    case ALU_LSL_A:  out|=(a<<1)&0x0e; if((char)a&0x08){cout=-1;} break; 
+                                                                         
+    case ALU_ROR_A:  if(cin) out=0x08; //the rest like LSR               
+    case ALU_LSR_A:  out|=(a>>1)&0x07; if((char)a&0x01){cout=-1;} break; 
+                                                                         
+    case ALU_AND:    out=a&b; break;                                     
+    case ALU_OR:     out=a|b; break;                                     
+    case ALU_XOR:    out=a^b; break;                                     
+                                                                         
+    case ALU_ADC:    if(cin) out=1;                                      
+    case ALU_ADD:    out+=(a&0xf)+(b&0xf);                               
+                     if(out>0x0f){cout=-1;} break;                       
+                                                                         
+    case ALU_SBC:    if(cin==0) out=-1; //subtract 1, borrow active.     
+    case ALU_SUB:    out+=(a&0xf)-(b&0xf);                               
+                     if(out>=0){cout=-1;/*no borrow.*/} break;           
+                                                                         
+    case ALU_CONST_0: out=0x00; break;                                   
+    case ALU_CONST_1: out=0x01; break;                                   
+    case ALU_CONST_F: out=0x0f; break;                                   
+  }                                                                      
+                                                                         
+  out&=0x0f; //limit result to 4 Bit, to keep the flags clean.           
+  if(out==0) zout=-1; //check for Zero_Condition                                                   
+                                                                         
+ //now to pass the flags to the outputs.                                 
+  if(zout) out|=0x10; //Zero                                             
+  if(cout) out|=0x80; //Carry                                            
+                                                                         
+  return(out);                                                           
+}                                                                        
+</PRE>                                                                     
+
+<HR>
+
+<P>
+When wasting a few more thoughts on this, we could<BR>
+increment, decrement, add, subtract, multiply and divide,<BR>
+barrel shift, sign extend, in binary and BCD.<BR>
+Convert from binary to BCD to ASCII and back.<BR>
+Generate any constant we need to set up the<BR>
+address bus for jumping Interrupt vectors.<BR>
+V_Flag, parity checking, Bit merging from both input_busses...<BR>
+no problem at all.
+
+
+<P>
+Speaking of Bit merging, another trick is to define<BR>
+special ALU commands to update/modify the status register<BR>
+after an arithmetic/logic operation.<BR>
+Simply latch the (temporary) flag outputs from the ALU<BR>
+into a 74374, and pass them together with the contents<BR>
+of the status register through the ALU in the next<BR>
+microcode cycle.<BR>
+Wastes not much CPU time (could be done during<BR>
+memory write back, or during command fetch,<BR>
+when the ALU is not used)...<BR>
+but this can save quite a few components<BR>
+in a 74XX TTL_based design.
+
+
+<P>
+So far, we could cram every function into the EPROM<BR>
+we can imagine, and a few we can not.<BR>
+The only problem is: with one EPROM,<BR>
+we may be limited to 4 Bit.
+
+
+<HR>
+
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="a1_0.htm">[UP]</A>/
+<A HREF="a1_1.htm">[BACK]</A>
+<A HREF="a1_1.htm">[1]</A>
+[2]
+<A HREF="a1_3.htm">[3]</A>
+<A HREF="a1_4.htm">[4]</A>
+<A HREF="a1_5.htm">[5]</A>
+<A HREF="a1_6.htm">[6]</A>
+<A HREF="a1_7.htm">[7]</A>
+<A HREF="a1_8.htm">[8]</A>
+<A HREF="a1_3.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2004
+</BODY>
+</HTML>

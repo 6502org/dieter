@@ -1,0 +1,199 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD><TITLE><K9></TITLE></HEAD>
+<BODY>
+
+<P><CENTER><H1>K9</H1></CENTER>
+
+<HR>
+<P><PRE><I>
+ -------------------------------------
+| Watching TV can be fun...           |
+| even when doing it from the inside. |
+ -------------------------------------
+</I></PRE>
+<HR>
+
+<P><CENTER>This page is about the K9 chassis,<BR>
+which was part of some old Philips TVs,<BR>
+not about dogs and such.</CENTER>
+
+<P><CENTER><I>Most of the tinkering<BR>
+did happen in 1995.</I></CENTER>
+
+<HR>
+
+<P><IMG SRC="k9_innards.jpg">
+
+<P>Many years ago, elektronics hobbyists did like to play<BR>
+with the K9 chassis, because it was nice and service<BR>
+friendly, and every TV came together with a neat,<BR>
+colored set of schematics.
+
+<P>At some point, people did start to throw away their<BR>
+old TVs, and I did salvage plenty of spare parts<BR>
+from scrap, for being able to repair my old TV at home.
+
+<HR>
+
+<P>As the mains switch went defective, I started to<BR>
+wonder if it would be possible to replace it by a<BR>
+more reliable solution.
+
+<P>First, I did replace the switch with a "pushbutton"<BR>
+like those used in control cabinets...
+
+
+<P><IMG SRC="k9_switch.jpg">
+
+<P><I>(The brown thing at the left side of the picture.)</I>
+
+<P>It triggered an "Eltako", as used in staircase<BR>
+illuminations, which turned on/off a neat contactor<BR>
+(at the right side of the picture).
+
+<P><IMG SRC="k9_contactor.jpg">
+
+<P>Note the PCB material below the contactor:<BR>
+A homebuilt "silencer" to prevent the casing of<BR>
+the TV from humming at 50 Hz.
+
+<P>Two switches 16A were wired in parallel, to make<BR>
+the contactor live longer than than the rest of the TV.
+
+<HR>
+
+<P>Unfortunately the TV did have sensor buttons to change<BR>
+the cannels, things that sense the impedance of the<BR>
+tip of your finger... and after two decades of operation,<BR>
+cleaning solvent didn't help anymore to keep them<BR>
+working.
+
+<P>Also, the Nixie tube in the display did fail to show<BR>
+all of the numbers, so I did decide to build something<BR>
+more reliable.
+
+<P><IMG SRC="k9_keys.jpg">
+<P><IMG SRC="k9_receiver.jpg">
+
+<P>Middle: precision DIP socket, holding a 7 segment display.<BR>
+Right: receiver for an IR remote control...
+
+<P>The ICs related to said sensors also did show some<BR>
+signs of oxidation/corrosion, so I just did replace that<BR>
+part of the circuitry with some CMOS logic ICs from<BR>
+the drawer.
+
+<P>Some Schmitt triggers, a priority encoder, a latch,<BR>
+then a decoder and some transistors to drive the reed<BR>
+relays (not shown in this picture), which sent different<BR>
+voltages to the tuner.
+
+<P><IMG SRC="k9_select.jpg">
+
+<P>Did have no 7 segment decoder/driver IC in the drawer,<BR>
+so I did use a handful 1N4148 diodes instead.
+
+<HR>
+
+<P>Now for the next modification:<BR>
+The ultrasonic remote control of the TV went<BR>
+defective, maybe because of leaking battery acid...
+
+<P>Buying a replacement for the remote control did turn<BR>
+out to be very expensive, so I did decide to build my<BR>
+very own IR remote control.
+
+<P>Ok, so it won't win a price for beauty, on the other<BR>
+hand it won't be impressed when getting thrown at a<BR>
+brick wall.
+
+<P><IMG SRC="k9_remote.jpg">
+
+<P>Some years later, I did find an original ultrasonic<BR>
+remote control in the dumpster, so it was possible<BR>
+to control the TV by IR and ultrasonic at the same<BR>
+time...
+
+<P>Problem was, the TV did have no microcontroller at all,<BR>
+and for some reasons I wanted to keep it that way.
+
+<P><IMG SRC="k9_brains.jpg">
+
+<P>Right side: original Philips ultrasonic control<BR>
+circuitry. The metal box did have a sign on it:<BR>
+<I>"If the TV happens to do anything strange, replace<BR>
+the whole box with another box from the factory.<BR>
+<B>Thou shalt not try to repair it by yourself."</B></I>
+
+<P>As a hobbyist, you can't resist such labels.
+
+<P><IMG SRC="k9_control.jpg">
+
+<P>Figured out, that they did use 74xx up/down counters<BR>
+with DACs built from simple resistor networks to set<BR>
+volume, brightness and such.
+
+<P>And I happen to know, what to do with 74xx ICs...
+
+<P>Now to take a look into my IR decoder:
+
+<P><IMG SRC="k9_decoder.jpg">
+
+<P>Basically a SAA3009, connected to some decoders,<BR>
+which did drive 74LS06 ICs, connected to the wires<BR>
+which tapped into the original ultrasonic control<BR>
+circuitry.
+
+<P><B>Don't try such things at home, kids.</B>
+
+<P>(If I wouldn't have had some SAA3006/SAA3009 ICs<BR>
+in the drawer, I would have tried something different,<BR>
+just don't ask...)
+
+<HR>
+
+<P>At some point, I did want to have a standby<BR>
+mode, so I did a few more modifications.
+
+<P><IMG SRC="k9_power.jpg">
+
+<P>Here the switchmode power supply, with a cable<BR>
+which wasn't intended to be there by the manufacturer.
+
+<P><IMG SRC="k9_standby.jpg">
+
+<P>And a transformer with a 9V output, which powered<BR>
+the control circuitry during standby.
+
+<HR>
+
+<P><IMG SRC="k9_defective.jpg">
+
+<P>But in the end, it did feel too much like riding a<BR>
+dead horse.<BR>
+As it went defective again, I didn't want to fix it<BR> 
+anymore, so the TV went scrapped back in 2007.
+
+<P>I somehow doubt, that you have a chance to keep<BR>
+nowadays modern TVs up and running for more than<BR>
+30 years as a mere electronics hobbyist...
+
+<P><I>After the K9 went out of production, Philips did<BR>
+build a chassis which somehow did look like<BR>
+engineered by evil space aliens.</I>
+
+<HR>
+
+<P>Well, I still happen to have a Grundig TV<BR>
+from 1988, but that's another story.<BR>
+I only had to repair it two times... yet.
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+
+
+<HR>
+<P>(c) Dieter Mueller 2008
+
+</BODY></HTML>

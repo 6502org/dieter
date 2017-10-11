@@ -1,0 +1,252 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Microcode examples</TITLE>
+</HEAD>
+<BODY>
+
+<P><CENTER><H2>Microcode examples</H2></CENTER>
+<HR>
+
+<P>
+Remember, when we fetched EPROM outputs with a 74374 at the<BR>
+rising edge of CLK, to get a stable/clear signal for one CLK cycle ?<BR>
+When we want to control tristate_buffers, latches and bus signals<BR>
+(such as address_valid and write_enable), this trick will also work.
+<P>
+And if there are synchronous counters in our processor (PC,<BR>
+stackpointer, etc.), they can be controlled in the same way<BR>
+as our 74163 microcode counter.
+<P>
+<I>We just define single Bits, and combine them in one line of<BR>
+assembler source code with logic_OR_operators, as we already<BR>
+did in our traffic light example.</I>
+
+
+<P>
+Now imagine 16 registers (maybe static RAM, or latches<BR>
+encoded/controlled by 74138).<BR>
+To handle them, we only have to modify, what we already know.<BR>
+Imagine O0..O3 as register read select, and O4..O7 as register<BR>
+write select for one CLK cycle (reading and writing different<BR>
+registers turned out to be useful when calculating jumps/branches).<BR>
+The trick is, to define 4 Bits at once.
+<PRE>
+R_R0    EQU     $0000000<B>0</B>
+R_R1    EQU     $0000000<B>1</B>
+R_R2    EQU     $0000000<B>2</B>
+;...
+R_R15   EQU     $0000000<B>f</B>
+
+W_R0    EQU     $000000<B>0</B>0
+W_R1    EQU     $000000<B>1</B>0
+W_R2    EQU     $000000<B>2</B>0
+;...
+W_R15   EQU     $000000<B>f</B>0
+</PRE>
+
+
+<P>
+When using static RAM as registers, we could use two 74374 to<BR>
+fetch read and write select/address from the EPROMs.<BR>
+Outputs of both latches and RAM address lines are wired together,<BR>
+we only have to switch the output_enables of bouth latches within<BR>
+the right moment.<BR>
+<B>Be warned: the timing issues when implementing registers,<BR>
+no matter if RAM or TTL latches in parallel, can be tough.</B><BR>
+Unless there is a chance of using synchronous counters as registers.<BR>
+(Preferably up/down_counters with three_state outputs.)<BR>
+<I>Hint: it is not necessary to disable RAM write cycles,<BR>
+if we could write "unwanted" ALU_results<BR>
+(after comparing values by subtraction, for instance)<BR>
+into oblivion... also known as /dev/null.<BR>
+Try to reserve one register for that purpose, preferably register 0.</I>
+
+
+<P>
+It's a good thing to use a notation such as R_register for read,<BR>
+and W_register for write.<BR>
+We may as well define registers as R_PC, W_PC, R_ACC, W_ACC<BR>
+and so on, to make the code look better.
+<P>
+And for the ALU, we just go on with that example, and reserve<BR>
+(for instance) O8..O15 from the next EPROM.
+
+<PRE>
+ALU_INC EQU     $0000<B>03</B>00
+ALU_DEC EQU     $0000<B>04</B>00
+</PRE>
+
+<P>
+So one line of assembler code for incrementing register 14<BR>
+would look like this:
+
+<PRE>
+        DC.L    R_R14 | R_W14 | ALU_INC
+</PRE>
+<P>
+And if there is a 74374 between ALU output and address_bus<BR>
+to program memory, and R14 is used as PC<BR>
+(assuming equal word sizes in ALU and address_bus, what we<BR>
+won't have in a 6502), you sure can imagine what to do with it.<BR>
+<P>
+Another latch could be between ALU output and data_bus.<BR>
+<I>To make things more complicated, we could add some other<BR>
+latches and/or multiplexers for bypassing the ALU and<BR>
+increasing throughput to external address_bus/data_bus.</I>
+
+<P>
+And now a macro for incrementing one register:
+<PRE>
+INC_REG MACRO   regr,regw
+        DC.L    regr | regw | ALU_INC
+        ENDM
+;...
+        INC_REG R_PC,W_PC ;increment PC
+</PRE>
+
+<P>
+And for performing operations with the accumulator<BR>
+(just another register), we could also pass the ALU<BR>
+command into the macro, while using R_ACC | W_ACC<BR>
+inside of it.
+
+
+<P>
+In our traffic light example, we used a complete macro<BR>
+for our "program".<BR>
+When writing microcode for a processor, it's a good thing<BR>
+to combine several macros to a "program" for one opcode.<BR>
+Example:
+<PRE>
+        ORG     $29*$20*4
+                ;$29 = 6502 opcode AND#,
+                ;$20 Longwords (4 Bytes) reserved for each "program".
+
+AND_IMM         ;label that explains us what the "program" is good for.
+
+        M_IMM   ;calculate address for data (would be PC+1),
+                ;and put it on the address_bus
+
+        M_AND   ;perform AND with ACC and Byte from data_bus,
+                ;write the result back to ACC, set status register.
+
+        M_NEXT  ;increment PC, put it on the address_bus,
+                ;prepare to fetch the next command.
+</PRE>
+
+
+<P>
+When using an EPROM based ALU, there is a trick of reducing<BR>
+component count (and speed).<BR>
+The basic idea is to store the ALU status outputs (temporary<BR>
+status) into a 74374 after a data calculation.<BR>
+The status register would be just a register as all the others,<BR>
+and there would be special ALU commands,<BR> that read processor<BR>
+status and temporary status, throw the Bits together according<BR>
+to the type of the previous data calculation (arithmetic/logic),<BR>
+and write the result back into the status register.<BR>
+<P>
+Problem is, that we need a 74374 as "shadow register", that<BR>
+gives the flags to the IRQ enable and the flag multiplexer<BR>
+(for testing true/false condition in microcode, as already<BR>
+discussed).<BR>
+We could clock this latch with another microcode Bit... or decide<BR>
+to use register 15 and decode the write address with a NAND.<BR>
+Updating the flags can be done during command fetch<BR>
+(or memory write back).<BR>
+The macro could look like:
+
+<PRE>
+M_NEXT  MACRO   flagmod
+
+        DC.L    R_R14 | W_R14 | ALU_INC | LD_MA
+        ;increment PC, load memory_address output latch with the result
+
+        DC.L    R_R15 | W_R15 | flagmod | OE_TF | LD_CMD
+        ;modify flags (OE_TF=output enable for temorary flag register)
+        ;opcode should be stable on databus, so we load it at the next
+        ;rising edge on CLK with LD_CMD. (remember our traffic light "AGAIN".)
+
+        ENDM
+</PRE>
+We would just define some constants as ALU commands, let's suppose<BR>
+F_NZ to modify the flags N,Z.
+<PRE>
+        M_NEXT  F_NZ ;increment PC. modify N,Z. fetch next command.
+</PRE>
+
+
+<HR>
+
+<P>
+Now for something different:<BR>
+<B>Oh captain, my captain ! Iceberg ahead !</B><BR>
+<I>(Responding to real live events/issues can take some time.)</I><BR>
+
+<P>
+When writing the opcode into the 74374 command latch at the<BR>
+rising edge of CLK, and fetching the microcode Bits into other<BR>
+74374 at the next rising edge, there is one problem:<BR>
+The processor <B>can not respond</B> within the next cycle after<BR>
+fetching the opcode, only in the cycle thereafter.<BR>
+One trick would be, to put a 74373 and a 74374 in series for<BR>
+fetching the opcode:<BR>we could either read the opcode the<BR>
+old fashioned way, or try to do a "prefetch".<BR>
+Theoretically, using an up/down_counter as PC could be a good idea.<BR>
+
+<P>
+<I>Thinking one step ahead when writing microcode isn't much fun.</I><BR>
+If we don't aim for high speed (3 MHz, for instance),<BR>
+we could simplify the problem by arranging program memory and<BR>
+microcode EPROMs in series.
+<P>
+What means, the program memory address changes at the<BR>
+rising edge of CLK, the opcode is fetched with a <B>74373</B><BR>
+(that is transparent for the full cycle), runs through the<BR>
+microcode EPROMs, and the resulting microcode Bits<BR>
+are fetched at the next rising edge on CLK (and so, we<BR>
+<B>can</B> respond to the opcode within the next cycle).
+
+<P><I>
+Note, that the propagation delay of Program Memory<BR>
+(and adress decoding), Command Latch, Microcode ROM<BR>
+(and perhaps Microcode Latches) will sum up <BR> 
+in that case.
+</I>
+
+<P>
+But we are going too far off topic, because harware design<BR>
+would be another story.
+<P>
+The things discussed in here are just a "starting point" for<BR>
+experimenting with your own microcode, and quite a few<BR>
+tricks went unmentioned.<BR>
+For more sophisticated approaches on microprogramming,<BR>
+consult/dissect the AM2910 datasheet.
+
+<P>
+Be aware, that writing microcode can be more time consuming<BR>
+than hardware design.
+
+<P>That's all for now. Good luck (You're going to need it).
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="mpd_0.htm">[UP]</A>/
+<A HREF="mpd_7.htm">[BACK]</A>
+<A HREF="mpd_1.htm">[1]</A>
+<A HREF="mpd_2.htm">[2]</A>
+<A HREF="mpd_3.htm">[3]</A>
+<A HREF="mpd_4.htm">[4]</A>
+<A HREF="mpd_5.htm">[5]</A>
+<A HREF="mpd_6.htm">[6]</A>
+<A HREF="mpd_7.htm">[7]</A>
+[8]
+
+
+<P>(c) Dieter Mueller 2005.
+
+</BODY>
+</HTM>

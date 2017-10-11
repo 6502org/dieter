@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>74181</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>74181</H2></CENTER>
+<HR>
+
+<P><B>The 74283, a well known adder:</B>
+<P><IMG SRC="a2_74283.png">
+
+<HR>
+<P><B>The less known 8260 from Signetics.</B><BR>
+Some kind of ALU chip, with a minimalistic functionality:<BR>
+addition, XNOR, AND.
+<P><IMG SRC="a2_8260.png">
+
+<P>The 8260 had 2 control_lines, called C_INH and E_INH.<BR>
+C_INH was used to select arithmetic or logic operation mode.<BR>
+<I>C_INH=0</I> enabled the carry chain, and the 8260 worked as an adder.<BR>
+<I>C_INH=1</I> disabled the carry chain by forcing all it's high_active<BR>
+carry outputs to 1, what basically turned the XOR gate into an inverter.
+
+<P>When logic mode was selected, E_INH was used to force the<BR>
+propagate_signals active, what made it possible to switch<BR>
+from XNOR to AND.
+
+<HR>
+<P><B>The 74181 ALU:</B><BR>
+A marvel of logic design.
+<P><IMG SRC="a2_74181.png">
+
+<P>It also has a control line, called <B>M</B>, to select<BR>
+arithmetic or logic operation mode.
+
+<P>In logic mode, the carry chain is disabled, and the<BR>
+high_active carry_outputs are forced to 1.<BR>
+(In all examples mentioned here: high_active A,B,F and<BR>
+low_active carry at the 74181 I/O_pins)<BR>
+Like with the 8260, this turns the XOR at the output into an inverter.
+
+<P>Now to discuss how it works in detail.
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="a2_0.htm">[UP]</A>/
+<A HREF="a2_2.htm">[BACK]</A>
+<A HREF="a2_1.htm">[1]</A>
+<A HREF="a2_2.htm">[2]</A>
+[3]
+<A HREF="a2_4.htm">[4]</A>
+<A HREF="a2_5.htm">[5]</A>
+<A HREF="a2_6.htm">[6]</A>
+<A HREF="a2_7.htm">[7]</A>
+<A HREF="a2_8.htm">[8]</A>
+
+<A HREF="a2_4.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2005
+</BODY>
+</HTML>
+

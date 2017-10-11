@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>MT15 transistor CPU</TITLE>
+</HEAD>
+<BODY>
+<P><H1 ALIGN=CENTER>MT15</H1>
+
+<HR>
+
+<P><PRE><I>
+ ----------------------------------------------------
+| "Label it computer porn to attract more readers.", |
+| a friend from Italy did say...                     |
+| ...It wasn't one of his best ideas.                |
+ ----------------------------------------------------
+</I></PRE>
+<HR>
+
+<P>If there <B>would</B> be a standard with FPGAs/CPLDs<BR>
+<I>as known from PALs/GALs</I>, allowing me to select<BR>
+between parts from different manufacturers with the<BR>
+same Pin_out <I>while still working</I> with the same <BR>
+(non_proprietary/open_source) software tools,<BR>
+<B>this project would not exist</B>.
+<HR>
+
+<P>MT15 is a (mostly) transistorised CPU.
+
+<P><I>"Mostly" means, that 74xx chips are used in three places:</I><BR>
+74LS164/74LS27 is used to generate the 4_phase_clock,<BR>
+instruction decoder outputs are buffered with four 74HCT245,<BR>
+and another four 74HCT245 work as buffer for the 16 Bit<BR>
+address and data bus.
+
+<P>Everything else (Registers, Flags, ALU, instruction decoder etc.)<BR>
+was built with BC847/BC857 low_frequency_transistors,<BR>
+running with a 2.5 Volt supply.
+
+<P>Maximum power dissipation is around 13W (low power).
+
+<P>500 kHz 4_phase_clock, means a 2 us cycle, instructions<BR>
+take 2 to 6 cycles.
+
+<P>Address range is 64 kWords (128 kBytes).
+
+<P>Contains circa 3000 low_frequency transistors, 3 EuroCents each.<BR>
+(BC847/BC857 is a SMD_version of the well known BC547/BC557)
+
+<P>"Borrowed" CRT and Keyboard interface from my old M02 project.
+
+<P>
+<B>MT15 modules:</B><BR>
+<A href="mt15_sch.htm">View schematics as PNG images online</A><BR>
+<A href="mt15_mod.zip">Download schematics and layouts for Eagle 3.55 as ZIP (200 kB)</A>
+
+
+<HR>
+
+<P>2008: some crude software stuff, including an improvised emulator<BR>
+and the source code of the monitor program which did run on the<BR>
+MT15 hardware: <A href="mt15stuff.zip">mt15stuff.zip</A>
+
+<HR>
+
+<P>...Now for the pictures.
+<HR>
+<P><B>Test run:</B>
+<P><A href="mt15_cpu_front.jpg">front view                                       </A>
+<P><A href="mt15_cpu_right.jpg">side view                                        </A>
+<P><A href="mt15_cpu_down.jpg" >command latch/flags/PLA                          </A>
+<P><A href="mt15_cpu_down1.jpg">ALU/register slices and carry logic              </A>
+<P><A href="mt15_cpu_down2.jpg">complete CPU                                     </A>
+<P><A href="mt15_display.jpg"  >display memory, starting at address $0400        </A>
+<P><A href="mt15_power.jpg"    >power supply                                     </A>
+
+<HR>
+<P><B>CPU disconnected</B>  
+<P><A href="mt15_cpu_top.jpg"  >CPU top                                          </A>
+<P><A href="mt15_cpu_bot.jpg"  >CPU bottom, "Sauerkraut" wiring                  </A>
+<P><A href="mt15_clk_top.jpg"  >clock generation, top                            </A>
+<P><A href="mt15_clk_bot.jpg"  >clock generation, bottom                         </A>
+<P><A href="mt15_mem_top.jpg"  >memory, top                                      </A>
+<P><A href="mt15_mem_bot.jpg"  >memory, bottom: some more Sauerkraut.            </A>
+
+<HR>
+<P><B>A close look to MT15 Modules</B>
+<P><A href="mt15_nand.jpg"     >8 expandable open_collector NANDs, 4 inputs each </A>
+<P><A href="mt15_carry.jpg"    >4 Bit parallel carry (sort of a 74182)           </A>
+<P><A href="mt15_alu.jpg"      >1 Bit ALU slice                                  </A>
+<P><A href="mt15_regs.jpg"     >1 Bit register slice (4 registers)               </A>
+<P><A href="mt15_latch.jpg"    >4 transparent latches (Opcode, Flags, Sequencer) </A>
+<P><A href="mt15_pla_top.jpg"  >"programmable" logic array, top    (one of five) </A>
+<P><A href="mt15_pla_bot.jpg"  >"programmable" logic array, bottom               </A>
+
+<HR>
+<P>More technical details in the "articles" section:
+<UL>
+ <LI><A href="../mt15i/mt15i_0.htm">The MT15 Instruction set               </A></LI>
+ <LI><A href="../mt15a/mt15a_0.htm">The MT15 Architecture                  </A></LI>
+ <LI><A href="../mt15b/mt15b_0.htm">The MT15 Instruction_decoder/sequencer </A></LI>
+</UL>
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+
+<HR>
+<P>(c) Dieter Mueller 2004
+</BODY></HTML>

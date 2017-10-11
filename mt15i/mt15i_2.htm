@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>OpCodes</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>OpCodes</H2></CENTER>
+<HR>
+
+<P>MT15 registers, visible to the "end user":
+<P><PRE>
+       15 14 13 12 11 10  9  8  7  6  5  4  3  2  1  0 
+       ----------------------------------------------- 
+ACC   |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+       -----------------------------------------------
+PC    |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+       -----------------------------------------------
+       -----------
+Flags | I| N| Z| C|
+       -----------
+
+</PRE>
+
+<P>Status_register/Flags can't be directly read/written.
+
+<HR>
+<P><B>MT15 OpCode:</B>
+
+<P>Trick is, that the command Bits mentioned here are applied<BR>
+more or less directly to some parts of the CPU in the right<BR>
+moment of OpCode execution.
+
+<P><PRE>
+
+ |15 14 13|12 11 10| 9| 8  7| 6| 5  4| 3  2  1  0|
+ |--------|--------|--|-----|--|-----|-----------|
+<B> |F2|F1|F0|A2|A1|A0|S |W1|W0|MF|M1|M0|C3|C2|C1|C0|</B>
+  -----------------------------------------------
+  \ cond / \ addr / |  \ w / |  \cin/ \  alu    /
+   ------   ------  |   ---  |   ---   ---------\
+     |        |     |    |   |    |              \
+     |        |     |    |   | 00 ALU_C_in=0      \ 
+     |        |     |    |   | 01 ALU_C_in=C_Flag  |
+     |        |     |    |   | 1x ALU_C_in=1       |
+     |        |     |    |   |                     |   ALU_out =
+000 true      |     |    | 0 keep___Flags     0000 AND reg& mem
+001 if_I=1    |     |    | 1 modify_Flags     0001 ANN reg&!mem
+010 if_N=0    |     |    |                    0010 ORA reg| mem
+011 if_N=1    |     | 00 don't_write          0011 XOR reg^ mem
+100 if_Z=0    |     | 01 write_ACC            0100 MVR reg
+101 if_Z=1    |     | 10 write_PC             0101 MVM mem
+110 if_C=0    |     | 11 write_memory         0110 DEC mem-1
+111 if_C=1    |     |                         0111 SET $FFFF
+              |     0 ALU_source=ACC          1000 CLR $0000
+          000 #d16  1 ALU_source=PC           1001 ADD reg+mem
+          001 #d16                            1010 SUB reg-mem
+          010  d16+PC                         1010 SBU mem-reg
+          011 [d16+PC]                        1100 SRR reg >>1
+          100  d16+ACC                        1101 SRM mem >>1
+          101 [d16+ACC]                       1110 SLR reg <<1
+          110  d16                            1111 SLM mem <<1
+          111 [d16]
+
+</PRE>
+
+<P>Now for a more detailed description.
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="mt15i_0.htm">[UP]</A>/
+<A HREF="mt15i_1.htm">[BACK]</A>
+<A HREF="mt15i_1.htm">[1]</A>
+[2]
+<A HREF="mt15i_3.htm">[3]</A>
+<A HREF="mt15i_4.htm">[4]</A>
+<A HREF="mt15i_5.htm">[5]</A>
+<A HREF="mt15i_6.htm">[6]</A>
+<A HREF="mt15i_7.htm">[7]</A>
+<A HREF="mt15i_8.htm">[8]</A>
+
+<A HREF="mt15i_3.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2005
+</BODY>
+</HTML>

@@ -1,0 +1,101 @@
+v<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>PLA5: Flag control</TITLE>
+</HEAD>
+
+<BODY>
+<P><H2 ALIGN=CENTER>PLA5: Flag control</H2>
+
+<HR>
+
+<P><B>PLA5</B> contains the flag_multiplexer, for testing the<BR>
+TRUE condition.
+
+<P>it also generates the clock signals for loading the flags<BR>
+during data calculation (step 3).<BR>
+<I>(Clock gating)</I>
+
+<P><I>Note:</I><BR>
+<B>+</B> means, no transistor.<BR>
+<B>O</B> means, transistor (BC847 or BC857) at this location.
+
+<P><PRE>
+     S0-++++++++OO++++++
+     S1-++++++++OO++++++
+ !CMD13-O+O+O+O+++++++++
+  CMD13-+O+O+O+O++++++++
+ !CMD14-OO++OO++++++++++
+  CMD14-++OO++OO++++++++
+ !CMD15-OOOO++++++++++++
+  CMD15-++++OOOO++++++++
+!N_FLAG-++O+++++++++++++
+ N_FLAG-+++O++++++++++++
+!Z_FLAG-++++O+++++++++++
+ Z_FLAG-+++++O++++++++++
+!C_FLAG-++++++O+++++++++
+ C_FLAG-+++++++O++++++++
+    INT-+O++++++++++++++
+  PHI21-++++++++OO++++++
+   CMD3-++++++++O+++++++
+   CMD6-++++++++OO++++++
+        ||||||||||||||||
+        OOOOOOOO++++++++-TRUE
+        ++++++++O+++++++-LC
+        +++++++++O++++++-LNZ
+        ++++++++++++++++-
+        ++++++++++++++++-
+        ++++++++++++++++-
+        ++++++++++++++++-
+        ++++++++++++++++-
+        ++++++++++++++++-
+        ++++++++++++++++-
+</PRE>
+
+<HR>
+
+<P><B>Flag_multiplexer for testing TRUE condition</B><BR>
+<I>(if TRUE=1, execute instruction. if TRUE=0, skip instruction.)</I><BR>
+<PRE>
+     CMD15..13
+
+     000 TRUE =        1
+     001 TRUE = INT_FLAG
+     010 TRUE =  !N_FLAG
+     011 TRUE =   N_FLAG
+     100 TRUE =  !Z_FLAG
+     101 TRUE =   Z_FLAG
+     110 TRUE =  !C_FLAG
+     111 TRUE =   C_FLAG
+</PRE>
+
+<P>Looks like some sort of 74151, doesn't it ?
+
+<HR>
+
+<P><B>Loading the flags:</B><BR>
+<PRE>
+     LC  = PHI21 & S1 & S0 & CMD6 &CMD3 //Load Flag C
+     LNZ = PHI21 & S1 & S0 & CMD6       //Load Flag N,Z
+</PRE>
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="mt15b_0.htm">[UP]</A>/
+<A HREF="mt15b_6.htm">[BACK]</A>
+<A HREF="mt15b_1.htm">[1]</A>
+<A HREF="mt15b_2.htm">[2]</A>
+<A HREF="mt15b_3.htm">[3]</A>
+<A HREF="mt15b_4.htm">[4]</A>
+<A HREF="mt15b_5.htm">[5]</A>
+<A HREF="mt15b_6.htm">[6]</A>
+[7]
+<A HREF="mt15b_8.htm">[8]</A>
+
+<A HREF="mt15b_8.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2005
+</BODY>
+</HTML>
+

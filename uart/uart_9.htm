@@ -1,0 +1,115 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>RX description</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>RX description</H2></CENTER>
+<HR>
+
+<P><H3>Schematic, part 1:</H3>
+
+<P>First, the RX signal goes into a 'digital' filter.<BR>
+<I>RX has to be stable for three clock cycles</I> to be latched into the flipflop<BR>
+that emits RX1 towards the Start Bit detection and the RX shift register.
+
+<P><I>(Keep in mind, that the clock runs 16 times faster than the baud rate.)</I>
+
+<P>The basic idea is, that an interfering signal shorter than three clock<BR>
+cycles might be ignored, so there is a chance that the Start Bit<BR>
+detection won't trigger the receiver by accident.<BR>
+The 74164 shift register samples the RX signal, and the 74151<BR>
+8:1 multiplexer uses three succesive Bits from said shift register<BR>
+to figure out what to do with the RX1 flipflop.<BR>
+So much for the filter.
+
+<P>Since a Start Bit is represented by a 0 on RX1 <BR>
+<I>(and the previous Stop Bit made sure that RX1 was 1 before),</I><BR>
+we use a second flipflop to latch the previous level on RX1, what gives us RX2.<BR>
+If <B>RX1</B> (actual value) is 0, and <B>RX2</B> (previous value) is 1, <BR>
+then the NAND gate makes sure that the receiver will start to receive/operate<BR>
+at the next rising edge on CLK.
+
+<P>Problem is, that the circuitry would _always_ try to trigger to a falling edge on RX1:<BR> 
+if one would transmit 0x55, there are 5 falling edges (including the Start Bit) on the RX1 line.<BR>
+To prevent the received Data from being shredded apart by re_triggering the receiver<BR>
+during the reception of a Byte,<BR> 
+we just pretend that the previous value was 0 by keeping the RX2 flipflop cleared<BR>
+when the receiver is running...<BR>
+<I>what is indicated by RDONE = 0.</I>
+
+<HR>
+<P><H3>Schematic, part 2:</H3>
+
+<P>The control circuitry of the receiver is based on the idea used for the
+transmitter.<BR>
+But now we have two 74163 counters: <BR>
+one to count the received Data Bits,<BR>
+<I>and one to count the cycles of a Bit</I>.
+
+<P>If the cycle counter rolls over, the Bit counter is incremented until it reaches 15.<BR> 
+Then all of the Data Bits are received, both counters are stopped at 15,<BR>
+and RDONE goes high.
+
+<P>The /RSTART signal from the Start Bit detector loads/starts both counters,<BR>
+what takes one clock cycle...<BR>
+so we're loading the cycle counter wit 1 to compensate that.
+
+<P>The uppermost Bit from the cycle counter gives us a neat/clean rising edge<BR>
+in the <B>middle</B> of a Data Bit, so we use it to clock the receive shift register.
+
+<P>There could be some dirt on the RDONE signal, so we better <I>synchronize<BR>
+it to the clock</I> before we use it to transfer the received Byte from<BR>
+the receive shift register into the 'receive hold register'.
+
+<P>We also have a 'status register', built with two flipflops (you could<BR>
+as well use a 74164 instead), that is clocked at the same time as the<BR>
+'receive hold register'.<BR>
+Data input of this shift register is set to 1, so if a valid Byte is in the<BR>
+'receive hold register', RX_VALID is set to 1, indicating that the CPU<BR>
+or microcontroller in control of the UART can read out said Byte...<BR> 
+<I>what will clear the status register.</I>
+
+<P>If it takes too long to read the Byte, the contents of the<BR>
+'receive hold register' might be overwritten by the next Byte received,<BR> 
+and the OVERFLOW flipflop indicates that your Data stream<BR>
+went corrupted.
+
+<HR>
+
+<P>Some UARTS also sample the Stop Bit, that is supposed to be 1,<BR>
+and set a 'frame error' flag if said Bit was 0...<BR>
+indicating that something is wrong with the configuration of the UART:<BR>
+<I>wrong Baud Rate, or wrong number of Data Bits.</I>
+
+<P>There are some other tricks to build a simpler RX circuitry,<BR>
+but they are probably less reliable...<BR>
+...and maybe limited to a fixed Baud Rate when using 74221 monoflops.
+
+<P>BTW: You might want to take a look at the 'Imlac' schematics:<BR>
+an old computer that also had a 74xx TTL based UART.
+
+<HR>
+
+<P><I>Good luck when building your own UART, and please put a photo<BR>
+of your contraption in the Internet when you had success.</I>
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="uart_0.htm">[UP]</A>/
+<A HREF="uart_8.htm">[BACK]</A>
+<A HREF="uart_1.htm">[1]</A>
+<A HREF="uart_2.htm">[2]</A>
+<A HREF="uart_3.htm">[3]</A>
+<A HREF="uart_4.htm">[4]</A>
+<A HREF="uart_5.htm">[5]</A>
+<A HREF="uart_6.htm">[6]</A>
+<A HREF="uart_7.htm">[7]</A>
+<A HREF="uart_8.htm">[8]</A>
+[9]
+
+
+<P>(c) Dieter Mueller 2007
+</BODY>
+</HTML>

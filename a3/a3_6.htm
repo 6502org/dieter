@@ -1,0 +1,166 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>A MC14500 modification</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>A MC14500 modification</H2></CENTER>
+<HR>
+
+<P>Since we're at it, we could start thinking about how to modify<BR>
+the data path of the MC14500 design to run arithmetic.
+
+<P><img src="a3_145a.png">
+
+<P>I'm leaving out a few little details, like the XOR gate<BR>
+needed to store the complement of RR to memory,<BR>
+and the fact that not all instructions do modify<BR>
+the Result Register (RR) and the Carry Flag (C).
+
+<HR>
+
+<P>We still have the Logic Unit (LU) from the MC14500,<BR>
+but in order to build a full adder,<BR>
+we have to send the output of the LU and the Carry Flag<BR>
+through an XOR gate before writing the result into RR.
+
+<P>For logic instructions (and for some of the arithmetic instructions),<BR>
+it's necessary to keep the Carry input at the XOR 0,<BR>
+so we have to insert an AND gate.<BR>
+Some of the arithmetic instructions might want to have the C Flag set,<BR>
+like when processing the first Bit for a subtraction,<BR>
+so we insert an OR gate into the output of the Carry Flag.
+
+<HR>
+
+<P>Like with our other ALU examples, the LU emits the propagate (P) signal,<BR>
+which routes the Carry Flag from the previous Bit to the Carry of the next<BR>
+Bit, when P is active.
+
+<P>For RR + mem, the LU is configurated as <B>XOR</B>.<BR>
+
+<P>For RR - mem, we calculate RR + /mem.<BR>
+Inverting one input of a XOR gate is the same as inverting the output,<BR>
+so the LU is configurated as <B>XNOR</B> when calculating RR - mem.
+
+<HR>
+
+Another thing is, that we need a generate (G) signal, that generates<BR>
+a Carry for the next Bit when<BR>
+<B>RR = 1</B> and <B>mem = 1</B> for <I>RR + mem</I>,<BR>
+<B>RR = 1</B> and <B>mem = 0</B> for <I>RR - mem</I>.
+
+<HR>
+
+<P>For some of the arithmetic instructions you might want to add 0 or 1 to RR.<BR>
+Fortunately we already have the DIN Flag,<BR>
+which is ANDed with the Bit from memory.
+
+<P>For loading a copy from the Carry Flag into the Result Register,<BR>
+set the LU output to 0, and enable the Carry to pass through<BR>
+the XOR into RR.
+
+<P>For loading a copy of RR into the Carry Flag, set the LU output to 0<BR>
+and activate both AND gates for RR + mem, RR - mem...<BR>
+so that RR is passed through, while the Bit from memory is ignored.
+
+<HR>
+
+<P>Of course, the processor would need to have more than 16 instructions,<BR>
+and the instruction word wouldn't fit into 4 Bit anymore.
+
+<HR>
+
+Another question is, if we should support indirect addressing.<BR>
+For instance, we could have three counters, that work as<BR>
+"file select registers" (or pointers),<BR>
+like in the PIC18F family of microcontrollers.
+
+Let's imagine, our "programmable logic controller" has timers,<BR>
+which are loaded with the "Flag 0" instruction.<P>
+
+<P><PRE>
+ 15   11 8 7      0
+ ------------------
+|0000|Tttt|########|
+ ------------------
+</PRE>
+
+<P>An instruction word like that loads an 8 Bit literal value<BR>
+into a timer (hey, it's just an example).<BR>
+Except when Bit 11 is 0. Depending on Bit 8, the value<BR>
+is loaded into the high or low Byte of a pointer,<BR>
+which is selected by Bit 9 and Bit 10.<BR>
+It's easy.
+
+<P>We might want to have the 16 Bits for all the counters<BR>
+mapped into memory to be able to do some address calculation.<BR>
+For instance:<BR>
+0x10..0x1F = Pointer 1.<BR>
+0x20..0x2F = Pointer 2.<BR>
+0x30..0x3F = Pointer 3.
+
+<P>A memory read/write at 0x04..0x07 would read/write the<BR>
+memory Bit selected by Pointer 1, for 0x08..0x0B it's Pointer 2,<BR>
+0x0C..0x0F it's Pointer 3.
+
+<P>You sure noticed, that I'm suggesting to reserve 4 Bits per Pointer.<BR>
+That's because we could tie the control signals for the counters/Pointers<BR>
+to the address lines A0 and A1, to trigger things like<BR>
+postincrement/predecrement.
+
+<P>The only thing we need is a "LOOP" instruction,<BR>
+to run a set of instructions like<BR>
+<PRE>
+LD  [A]+
+ADC [B]+
+STO [Q]+
+</PRE>
+8 times when adding two Bytes in memory.
+
+<P>Maybe tied to "Flag 0" again...
+
+<P><I>The disadvantage of such a design is, that it might require<BR>
+more transistors, logic gates, flipflops, whatever...<BR>
+than just building a minimalistic 16 Bit CPU.</I>
+
+<HR>
+
+<P>...do we really need<BR>
+<PRE>
+LD  A
+SBC B
+STO Q
+</PRE>
+
+Or could we replace that with<BR>
+<PRE>
+LDC B
+ADC A
+STO Q
+</PRE>
+
+<P>Hmm...
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="a3_0.htm">[UP]</A>/
+<A HREF="a3_5.htm">[BACK]</A>
+<A HREF="a3_1.htm">[1]</A>
+<A HREF="a3_2.htm">[2]</A>
+<A HREF="a3_3.htm">[3]</A>
+<A HREF="a3_4.htm">[4]</A>
+<A HREF="a3_5.htm">[5]</A>
+[6]                          
+<A HREF="a3_7.htm">[7]</A>
+<A HREF="a3_8.htm">[8]</A>
+                              
+<A HREF="a3_7.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2008
+</BODY>
+</HTML>
+
+

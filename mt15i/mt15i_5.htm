@@ -1,0 +1,127 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Addressing modes</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Addressing modes</H2></CENTER>
+<HR>
+
+<P><B>MT15 addressing modes:</B>
+<P>Addressing modes are valid for ALL instructions.
+
+<P><B>d16</B> means the parameter field, second word of a MT15 instruction.
+<BR>Example: lda: load ACC with word in memory...<BR> 
+<PRE>
+ #d16      <B>lda#   </B> ; immediate with d16
+  d16      <B>lda&   </B> ; mem[d16]
+ [d16]     <B>lda@   </B> ; mem[mem[d16]]      //nice for implementing a stack
+  d16+ACC  <B>ldaa&  </B> ; mem[d16+ACC ]      
+  d16+PC   <B>ldapc& </B> ; mem[d16+PC  ]      //PC relative data
+ [d16+ACC] <B>ldaa@  </B> ; mem[mem[d16+ACC]
+ [d16+PC ] <B>ldapc@ </B> ; mem[mem[d16+PC ]   //PC relative pointer
+</PRE><BR>
+Another example:<BR>
+<PRE>
+ <B>jmp# </B> writes d16 immediate into PC, like the "JMP" known frome other CPUs.
+ <B>jmpa&</B> takes one word from a table in memory, starting at d16, with ACC as offset.
+ <B>jmp@ </B> reads from a word selected by a pointer in memory, as when returning from a subroutine.
+</PRE><BR>
+<I>...although jmp# looks a bit odd.</I>
+
+<HR>
+<P><B>Now a nice example for jmpa&:</B>
+<P>You did read an ASCII character, maybe from a keyboard, and want<BR>
+to execute a part in a program depending on a number:<BR>
+<PRE>
+        ;ACC='0'..'3'=$0030..$0033
+        ;
+        and#   $0003       ;limit ACC to $0001..$0003
+        jmpa&  ladr(TABLE) ;load PC with contents of address "TABLE+ACC".
+TABLE
+        dc.w   ladr(addr0) ;<-ACC = $0000, was '0'
+        dc.w   ladr(addr1) ;<-ACC = $0001, was '1'
+        dc.w   ladr(addr2) ;<-ACC = $0002, was '2'
+        dc.w   ladr(addr3) ;<-ACC = $0003, was '3'
+</PRE><BR>
+<P>...don't get confused by ladr(),<BR>
+it just indicates, that TABLE is an address.
+
+<P>ladr() is defined as a function:<BR>
+<I>ladr function</I> addr, (addr>>1)
+
+Didn't like TMS32010 notation, or PIC endianess...<BR>
+so I decided to stay with the AS macroassembler in 68000 mode.
+
+<P>Had to improvise a bit, because 68000 assembler is counting <B>Bytes</B><BR>
+of program memory, while MT15 is counting <B>words</B>.<BR>
+So ladr() divides by two for a correction by shifting the address one Bit<BR>
+to the right.<BR>
+You sure know, how to do better than that.
+
+<HR>
+<P>Building (conditional) jumps is easy.<BR>
+<PRE>
+        jnz#  ladr(TARGET)      ;jump, if Z_Flag = 0
+</PRE>
+could be encoded with:<BR>
+if_nz, immediate_addressing, keep flags, write PC, MVM<BR>
+Here the macro:
+<PRE>
+jnz#    macro addr          
+        dc.w  %1000000100000101 ; $8105
+        dc.w  addr          
+        endm
+</PRE>
+
+<HR>
+<P>Now for the "branch" instruction.
+<P>Branch means, a relative jump from the actual PC address.<BR>
+In other words: nothing more than adding a value to PC.<BR>
+
+<P>Example:<BR>
+<PRE>
+        brz#  lrel(ADDR)
+</PRE>
+would look like:<BR>
+if_z, immediate_addressing, keep flags, read PC, write PC, increment, ADD<BR>
+<PRE>
+brz#    macro rel 
+        dc.w  %1010001100111001 ; $a339
+        dc.w  rel 
+        endm
+</PRE>
+<P>lrel() is defined as a function:<BR>
+<I>lrel function</I> rel, (addr-(*+2))/2
+
+<P>PC (ProgramCounter) would point to the address of the<BR>
+second word of the instruction during data calculation.<BR>
+So we add 2 to increment the address to the next word<BR>
+(what would be the first word of the next instruction).
+
+<P>Then we have to subtract the target address from that,<BR>
+and divide the result by two<BR>
+<I>(you already know, why).</I><BR>
+Since the subtraction will result in a <B>signed integer</B>,<BR>
+we have to perform a signed division.
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="mt15i_0.htm">[UP]</A>/
+<A HREF="mt15i_4.htm">[BACK]</A>
+<A HREF="mt15i_1.htm">[1]</A>
+<A HREF="mt15i_2.htm">[2]</A>
+<A HREF="mt15i_3.htm">[3]</A>
+<A HREF="mt15i_4.htm">[4]</A>
+[5]
+<A HREF="mt15i_6.htm">[6]</A>
+<A HREF="mt15i_7.htm">[7]</A>
+<A HREF="mt15i_8.htm">[8]</A>
+
+<A HREF="mt15i_6.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2005
+</BODY>
+</HTML>

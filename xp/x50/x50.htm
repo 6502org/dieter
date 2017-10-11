@@ -1,0 +1,125 @@
+<HTML>
+<HEAD><TITLE>...4C D2 FF</TITLE>
+</HEAD>
+<BODY>
+<CENTER><H1>Failed: X50 &lt; 6850</H1></CENTER>
+
+<P>A failed experimental attempt of building something like a 6850<BR>
+with 74XX TTL chips.
+
+<P>Most things are untested, the schematics are a mess,<BR>
+and there is no documentation.
+
+<P>Failed to get the 2R51 receiver working at all.<BR>
+I'm not sure, if my concept for the receiver was the right approach.<BR>
+Decided, that it's better not to include that receiver<BR>
+into the project files, to prevent people from following me<BR>
+an a track which probably might be wrong.
+
+<P>If you made it to build a working receiver,<BR>
+please post the schematics.
+
+<P><HR>
+
+<P><B>Test setup:</B>
+<P>Bottom: my DRC2 SBC, which is supposed to be compatible to the SBC-2.<BR>
+<P>2B22 bus interface is plugged into DRC2.<BR>
+1X51 backplane is plugged into the 2B22 bus interface.<BR>
+
+<P>Plugged into the 1X51 backplane, we have:  <BR>
+1* 1C50, control module                       <BR>
+1* 2F50, flag and status module               <BR>
+1* 2R51, receiver module                      <BR>
+1* 2T51, transmitter module                   <BR>
+1* G50, baud rate generator module            <BR>
+1* D51, RS232 level converter module
+
+<P><IMG SRC="x_50.jpg">
+
+<P><HR>
+
+<P><B>1X51 backplane:</B>
+<P><IMG SRC="1x51.jpg">
+
+<P>This module is used in the X50 and X51 project.
+
+<P>Because register addresses for both projects are different,<BR>
+we have to compensate this with a few jumpers in the left upper area<BR>
+of the PCB.
+
+<P>Also, there is a three pin jumper for connecting the interupt output<BR>
+either with NMI or IRQ.
+
+<P>The jumper in the right lower area enables the blinkenlights.
+
+<P><HR>
+
+<P><B>D51 RS232 level converter module</B>
+<P><IMG SRC="d51.jpg">
+
+<P>RS232 to TTL and back level converter.<BR>
+Concept and jumper field are stolen from Daryl's SBC-2.
+
+<P>This module is used in the X50 and X51 project.
+
+<P><HR>
+
+<P><B>G50 baud rate generator module</B>
+<P><IMG SRC="g50.jpg">
+
+<P>The original 6850 has no baud rate generator,<BR>
+but because a baud rate generator is needed for testing a 6850,<BR>
+I just had to build one.
+
+<P>Depending on the DIP switch on the 1C50 control module,<BR>
+baud rate could be set either by software, or by said switch.<BR>
+For more details, please dig into the schematics.
+
+<P><HR>
+
+<P><B>1C50 control module</B>
+<P><IMG SRC="1c50.jpg">
+
+<P>This module contains registers and some circuitry<BR>
+for making the CPU able to set some control signals...<BR>
+including baud rate selection.
+
+<P><HR>
+
+<P><B>2F50 flag and status module</B>
+<P><IMG SRC="2f50.jpg">
+
+<P>Flags and status.
+
+<P><HR>
+
+<P><B>2R51 receiver module</B><BR>
+<P><IMG SRC="2r51.jpg">
+
+<P>That's the part which horribly failed,<BR>
+and which isn't in the project files.
+
+<P>Unfortunately, this module is used in the X50 and X51 project.
+
+<P><HR>
+
+<P><B>2T51 transmitter module</B><BR>
+<P><IMG SRC="2t51.jpg">
+
+<P>Parallel to serial converter...
+
+<P>This module is used in the X50 and X51 project.
+
+<P><HR>
+
+<P><A HREF="x50.zip">x50 project files</A>
+
+<P><HR>
+<P>
+<A HREF="../xp.htm">[UP]</A>
+
+<HR>
+<P>(c) Dieter Mueller 2015
+
+</BODY>
+</HTML>

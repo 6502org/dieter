@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>About half adders</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>About half adders</H2></CENTER>
+<HR>
+
+<P>First, we are starting with a simple half adder circuit<BR>
+from the school books.
+
+<P>It uses a 7408 AND gate, and a 7486 XOR gate.
+
+<P>Q = A + B, and the (high active) carry output<BR>
+turns to 1, if A = 1 and B = 1.
+
+<P><IMG SRC="a5_ha1.png">
+
+<P>If you only happen to have 7400 NAND gates,<BR>
+there is another approach which is mentioned<BR>
+less often in those school books:
+
+<P><IMG SRC="a5_ha2.png">
+
+<P>Downside is, that the carry output of this schematic<BR>
+is low active, means that A = 1 and B = 1 turns the<BR>
+carry output to 0.
+
+<HR>
+
+<P>For building a full adder, we need two half adders:
+
+<P><IMG SRC="a5_fa1.png">
+
+<P>The 7400 NAND approach:
+
+<P><IMG SRC="a5_fa2.png">
+
+<P>Note, that if you take a NAND gate and invert both<BR>
+intput, it turns into an OR gate.<BR>
+And that's why the carry output of this full adder<BR>
+is high active.
+
+<HR>
+
+<P><I>"Why is that guy warming up old boring basics again ?"</I>,<BR>
+You may ask now.
+
+<P>Ok, to make things a bit more difficult to understand,<BR>
+we now build a half adder with 7410 three_input NANDs:
+
+<P><IMG SRC="a5_ha3.png">
+
+<P>Note the blue marked control signals T, X, Y and S.
+
+<P>Then stare for a while at this picture above,<BR>
+think about the implications,<BR>
+and then go for the next page of this article.
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="a5_0.htm">[UP]</A>/
+<A HREF="a5_0.htm">[BACK]</A>
+[1]
+<A HREF="a5_2.htm">[2]</A>
+<A HREF="a5_3.htm">[3]</A>
+<A HREF="a5_4.htm">[4]</A>
+<A HREF="a5_5.htm">[5]</A>
+<A HREF="a5_6.htm">[6]</A>
+<A HREF="a5_7.htm">[7]</A>
+<A HREF="a5_8.htm">[8]</A>
+
+<A HREF="a5_2.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2012
+</BODY>
+</HTML>
+

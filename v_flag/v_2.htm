@@ -1,0 +1,122 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Tools</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Tools</H2></CENTER>
+<HR>
+
+<P>Now an example, how to emulate the V_Flag in C.
+
+<P><I>This program was used to generate the peculiar looking tables at the
+previous page.</I><BR>
+For A-B, it looks like this:
+
+<P><PRE>
+#include &lt;stdlib.h&gt;
+
+int main(void)
+{
+ int a,b,c_flag,bi,q;
+ int a7,b7,q7,v;
+<B>
+// c_flag= 0;
+   c_flag=-1;
+</B>
+ printf("\n  0123456789ABCDEF\n  0000000000000000");
+ for(bi=0;bi&lt;0x100;bi+=0x10)
+ {
+	printf("\n%02X",bi);
+        for(a=0;a&lt;0x100;a+=0x10)
+	{
+<B>         b=~bi; //a-b
+//       b=bi;  //a+b
+</B>
+	  q=a+b+(c_flag&1);
+
+	  a7=b7=q7=0;
+	  if((int)a&0x0080) a7=-1;
+	  if((int)b&0x0080) b7=-1;
+	  if((int)q&0x0080) q7=-1;
+
+	  v=(a7^q7)&~(a7^b7);
+	  if(v) printf("*"); else printf(".");
+	}
+	printf("%02X",bi);
+ }
+ printf("\n  0123456789ABCDEF\n  0000000000000000");
+ return(0);
+}
+</PRE>
+
+<P>For comparing the results with a real 6502, here a short program.<BR>
+It uses JSR $FFD2 for printing the results, so it should work with<BR>
+all 6502 based commodore computers.<BR>
+This progam did A-B, and it was tested on a C64.
+
+<PRE>
+1000:a2 00 a9 0d 20 d2 ff a0
+1008:00 20 17 10 c8 c0 10 d0
+1010:f8 e8 e0 10 d0 ec 60 38
+1018:b9 28 10 fd 28 10 70 03
+1020:a9 2e 2c a9 2a 4c d2 ff
+1028:00 10 20 30 40 50 60 70
+1030:80 90 a0 b0 c0 d0 e0 f0
+</PRE>
+
+<P>For those, who are interested in an assembler listing:
+
+<PRE>
+    LDX #$00  ;outer loop
+
+L1  LDA #$0d  ;new line
+    JSR $ffd2
+    LDY #$00  ;inner loop
+
+L2  JSR L3    ;process one Byte
+    INY       ;next column
+    CPY #$10
+    BNE L2
+
+    INX       ;next row
+    CPX #$10
+    BNE L1
+
+    RTS       ;done.
+;
+L3  SEC
+    LDA L10,Y
+    SBC L10,X
+    BVS L4
+    LDA #$2e  ;'.'
+    byt $2c   ;skip the next LDA#
+
+L4  LDA #$2a  ;'*'
+    JMP $ffd2 ;print character
+;
+L10 byt $00,$10,$20,$30,$40,$50,$60,$70
+    byt $80,$90,$a0,$b0,$c0,$d0,$e0,$f0
+</PRE>
+
+<P>The tools on this page here are only a starting_point/example,<BR>
+for instance when testing your own homebrew 6502 emulator.
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="v_0.htm">[UP]</A>/
+<A HREF="v_1.htm">[BACK]</A>
+<A HREF="v_1.htm">[1]</A>
+[2]
+<A HREF="v_3.htm">[3]</A>
+<A HREF="v_4.htm">[4]</A>
+
+<A HREF="v_3.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2005
+</BODY>
+</HTML>
+
+

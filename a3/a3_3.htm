@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Decoder</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Decoder</H2></CENTER>
+<HR>
+
+<P>Now for something different: a decoder.
+
+<P><img src="a3_decode.png">
+
+<P>A, B select one output (Q0, Q1, Q2 Q3) to be routed to the supply voltage...
+
+<P>Of course, it doesn't have to be the supply voltage.<BR>
+It also could be an "enable signal", a little bit like with the 74139.
+
+<P>By the way, it's possible to tie some of the outputs together:
+
+<P><img src="a3_multi.png">
+
+<P>Looks like it's possible to use this in our four relay adder,<BR>
+so we could save one switch...<BR>
+maybe for integrating a register (ACC) into the ALU.
+
+
+<P>Another idea would be, to use a 4:1 multiplexer which connects<BR>
+to the adder output, and the logic functions NOR, XOR, AND.<BR>
+This might take 6 (Two-Pole-Double-Switch) relays per Bit,<BR>
+and maybe some additional relays for inverting the ALU B input<BR>
+(for A-B), and for forcing B to 0 or -1 (for incrementing/decrementing A).
+
+<P>There is a more efficient approach, it shows up at the next page...<BR>
+
+<HR>
+
+<P>Another thing is, that we could turn the "pyramid" of relay switches<BR>
+"upside down", so that it routes one of four inputs to one output.<BR>
+In other words, we are building a multiplexer,<BR>
+a little bit like with the 74153.
+
+<HR>
+
+<P><B>Speaking of switches...</B><BR>
+Left to right:
+
+<P>
+Relay <B>switch</B> from the stone age,<BR>
+bipolar differential emitter coupled <B>current switch</B>,<BR>
+<B>differential Current switch</B> with FETs ...as used in Pentium 4.
+
+<P><img src="a3_switch.png">
+
+<P>Of course, when technology changes, design rules also change...<BR>
+I'm leaving out quite a few details.
+
+<P>...the <I>"automatic Digital Computation symposium 1953"</I><BR>
+(available at Bitsavers) gives you a few hints about how to<BR>
+do such things with vacuum tubes,<BR>
+take a look at the MOSAIC computer.
+
+<HR>
+
+<P>Nevertheless:
+
+<P><img src="a3_multi2.png">
+
+<P>Taking a look at the "pyramid" of switches while comparing relay<BR>
+switches with differential transistor pairs leads to interesting results.
+
+<P><img src="a3_multi3.png">
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="a3_0.htm">[UP]</A>/
+<A HREF="a3_2.htm">[BACK]</A>
+<A HREF="a3_1.htm">[1]</A>
+<A HREF="a3_2.htm">[2]</A>
+[3]
+<A HREF="a3_4.htm">[4]</A>
+<A HREF="a3_5.htm">[5]</A>
+<A HREF="a3_6.htm">[6]</A>
+<A HREF="a3_7.htm">[7]</A>
+<A HREF="a3_8.htm">[8]</A>
+
+<A HREF="a3_4.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2008
+</BODY>
+</HTML>
+

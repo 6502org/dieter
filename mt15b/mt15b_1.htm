@@ -1,0 +1,155 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Programmable logic array</TITLE>
+</HEAD>
+
+<BODY>
+<P><H2 ALIGN=CENTER>Programmable logic array</H2>
+
+<HR>
+
+<P><B>First, the inevitable foreword:</B><BR>
+For every CPU, there is <I>supposed to be</I> a predetermined procedure,<BR>
+what to do, and in what kind of order things should happen inside.<BR>
+Like, what to do with ALU (arithmetic logic unit), registers, AddressBus<BR>
+and DataBus interface, etc.
+
+<P><B>My first CPU</B>, M02, binary compatible to the 6502, had 256kB<BR>
+of microcode ROM (actually four 27512 EPROMs, 64kB each).<BR>
+Decoding/executing a CISC_like instruction set can be tough,<BR>
+and microcode (as some kind of program, hidden <B>inside</B> the CPU)<BR>
+could ensure a high flexibility.<BR>
+Means, it could be modified/changed with a (more or less)<BR>
+reasonable amount of time and effort.<BR>
+Problem is, that it may take a lot of ROM.<BR>
+Sure, there are some tricks, how to reduce ROM size.<BR>
+If things go wrong, you may end up with a computer <B>inside</B><BR>
+the computer, what puts a limit to the maximum speed of the CPU.<BR>
+For more details, please consult/dissect the AM2910 datasheet.<BR>
+Another source of information might be my article about<BR>
+microprogramming.
+
+<P><B>My second CPU</B>, the one_Bit M14500, was built for increasing<BR>
+knowledge and testing concepts.<BR>
+A one Bit CPU, with 16 instructions, and one addressing mode,<BR>
+happens to be a nice playground for testing RISC like concepts<BR>
+with a minimum of cost and effort.<BR>
+Instruction decoding/sequencing could be done with only a few logic gates.<BR>
+Of course, the practical use of such a design is, somewhat, limited.
+
+<P><B>MT15</B> is a mostly transistorised CPU.
+
+<P>For some reason, the use of microcode by building transistorised<BR>
+"EPROMs" appeared to be a bad idea.
+
+<P>Wiring logic gates together would probably have been a solution.<BR>
+Problem is, that some of the gates would have a lot of inputs,<BR>
+and some would have not... resulting in a strange/chaotic contraption,<BR>
+that would be (nearly) impossible to modify/change.<BR>
+Experience showed, that such a design would require more than one try<BR>
+(or modification), to work as intended.
+
+<P><B>But there is another solution: PLA, programmable logic array.</B>
+
+<P>We now skip modern devices (like GAL22V10), ignore some of the<BR>
+older things (as PAL16L8), way back before the stone age (74S330),<BR>
+on our journey back towards the very basics.
+
+<HR>
+
+<P>Now introducing: a transistorised <B>"programmable" logic array</B>,<BR>
+also known as PLA.<BR>
+"Programmable" with a solder iron.
+
+<P><IMG SRC="mt15b_pla.png">
+
+<P>Well.<BR>
+<B>One PLA module</B> has 18 input lines (started experimenting with 16,<BR>
+but needed two more).<BR>
+We have 16 AND gates, max. 18 inputs each, connecting to said<BR>
+input lines. Followed by 10 OR gates (feeding the 10 output lines),<BR>
+that may connect to the outputs of our AND gates.
+
+<P>Note the 16 <I>vertical</I> lines inside the schematic above.<BR>
+Each one of those lines (also known as "the axis of evil"), may be<BR>
+build with up to 18 PNP transistors (BC857), working as AND gate,<BR>
+and up to 10 NPN transistors (BC847), working as OR gates.
+
+<P>Basically, it is build with CTL, complementary transistor logic.<BR>
+We could have used diodes instead.<BR>
+But point is, that transistors are nowadays (this article was written<BR>
+in 2005) in the same price range, while being faster, with a remarkable<BR>
+DC current gain.<BR>
+<I>That allows us to build rather large and "fast" logic arrays.</I><BR>
+Downside is, that transistors have three pins.
+
+<P><B>Note:</B> each one of the 10 output lines must be terminated with a<BR>
+330 ohm pulldown resistor.<BR>
+Those resistors are located on the mainboard (that carries five such<BR>
+PLA modules).<BR>
+Trick is, that outputs of (for instance) two modules could be wired<BR>
+together to one pulldown resistor, turning two 10_input OR gates into<BR>
+one 20_input OR gate, distributed/located in two different PLA modules...<BR>
+<I>that may have different input signals at the AND input lines.</I>
+
+<P>Now a very simplified diagram, how the logic block (build with 5 PLAs)<BR>
+is connected:
+
+<P><IMG SRC="mt15b_control.png">
+
+<P>We happen to have a <B>three Bit state machine</B>, with S0..2<BR>
+as the <I>current</I> state and NS0..2 as the <I>next/following</I> state.<BR>
+Note the master/slave_flipflops, loaded with two non_overlapping<BR>
+clock signals:<BR>
+<B>PHI20, PHI10.</B>
+
+<P>Three Bits in a master/slave configuration means six flipflops.<BR>
+Note, that the outputs (inverted and non_inverted) of the slave<BR>
+flipflop are connected to PLA inputs, because our PLA modules<BR>
+<I>don't have</I> integrated inverters, like PALs/GALs.
+
+<P>Additionally, we also have the 16 Bit OpCode, loaded at the<BR>
+<I>beginning</I><BR> of the instruction execution with LIR into<BR>
+the instruction register.<BR>
+This also may be a source of information to the PLA, what to do,<BR>
+and what step to take next.<BR>
+<I>Like performing calculations for a given addressing mode,<BR>
+for instance.</I>
+
+<P>Some PLA outputs, that control load/clock_signals for some<BR>
+other registers/flipflops <BR><I>(like the LIR signal)</I>, are gated<BR>
+inside the PLA by two clock signals:<BR>
+<B>PHI11 and PHI21.</B>
+
+<P>To be on the safe side, I decided to buffer those PLA outputs<BR>
+with four 74HCT245 (the only TTL ICs inside MT15).
+
+<P>I know, that clock gating is evil, but it doesn't take<BR>
+much transistors.
+
+<P>To clarify things, we take a short look at the clock signals,<BR>
+already mentioned in my previous article:<BR>
+The MT15 architecture.
+
+<P><IMG SRC="mt15b_clk.png">
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="mt15b_0.htm">[UP]</A>/
+<A HREF="mt15b_0.htm">[BACK]</A>
+[1]
+<A HREF="mt15b_2.htm">[2]</A>
+<A HREF="mt15b_3.htm">[3]</A>
+<A HREF="mt15b_4.htm">[4]</A>
+<A HREF="mt15b_5.htm">[5]</A>
+<A HREF="mt15b_6.htm">[6]</A>
+<A HREF="mt15b_7.htm">[7]</A>
+<A HREF="mt15b_8.htm">[8]</A>
+
+<A HREF="mt15b_2.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2005
+</BODY>
+</HTML>

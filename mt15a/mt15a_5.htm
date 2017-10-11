@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>ALU</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>ALU</H2></CENTER>
+<HR>
+
+<P>The ALU (arithmetic logic unit) represents the state of knowledge,<BR>
+that I had at the end of the year 2004.<BR>
+<I>For details, consult the last page of my first ALU article.</I>
+
+<P>After building/testing the ALU modules, I figured out that some of<BR>
+the circuitry isn't needed, and that it would be possible to build the<BR> 
+ALU modules about 30 percent smaller...<BR> 
+<I>So I decided to describe the newer/smaller version.</I>
+
+<P>MT15 ALU uses Bitslice modules, one module processes <B>one Bit</B>.
+
+<P><IMG SRC="mt15a_alu2.png">
+
+<P>ALU A_input is connected to ACC, PC output.<BR>
+ALU B_input is connected to data bus.
+
+<P>First stage basically consists of two 4:1 multiplexers,<BR>
+working as configurable logic gates. <BR>
+(Two inverters for negating A, B not shown).<BR>
+It produces the low_active <B>propagate/generate</B> signals.<BR>
+<I>Imagine this part as a 74153 with inverted outputs.</I>
+
+<P><B>Propagate</B> means, the carry input should be propagated<BR>
+through to the next higher ALU Bitslice module.<BR>
+<P><B>Generate</B> indicates an overflow, setting the output carry<BR>
+active to be passed to the next higher Bit.
+
+<P>Since I didn't knew, if my carry circuitry would work<BR>
+as expected, I decided to make the high and low active<BR>
+propagate/generate_signals available outside the ALU<BR>
+Bitslice module.<BR>
+<I>The inverter for producing the high active generate_signal<BR>
+isn't shown in this schematic, and could probably be<BR>
+removed/eliminated.
+</I>
+
+<P>To be on the safe side, I decided to make the input/output<BR>
+of the red marked carry inverter available outside the ALU modules,<BR>
+as well as the inverted/non_inverted carry inputs for the last ALU
+stage.<BR>
+<I>What makes it possible, to wire up the ALU modules to a low active<BR>
+or high active carry signal, without any further modifications.</I>
+
+<P>The next stage (carry chain) is described at the next page of this
+article.
+
+<P>Last stage is, basically, an XOR gate, working as a half_adder.<BR>
+Plus another gate, that takes over during ALU shift right.
+
+<P>For more details, please read my two articles about ALU design.
+
+<P>Now the control signals for some ALU operations:<BR>
+<PRE>
+SHR=1, !SHR=0, shift right:
+
+ GS:321 PS:3210
+    |||    ||||
+    000    1010 shift right  register
+    000    1100 shift right  memory
+</PRE>
+For all other arithmetic/logic functions:<BR>
+<PRE>
+SHR=0, !SHR=1, anything but shift right:
+
+ GS:321 PS:3210
+    |||    ||||
+    101    0000 shift left   register
+    110    0000 shift left   memory
+    000    0000 zero
+    000    1111 $FFFF
+    000    1010 pass through register
+    000    1100 pass through memory
+    000    1000 register AND memory
+    000    0110 register XOR memory
+    000    1110 register OR  memory
+    100    0110 register +   memory
+    001    1001 register -   memory
+    110    0011 memory   -1
+</PRE>
+
+<P>Incrementing register/memory is a pass_through with the ALU<BR>
+carry_input forced active.
+
+<P>GS0 was 0 for all ALU functions that made sense, so it was removed.
+
+<P>Again, for more details/functions, please read the articles about
+ALU design.
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="mt15a_0.htm">[UP]</A>/
+<A HREF="mt15a_4.htm">[BACK]</A>
+<A HREF="mt15a_1.htm">[1]</A>
+<A HREF="mt15a_2.htm">[2]</A>
+<A HREF="mt15a_3.htm">[3]</A>
+<A HREF="mt15a_4.htm">[4]</A>
+[5]
+<A HREF="mt15a_6.htm">[6]</A>
+<A HREF="mt15a_7.htm">[7]</A>
+<A HREF="mt15a_8.htm">[8]</A>
+
+<A HREF="mt15a_6.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2005
+</BODY>
+</HTML>
+

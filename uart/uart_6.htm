@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>TX description</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>TX description</H2></CENTER>
+<HR>
+
+<P>The 74LS163/74HCT163 is a 4 Bit synchronous counter.<BR>
+There are three pins of interest when it comes to counting:<BR>
+ENP <B>and</B> ENT inputs have to be 1 to enable the counter<BR>
+(to make it increment at the rising edge on CLK).
+
+<P>The RCO output goes 1, if ENT = 1 <B>and</B> all four counter Bits are 1
+<BR><I>(if the counter is in state '15' that is),</I><BR>
+a feature intended to wire some of those counters together<BR>
+for counting more than 4 Bits...
+
+<P> So if the counter has a random value after power_on,<BR>
+it always will stop counting when it reaches 15 after<BR>
+a few clock cycles.
+
+<P>If /LD is low during a rising edge on CLK, the counter<BR>
+is loaded with a value (6 for example), and will increment<BR>
+until it reaches 15 again.
+
+<HR>
+
+<P>The 74LS166/74HCT166 is an 8 Bit shift register with a<BR>
+synchronous load, means that if /LD = 0, a rising edge<BR>
+on CLK will load an 8 Bit value into the register.<BR>
+When /LD = 1, the register does a 'shift left'.
+
+<P>Two 74166s are wired together to work as a 16 Bit shift register,<BR>
+although not all of the Bits are used...<BR>
+The serial input is always set to 1, so after a few clock cycles<BR>
+with /LD = 1, the output of the 16 Bit shift register will go 1,<BR>
+<I>what is default for an inactive TX line.</I>
+
+<HR>
+<P><B>Now to transmit the first Byte:</B>
+
+<P>The CPU or microcontroller in control of this UART<BR>
+writes a Byte into the 'transmit hold register' with a<BR>
+low_active write_enable:<BR>
+<I>A rising edge on /WTX loads said register,</I><BR>
+and sets the TX_start flipflop to 1...
+
+<P>The flipflop_output stays 1, until the Byte is transferred<BR>
+into the TX shift register.<BR>
+If the counter is in state 15, what means TX is inactive <BR>
+<I>(or transmitting the Stop Bit that marks the end of the transmission)</I>,<BR>
+/LD is pulled low, so that the counter and the TX shift registers<BR>
+are loaded and <B>the transmission starts</B>.
+
+<P>Actually, we are loading a 9 Bit word into the 16 Bit shift register:<BR>
+one leading Start Bit that always is 0,<BR>
+and 8 Data Bits.<BR>
+All unused Bits are set to 1 to work as 'Stop Bits'.
+
+<P>Since we're loading a value of 6 into the counter, the uppermost<BR>
+counter output QD goes 0 <BR>
+<I>when the transmission starts</I>...<BR>
+so we use a falling edge on that output to clear/reset the TX_start<BR>
+flipflop <I>(by using a R/C differentiator as mentioned in some old TI<BR>
+application notes)</I>, and our UART is ready again to get another Byte<BR>
+written into the 'transmit hold register'...
+
+<P>What sets the TX_start flipflop, waiting for the next Stop Bit.
+
+<P>Then the whole game starts again, and that's all there is to it.
+
+<HR>
+
+<P><I>An application note for building a differentiator mentions, that<BR>
+R should be 2 to 5 kOhm, and that R*C should be 1 us or less.</I>
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="uart_0.htm">[UP]</A>/
+<A HREF="uart_5.htm">[BACK]</A>
+<A HREF="uart_1.htm">[1]</A>
+<A HREF="uart_2.htm">[2]</A>
+<A HREF="uart_3.htm">[3]</A>
+<A HREF="uart_4.htm">[4]</A>
+<A HREF="uart_5.htm">[5]</A>
+[6]
+<A HREF="uart_7.htm">[7]</A>
+<A HREF="uart_8.htm">[8]</A>
+<A HREF="uart_9.htm">[9]</A>
+
+<A HREF="uart_7.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2007
+</BODY>
+</HTML>

@@ -1,0 +1,125 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Foreword</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Foreword</H2></CENTER>
+<HR>
+
+<P>For a homebuilt CPU hobby project, defining the instruction set<BR>
+is one of the toughest tasks.
+
+<P><I>Well, not actually <B>defining</B> it, but knowing that you<BR>
+<U>will have to live</U> with the consequences of your decisions for<BR>
+the next several years.</I>
+
+<P>A lot can happen within a few years.<BR>
+You could have missed a point, and then be forced to add some<BR>
+things not covered by your design...<BR>
+a nice example is the evolution of the 80386 family into the<BR>
+world of 64 Bit CPUs.
+
+<HR>
+
+<P>You could try to stay compatible with the instruction set<BR>
+of a CPU which already exists, but as a hobbyist you might find<BR>
+that plain boring...<BR>
+The question "is it possible finding an approach of solving the<BR>
+problem like no one considered doing it before" troubles you.
+
+<P>If you really want to invent your own instruction set,<BR>
+the question is, if you will have the time, energy and patience<BR>
+to write your own set of tools, your own operating system, and so on.
+
+<P>The effort for this always seems to be underestimated, and there<BR>
+is a chance that your hardware might turn into just another strange<BR>
+trophy in your cupboard, doing nothing but to filter the dust from<BR>
+out of the air several months after the test runs were completed.
+
+<P>So when starting such a project, try to get in contact with a<BR>
+'software guru' first, at least for getting some hints on what your<BR>
+CPU should look like for being able to run 'serious' software<BR>
+<I>(whatever that means...).</I>
+
+<HR>
+
+<P><B>If you ask three people what the best instruction set may look<BR>
+like, maybe you're getting five different answers.</B>
+
+<P><B>Assembly programmers</B><BR>
+might prefer different architectures, just remember the "8085/Z80 versus<BR>
+6502" holy wars in the past... besides that, the answer also depends on<BR>
+<I>what the CPU will be used for</I>:<BR>
+8031 might be nice for building a small PLC, but not for other applications.<BR>
+6502 is nice and efficient for small assembler projects, but when your<BR>
+projects grow bigger, you might feel a few limitations...<BR>
+68k is quite the thing for big projects, like writing your own operating<BR>
+systems, but you can't <I>memorize</I> every machine code there is,<BR>
+what could make debbuging the code without approbiate tools difficult.
+
+<P><B>"mere" C programmers</B><BR>
+don't exactly know, what a CPU <U>is</U>. <I>The don't want/need to know.</I><BR>
+But sometimes they are happy if the available CPU memory isn't melting away<BR>
+too fast when compiling C code into machine code...<BR>
+well, at least in the "embedded" sector sometimes.
+
+<P><B>Compiler gurus</B><BR>
+might prefer writing compilers and software tools for a rather simple,<BR>
+orthogonal instruction set, maybe with register windows like in the<BR>
+AM29k or SPARC architecture.
+
+<P><B>CPU hardware designers</B><BR>
+might want to keep the concept of the CPU as simple as possible, just for<BR>
+reducing the trouble to come when implementing the design.<BR>
+And the simplest concepts for building a CPU can be found in the Forth<BR>
+environment.
+
+<HR>
+
+<P>You see the problem: the hardware guy would enjoy to "nail together"<BR>
+a very simple instruction set, based on the hardware/technology available.<BR>
+<I>The result might fry the brains of the software guys.</I>
+
+<P>If the assembly programmer insists in having a 68k instruction set,<BR>
+the hardware guy probably would have to retire into a cave (like a Zen monk),<BR>
+<I>spending many months with scribbling specifications on piles of papers</I><BR>
+before being able of starting to actually design something.
+
+<P>If the mere C programmer eventually is happy with the efficiency of the CPU,<BR>
+maybe the assembly language programmers will refuse debbuging machine<BR>
+code on this architecture for some reasons.
+
+<P><B>And the problem is:</B><BR>
+As a hobbyist building a CPU, there is a chance that you will have to play<BR>
+in all the fields mentioned above, but maybe you're not aware of this<BR>
+when starting your project...
+
+<HR>
+
+<P>Back in 2006, I had a a nice and long discussion with<BR>
+a software guru about all the points mentioned above.
+
+<P>This article explains what grew out of it.
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="tinst_0.htm">[UP]</A>/
+<A HREF="tinst_0.htm">[BACK]</A>
+[1]
+<A HREF="tinst_2.htm">[2]</A>
+<A HREF="tinst_3.htm">[3]</A>
+<A HREF="tinst_4.htm">[4]</A>
+<A HREF="tinst_5.htm">[5]</A>
+<A HREF="tinst_6.htm">[6]</A>
+<A HREF="tinst_7.htm">[7]</A>
+<A HREF="tinst_8.htm">[8]</A>
+
+<A HREF="tinst_2.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2007, 2008
+</BODY>
+</HTML>
+

@@ -1,0 +1,213 @@
+<HTML>
+<HEAD><TITLE>...4C D2 FF</TITLE>
+</HEAD>
+<BODY>
+<CENTER><H1>X45 &lt; 6545\6845</H1></CENTER>
+
+<P>An experimental attempt of building something like a 6545\6845<BR>
+with 74XX TTL chips.
+
+<P><B>The design certainly has some issues,</B><BR>
+But it isn't impossible to generate a video signal with it...
+
+<P>Try reading the schematics at your own risk.
+
+<P><B>ATN:</B><BR>
+X45 generates a 16 Bit video address,<BR>
+and from the timing specifications,<BR>
+it outputs said address faster than a 6545\6845.
+
+<P>Because of this, the X45 video address is emitted<BR>
+by 74573 latches, what gives you a chance to tweak<BR>
+the timing a little bit if necessary.
+
+<P>Needless to say,<BR>
+that the load signal for those latches should be high,<BR>
+and that the output enable for those latches should be low<BR>
+for getting a valid video address...
+
+<P><HR>
+
+<P><B>Test setup:</B>
+<P>Bottom: my DRC2 SBC, which is supposed to be compatible to the SBC-2.<BR>
+D45 demonstrator is plugged into DRC2.<BR>
+X45 backplane is plugged into D45.
+
+<P>Plugged into the X45 backplane, we have:  <BR>
+1* B45, bus interface                        <BR>
+1* C45, the control module                   <BR>
+1* T45, horizontal\vertical timing module    <BR>
+1* R45, raster timing module                 <BR>
+2* G45, two video address generator modules  
+
+<P><IMG SRC="x_45.jpg">
+
+<P>Note the thin red wire at the left:<BR>
+it is necessary to run the CPU with a 2 MHz clock,<BR>
+which is generated from the D45 demonstrator.
+
+<P><HR>
+<P><IMG SRC="x_45_pic.jpg">
+
+<P>80*25 text,<BR>
+2 MHz clock,<BR>
+15.625 kHz horizontal,<BR>
+50 Hz vertical,<BR>
+8 raster lines per character,<BR>
+non_interlaced.
+
+<P>Ignore that odd text format:<BR>
+Software does 40*25 text, hardware does 80*25 text.
+
+<P>Register settings:<BR>
+R0 =0x7F <BR>
+R1 =0x50 <BR>
+R2 =0x5E <BR>
+R3 =0xAA // it's just a guess...<BR>
+R4 =0x26 <BR>
+R5 =0x00 <BR>
+R6 =0x19 <BR>
+R7 =0x1F <BR>
+R8 =0x00 <BR>
+R9 =0x07 <BR>
+R12=0x04 <BR>
+R13=0x00 <BR>
+
+<P>Todo: check, if this is compatible to a real 6545\6845...<BR>
+The register settings are just a guess, of course,<BR>
+because I was happy to eventually get a video signal at all...
+
+<P><HR>
+<P><IMG SRC="x_45_interlaced.jpg">
+
+<P>80*50 text,<BR>
+2 MHz clock,<BR>
+15.625 kHz horizontal,<BR>
+50 Hz vertical,<BR>
+8 raster lines per character,<BR>
+interlaced.
+
+<P>Register settings:<BR>
+R0 =0x7F <BR>
+R1 =0x50 <BR>
+R2 =0x5E <BR>
+R3 =0xAA // it's just a guess...<BR>
+R4 =0x4D <BR>
+R5 =0x00 <BR>
+R6 =0x32 <BR>
+R7 =0x3E <BR>
+R8 =0x03 <BR>
+R9 =0x03 <BR>
+R12=0x04 <BR>
+R13=0x00 <BR>
+
+<P><B>Issues:</B>
+
+<P>Looks like there is a conceptual mistake in the circuitry<BR>
+of the raster address counter\comparator...<BR>
+but fixing this most certainly will cause _other_ issues...
+
+<P>Also, there is a problem with R5, vertical total adjust.<BR>
+0x00 will work correctly: no additional raster lines inserted.<BR>
+For all other values, one raster line is inserted too many...
+
+<P>BTW: Light pen interface isn't fully tested.
+
+<P><HR>
+
+<P>X45 supports straight binary addressing mode (normal 16 Bit counter)<BR>
+and row\column addressing mode (8 Bit counter row, 8 Bit counter column),<BR>
+depending on register 8 Bit 2.
+
+<P><HR>
+
+<P><B>D45 demonstrator</B>
+<P><IMG SRC="d45.jpg">
+
+<P>Contains a video RAM, a character generator ROM,<BR>
+a shift register, an analog video output...<BR>
+and a clock generator.<BR>
+
+<P>Said clock generator has to drive the CPU with 2 MHz.
+
+<P>One line of text is supposed to have 80 characters.
+
+<P>Because I ran out of 100 nF capacitors in "standard package",<BR>
+I soldered 100 nF SMD capacitors at the bottom of the PCB.
+
+<P>A DIP switch was supposed to be plugged into that 8 pin IC socket.<BR>
+Unfortunately, when plugging that switch into the socket,<BR>
+there will be mechanical problems when plugging D45 and X45 together...<BR>
+so I just soldered 4 pins of that socket to GND, and then to be done with.
+
+<P><HR>
+
+<P><B>X45 backplane:</B>
+<P><IMG SRC="x45.jpg">
+
+<P>Ignore that green piece of wire...
+
+<P>Jumper\switch in the lower left area is for enabling the blinkenlights.<BR>
+
+<P>The jumpers in the upper left area are for the output enable<BR>
+for the 74573 latches which emit raster and video address.<BR>
+When using X45 together with D45, leave them OPEN.
+
+<P>The jumpers in the upper right area handle the chip select signals.
+
+<P>Note that piece of Tesa (TM) in the upper middle area,<BR>
+for preventing short circuits between traces at the bottom of the X45 PCB<BR>
+and the metal can oscillator at the top of the D45 PCB...
+
+<P><HR>
+
+<P><B>C45 control module</B>
+<P><IMG SRC="c45.jpg">
+
+<P>That's the place where the control signals for all those counters<BR>
+and the status output signals from all those comparators are going to meet.
+
+<P>Schematics still are a bit messy,<BR>
+contain a few little errors,<BR>
+and are not optimized for speed.
+
+<P>Don't mind those wires, I think I already fixed this<BR>
+in the schematics and in the PCB layout.
+<P><HR>
+
+<P><B>T45 horizontal\vertical timing module</B>
+<P><IMG SRC="t45.jpg">
+
+<P>Horizontal\vertical related registers, counters, comparators etc.
+
+<P><HR>
+
+<P><B>R45 raster timing module</B>
+<P><IMG SRC="r45.jpg">
+
+<P>Raster timing and cursor.
+
+<P><HR>
+
+<P><B>G45 8 Bit video address generator module</B><BR>
+Two PCBs required,<BR>
+two PCBs shown in the picture:
+<P><IMG SRC="g45.jpg">
+
+<P>Doing a layout for one 16 Bit module turned out<BR>
+to be a little bit too difficult,<BR>
+so I had to split that part into two modules 8 Bit each.
+
+<P><HR>
+
+<P><A HREF="x45.zip">x45 project files</A>
+
+<P><HR>
+<P>
+<A HREF="../xp.htm">[UP]</A>
+
+<HR>
+<P>(c) Dieter Mueller 2015
+
+</BODY>
+</HTML>

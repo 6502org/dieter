@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Flags</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Flags</H2></CENTER>
+<HR>
+
+<P>Now for the Flag circuitry.
+
+<P>Since Reset and external "Interrupt" have a noticable effect
+on OpCode execution, <BR>those signals are sampled when loading the
+OpCode into the instruction register.
+
+<P>Reset signal is low_active, please notice the polarity at the
+outputs of the Reset_flipflop.
+
+<P><IMG SRC="mt15a_res.png">
+
+<HR>
+
+<P>Each one_Bit ALU slice contains an open_collector inverter.<BR>
+Input is connected to ALU Q.<BR>
+Outputs of those 16 inverters are wired together, so that they<BR>
+work as a 16_input NOR gate, testing the ALU output for Zero.
+
+<P><IMG SRC="mt15a_z.png">
+
+<P>Negative ALU result is determined by ALU Q15.
+
+<P>We already discussed the carry signals.<BR>
+NOTE: ALU output carry !C16 is <B>low_active</B>.
+
+<P><IMG SRC="mt15a_flag.png">
+
+<P>N,Z could be fetched with transparent latches.<P>
+
+<P>Since we need to route the carry flag from the previous<BR>
+data calclation into the ALU, <BR>carry requires two<BR>
+transparent latches wired up in a master/slave configuration.
+
+<P>Now for part two:<BR>
+<A HREF="../mt15b/mt15b_0.htm">The MT15 instruction decoder/sequencer.</A>
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="mt15a_0.htm">[UP]</A>/
+<A HREF="mt15a_7.htm">[BACK]</A>
+<A HREF="mt15a_1.htm">[1]</A>
+<A HREF="mt15a_2.htm">[2]</A>
+<A HREF="mt15a_3.htm">[3]</A>
+<A HREF="mt15a_4.htm">[4]</A>
+<A HREF="mt15a_5.htm">[5]</A>
+<A HREF="mt15a_6.htm">[6]</A>
+<A HREF="mt15a_7.htm">[7]</A>
+[8]
+
+
+
+<P>(c) Dieter Mueller 2005
+</BODY>
+</HTML>
+

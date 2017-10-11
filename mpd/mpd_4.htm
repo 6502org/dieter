@@ -1,0 +1,222 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Assembler, led astray</TITLE>
+</HEAD>
+<BODY>
+
+<P><CENTER><H2>Assembler, led astray</H2></CENTER>
+
+<HR>
+
+<P>
+A disgruntled customer enters the shop, carrying a chainsaw.
+<P>
+
+<B>Customer</B> <I>(angry):</I>
+"Bought this thing yesterday. It took me eight hours to cut down one
+stupid tree."<BR>
+<B>Salesman</B> <I>(confused):</I>
+"Let me see.", grabs the chainsaw, and starts the motor.
+<BR>
+<B>Chainsaw:</B> "BRRMMMM..."<BR>
+<B>Customer</B> <I>(perplexed):</I>
+"What's that noise ?"
+<P>
+<I>If in doubt when using a new tool, read the manual.</I>
+
+
+<HR>
+
+<P>
+For the next example, we use the AS macroassembler,<BR>
+that can be downloaded for free.<BR>
+<B>One last warning.</B><BR>
+When comparing assemblers, language syntax and options/directives<BR>
+may look different.<BR>
+Even if they all support the same processor.<BR>
+Some assemblers are case sensitive, some are not.<BR>
+Some complain if there is no ':' after a label, some complain if<BR>
+there is one, and the rest just ignores such things.<BR>
+Some expect  0x55 to be a hexadecimal value, others may call it $55.<BR>
+Some insist that numbers starting without '$' or '0x' are decimal,<BR>
+some may take it as a hexadecimal value by default.<BR>
+<B>Take care.</B>
+<P>
+It is strongly recommended to read the manual before starting<BR>
+any experiments...<BR>
+unlike as some customers seem to do with chainsaws.
+
+
+<HR>
+
+<P>
+Now here some sourcecode.
+
+
+<PRE>
+        ;traf1.asm
+
+        CPU     68000
+        PADDING OFF
+
+;-------------------------------------------------------
+
+R1      EQU     $01
+Y1      EQU     $02
+G1      EQU     $04
+
+R2      EQU     $08
+Y2      EQU     $10
+G2      EQU     $20
+
+AGAIN   EQU     $80
+
+;-------------------------------------------------------
+
+SEQ1    MACRO                                      
+        DC.B    R2 |      G1              ;2 red, 1 green
+        DC.B    R2 |      G1              ;
+        DC.B    R2 |      G1              ;
+        DC.B    R2 |      Y1              ;
+        DC.B    R2 | Y2 | R1              ;
+        DC.B    G2 |      R1              ;
+        DC.B    G2 |      R1              ;
+        DC.B    G2 |      R1              ;
+        DC.B    Y2 |      R1              ;
+        DC.B    R2 |      R1 | Y1 | AGAIN ;start again
+        ENDM
+
+;-------------------------------------------------------
+
+        ORG     $0000
+        SEQ1
+
+;-------------------------------------------------------
+
+        END
+</PRE>
+
+<HR>
+
+<P>
+Now to explain it.
+<P>
+AS supports different processors/<U>CPU</U>s, and syntax/options/directives<BR>
+may vary.<BR>
+To be on the safe side, we select <U>68000</U>.
+
+<P>
+Oops, something went wrong: we got 20 Bytes instead of 10.<BR>
+The Bytes we wanted to have are placed at even addresses, odd addresses<BR>
+are filled with zero.<BR>
+After some hours of digging through manuals, we may figure out that 68000<BR>
+machine code has a length of (multiples of) 16 Bit, starting at an even<BR>
+address.<BR>
+For the assembler it's obvious, and it automatically fills Bytes at odd<BR>
+addresses with zero,<BR>
+without that we are neither asked nor informed about it...<BR>
+unless we turn <U>PADDING OFF</U>.
+
+<P>
+A semi-colon tells the assembler, that the rest of the line is a comment,<BR>
+and should be ignored.
+
+<P>
+Then we say, that R1 <U>EQU</U>als $01, Y1 equals $02, and G1 equals $04.<BR>
+We are talking here about red,yellow,green for the first traffic light.<BR>
+You should know, what R2,Y2 and G2 are good for.<BR>
+AGAIN is equal to $80, what we used in the last line of our table to reset<BR>
+the counter to zero... to start again.<BR>
+Would be better to write some comments behind those definitions...<BR>
+just do it.
+
+<P>
+The assembler recognizes that <U>SEQ1</U> is meant to be a macro.<BR>
+What means, any SEQ1 that shows up later in the sourcecode will be<BR>
+automatically "replaced" with the lines between <U>MACRO</U> and <U>ENDM</U>,<BR>
+in that case 10 lines of 'DC.B'.<BR>
+DC.B <U>D</U>efines <U>C</U>onstants with the size of one <U>B</U>yte.<BR>
+We take R2 (defined as $08), perform a logical OR with G1 (defined as $04),<BR>
+what will give us $0c as result.<BR>
+<I>Note, that we are only defining a macro. The assembler doesn't generate<BR>
+any Bytes at that point.</I>
+
+<P>
+Now that we are through with our definitions, we use <U>ORG</U> to set the<BR>
+origin of our "program" to $0000.
+
+<P>
+And now, the miracle happens. The assembler recognizes <U>SEQ1</U> as a<BR>
+defined macro, is still aware<BR>of all the Bits we defined before, and<BR>
+generates 10 Bytes of constants.
+
+<P>
+So far, we have reached the <U>END</U>.
+
+
+<HR>
+
+<P>
+When the hardware changes, for instance the green LED from traffic light 2<BR>
+is now connected to O6 of the EPROM,<BR>
+we only have to change our definition of G2:<BR>
+<PRE>
+G2      EQU     $40
+</PRE>
+
+<P>
+Changing the length/function of the phases is now only a matter of
+cut/copy/paste.<BR>
+We also can recognize very fast, what this "program" does, without consulting<BR>
+the schematic.<BR>
+<I>But we pay for that with a higher level of complexity, and we have to read<BR>
+the manual from time to time.</I><BR>
+<B>And never forget: our hardware only supports tables with a maximum<BR>
+of 16 entries (counting from 0..15).</B><BR>
+From what we have learned, we can generate long sequences of Bytes,<BR>
+but anything beyound/above address $000f won't make it to the LEDs...<BR>
+unless we use <B>two</B> 74163 for counting, what would set the maximum<BR>
+to 256 entries, or $00ff.
+
+
+<HR>
+<P>
+To generate a listing and a binary file from traf1.asm with AS:
+<PRE>
+as    traf1.asm /xLn
+p2bin traf1
+</PRE>
+<B>Hint:</B> better make backups of your source code from time to time.<BR>
+It's also a good thing, to check consistence between what you see<BR>
+in your source code, and what you finally get in the assembler<BR>
+output listings and the resulting binary files.
+
+<P>
+Avoid naming your constants/labels/macros like assembler directives<BR>
+or processor opcodes.<BR>
+Also avoid accidentally giving a label and a macro the same name.<BR>
+The assembler could become confused enough to produce garbage<BR>
+without that we are warned/informed about it.
+
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="mpd_0.htm">[UP]</A>/
+<A HREF="mpd_3.htm">[BACK]</A>
+<A HREF="mpd_1.htm">[1]</A>
+<A HREF="mpd_2.htm">[2]</A>
+<A HREF="mpd_3.htm">[3]</A>
+[4]
+<A HREF="mpd_5.htm">[5]</A>
+<A HREF="mpd_6.htm">[6]</A>
+<A HREF="mpd_7.htm">[7]</A>
+<A HREF="mpd_8.htm">[8]</A>
+<A HREF="mpd_5.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2005
+
+</BODY>
+</HTM>

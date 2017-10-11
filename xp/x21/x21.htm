@@ -1,0 +1,109 @@
+<HTML>
+<HEAD><TITLE>...4C D2 FF</TITLE>
+</HEAD>
+<BODY>
+<CENTER><H1>X21 &lt; 6521\6821</H1></CENTER>
+
+<P>An experimental attempt of building something like a 6521\6821<BR>
+with 74XX TTL chips.
+
+<P>The design might have some issues,<BR>
+try reading the schematics at your own risk...
+
+<P>I\O and bus connectors are supposed to be compatible<BR>
+to Daryl Rictor's SBC-2.
+
+<P><HR>
+
+<P><B>Test setup:</B>
+<P>Bottom: my DRC2 SBC, which is supposed to be compatible to the SBC-2.<BR>
+<P>2B22 bus interface from the X22 project (6522) is plugged into DRC2.<BR>
+X21 backplane is plugged into the 2B22 bus interface.<BR>
+
+<P>Plugged into the X21 backplane, we have:<BR>
+1* 1PA22, Port A module                    <BR>
+1* 1PB22, Port B module                    <BR>
+2* H21, handshake module       
+
+<P><IMG SRC="x_21.jpg">
+
+<P><HR>
+
+<P><B>X21 backplane:</B>
+<P><IMG SRC="x21.jpg">
+
+<P>Jumper\switch in the upper left area is for enabling the blinkenlights.<BR>
+
+<P>Jumpers in the lower left area are for connecting the Port A, Port B<BR>
+related interrupt outputs to either NMI or IRQ.
+
+<P>Jumpers in the lower middle area are for generating handshake signals<BR>
+which the original 6521\6821 is not supposed to have,<BR>
+the default setting for those two jumpers is OPEN.
+
+<P><HR>
+
+<P><B>2B22 bus interface</B>
+<P><IMG SRC="2b22.jpg">
+
+<P>The jumper field in the lower right area is for the chip select.
+
+<P>The bus interface is from the X22 project (6522),<BR>
+what means that it decodes A0..A3.<BR>
+Unlike the 6522, the 6521\6821 doesn't have 16 registers,<BR>
+so for better compatibility it's possible to deactivate<BR>
+the unused address lines with the three jumpers<BR>
+in the lower left area of the PCB.
+
+<P><HR>
+
+<P><B>1PA22 Port A module</B>
+<P><IMG SRC="1pa22.jpg">
+
+<P>Port A has open collector outputs.
+
+<P>There is a pullup resistor network for the port lines<BR>
+in the schematic and layout of the port lines.<BR>
+
+<P>I suggest to solder a single row precision socket into the PCB,<BR>
+to make sure that you are able to try different resistor values,<BR>
+or to go without pullup resistors if necessary.
+
+<P><HR>
+
+<P><B>1PB22 Port B module</B>
+<P><IMG SRC="1pb22.jpg">
+
+<P>Port B has three state outputs.
+
+<P>There is a pullup resistor network for the port lines<BR>
+in the schematic and layout of the port lines.<BR>
+
+<P>I suggest to solder a single row precision socket into the PCB,<BR>
+to make sure that you are able to try different resistor values,<BR>
+or to go without pullup resistors if necessary.
+
+<P>BTW: Port A module and Port B module have identical pinouts.
+
+<P><HR>
+
+<P><B>H21 handshake module</B>
+<P><IMG SRC="h21.jpg">
+
+<P>Two identical handshake modules required.
+
+<P>One handles CA1 and CA2, the other handles CB1 and CB2.
+
+<P><HR>
+
+<P><A HREF="x21.zip">x21 project files</A>
+
+<P><HR>
+<P>
+<A HREF="../xp.htm">[UP]</A>
+
+<HR>
+<P>(c) Dieter Mueller 2015
+
+</BODY>
+</HTML>

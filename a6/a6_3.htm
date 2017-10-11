@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Arithmetic mode</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Arithmetic mode</H2></CENTER>
+<HR>
+
+<P>And now, the miracle happens:
+
+<P><IMG SRC="a6_ar.png">
+
+<P>And yes, all we really need is this AND/OR combination gate<BR>
+for forming up the carry chain, plus one additional AND gate<BR>
+fed by the carry input and the CEN control signal.
+
+<P>Downside is, that performing arithmetic operations takes<BR>
+two clock cycles.
+
+<HR>
+
+<P>Now a close look to the carry chain:
+
+<P><IMG SRC="a6_cc.png">
+
+<P>Don't get confused now.<BR><PRE>
+A'  means "contents of the A flipflop after the  first clock pulse",
+A'' means "contents of the A flipflop after the second clock pulse".</PRE>
+
+<HR>
+
+<P>Now to describe, how it works.
+
+<P>Example:<BR>
+<B>A=A+B</B> //ADC, C_IN is high_active carry
+
+<P>Step 1: (first clock cycle)<BR>
+U=1, V=0, X=1, Y=1, CEN=0: <I>A'=A^B //XOR</I>
+
+<P><I>After the first clock cycle, the carry ripples through<BR>
+the carry chain according to B', A'.</I>
+
+<P>Step 2: (second clock cycle)<BR>
+U=1, V=0, X=0, Y=0, CEN=1: <I>A''=A'^carry.</I>
+
+<P><IMG SRC="a6_ar1.png">
+
+<HR>
+
+<P><B>A=A-B</B>: C_IN is low_active borrow<BR>
+Step 1: U=0, V=1, X=1, Y=1, CEN=0: A'=A^/B<BR>
+Step 2: U=0, V=1, X=0, Y=0, CEN=1: A''=A'^carry
+
+<P><B>A=A+1</B>:<BR>
+Only one step required. Set ALU carry input to 1.<BR>
+Step 1: U=0, V=0, X=0, Y=0, CEN=1
+
+<P><B>A=A-1</B>: A=A+(-1) set ALU carry input to 0<BR>
+Step 1: U=1, V=1, X=1, Y=1, CEN=0: A'=A^(-1)<BR>
+Step 2: U=1, V=1, X=0, Y=0, CEN=1: A''=A'^carry
+
+<P><B>A=-A</B>: set ALU carry input to 1<BR>
+Step 1: U=1, V=1, X=1, Y=1, CEN=0: A'=A^(-1)<BR>
+Step 2: U=0, V=0, X=0, Y=0, CEN=1: A''=A'^carry
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="a6_0.htm">[UP]</A>/
+<A HREF="a6_2.htm">[BACK]</A>
+<A HREF="a6_1.htm">[1]</A>
+<A HREF="a6_2.htm">[2]</A>
+[3]
+<A HREF="a6_4.htm">[4]</A>
+<A HREF="a6_5.htm">[5]</A>
+<A HREF="a6_6.htm">[6]</A>
+<A HREF="a6_7.htm">[7]</A>
+<A HREF="a6_8.htm">[8]</A>
+
+<A HREF="a6_4.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2012
+</BODY>
+</HTML>
+

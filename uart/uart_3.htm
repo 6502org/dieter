@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Baud Rate generator</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Baud Rate generator</H2></CENTER>
+<HR>
+
+<P>Uart clock has to be 16 times faster than the Baud Rate.
+
+<P>For instance, 19.2 kBaud would require that CLK = 307.2 kHz.
+
+<P>Divider factors for some common crystal/oscillator frequencies:<BR>
+<PRE>
+ 18.4320 MHz -> : 60
+ 11.0592 MHz -> : 36
+  9.8304 MHz -> : 32
+  9.2160 MHz -> : 30
+  7.3728 MHz -> : 24
+  6.1440 MHz -> : 20
+<B>  4.9152 MHz -> : 16 </B>
+<B>  3.6864 MHz -> : 12 </B>
+  2.4576 MHz -> :  8
+  1.8432 MHz -> :  6
+</PRE>
+
+<P>And if the application doesn't require to _exactly_ match the Baud Rate,<BR>
+there might be some other interesting frequencies...
+
+<P>4 MHz divided by 13 gives 307.6923 kHz, what is ca. 0.16% off from 307.2
+kHz.
+
+<P>Note: The UART clock doesn't need to have a 50% duty cycle...
+
+<HR>
+
+<P>Example for using a 3.6864 MHz TTL oscillator:
+
+<P><IMG SRC = "uart_baudrate.png">
+
+<HR>
+
+<P>It's also possible to build an 8 Bit programmable divider with two
+74163.
+
+<P>Another approach would be tapping with a 74151 multiplexer into the<BR>
+outputs of a 74393, if only a few different Baud Rates are needed.
+
+<P>The most primitive approach is using a jumper to select the Baud Rate,<BR>
+as shown in the example above.
+
+<P>Also note, that there are a few examples in the Internet about how to<BR>
+configurate the Baud Rate of UARTs that are integrated into Microcontrollers...<BR>
+PICs, for instance.
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="uart_0.htm">[UP]</A>/
+<A HREF="uart_2.htm">[BACK]</A>
+<A HREF="uart_1.htm">[1]</A>
+<A HREF="uart_2.htm">[2]</A>
+[3]
+<A HREF="uart_4.htm">[4]</A>
+<A HREF="uart_5.htm">[5]</A>
+<A HREF="uart_6.htm">[6]</A>
+<A HREF="uart_7.htm">[7]</A>
+<A HREF="uart_8.htm">[8]</A>
+<A HREF="uart_9.htm">[9]</A>
+
+<A HREF="uart_4.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2007
+</BODY>
+</HTML>
+

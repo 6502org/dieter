@@ -1,0 +1,143 @@
+Beschreibung M02, (c) Dieter Mueller 2002,2003
+Description  M02, (c) Dieter Mueller 2002,2003
+-----------------------------------------------------------------------------
+
+Ziel war der Bau eines moeglichst kompakten Prozessors aus StandardBauteilen,
+der in etwa die Geschwindigkeit eines 1 MHz 6502 erreicht, und alle legalen
+OpCodes ausfuehren kann.
+Dieses Ziel wurde mit M01 unter (fuer mich) akzeptablen Opfern erreicht:
+Zwei EPROMs als ALU, ein RAM fuer die Register, und ein zum 6502 nicht
+kompatibeles Timing.
+
+Nach einer Untersuchung der zusaetzlichen legalen Befehle des 65C02 wurde
+festgestellt, dass sie sich durch Microcode ohne Aenderung der Hardware
+emulieren liessen.
+Also wurden sie mit in den Microcode eingebaut.
+
+Es war offensichtlich, dass ein Adressbereich von 64 kB auf lange Sicht nicht
+ausreichen wuerde.
+Eine Erweiterung des Adressbereiches ueber 64 kB erschien also sinnvoll.
+Der 65C816 hatte diese Eigenschaften.
+Eine Untersuchung des Befehlssatzes ergab, dass sich der Aufwand fuer den
+Einbau von 8 zusaetzlichen Adressleitungen und den dazugehoerigen Befehlen
+bei M01 noch in akzeptablen Rahmen befand.
+
+Waehrend der Entwicklung von M01 traten gewisse technische Probleme auf, die
+nach und nach beseitigt wurden... allerdings wurde durch die Anzahl der
+Aenderungen (Draehte und Bauteile, die nach allen Richtungen aus der
+Leiterplatte herauswuchsen) eine komplette Ueberarbeitung von Schaltplan und
+Layout notwendig.
+Also wurde beschlossen, M01 zu verschrotten, und gleich einen neuen Prozessor
+zu entwickeln, der 24 Adressleitungen hatte: M02.
+
+Deshalb sind drei EPROMs im Microcode wie bei M01, und das vierte steuert nur
+A16..23.
+
+.............................................................................
+
+The intention was to build a CPU as compact as possible, from StandardParts,
+able to reach the speed of the 1 MHz 6502, and to run all legal OpCodes.
+This objective had been reached with M01, with some (for me) acceptable
+sacrifices: two EPROMs as ALU, one RAM for the registers, and a timing not
+compatible to the 6502.
+
+After an examination of the additional legal 65C02_OpCodes, it was obvious
+that they could be emulated by microcode without modification of the hardware.
+So they had been implemented.
+
+It was obvious, that a 64 kB AddressSpace whould not be enough in the long
+run.
+An extension of the AddressSpace above 64 kB looked useful.
+The 65C816 had those attributes.
+An examination of the OpCodes showed, that the cost for adding 8 AddressLines
+and the belonging OpCodes was reasonable.
+
+During development of M01 some minor problems showed up, that could be
+eliminated... but the amount of modifications (wires and components that
+started growing out of the PCB in several directions) made a complete work
+over of schematics and layouts necessary.
+So the decision had been made to scrap M01, and to build a new CPU, that
+had 24 AddressLines: M02.
+
+And that is the reason why three microcode_EPROMs are identical to M01,
+and the fourth only controls A16..23.
+
+-----------------------------------------------------------------------------
+M02 Spezifikation
+
+Hardware:
+
+ Selbstgebauter 8 Bit Prozessor, 40 ICs auf 2 Leiterplatten.
+ 16 MByte Adressbereich.
+ Durchsatz wie 1 MHz 6502.
+ Timing nicht 6502 kompatibel (kein phi2)
+
+Software:
+
+ Alle legalen 6502 und 65C02 OpCodes (kein WAI,STP).
+ Viele Adressierungsarten des 65C816 (kein BlockMove).
+ Zwei Akkus, DirectRegister mit Bit 0..7 immer auf null.
+ Einige 65C816 Befehle, um damit umzugehen.
+
+.............................................................................
+
+M02 Specification
+
+Hardware:
+
+ self build 8 Bit CPU, 40 ICs on 2 PCBs.
+ 16 MByte AdressRange.  
+ Speed like the 1 MHz 6502.
+ Timing not 6502 compatible (no phi2)
+
+Software:
+
+ All legal 6502 and 65C02 OpCodes (no WAI,STP).
+ A lot of the 65C816 AddressingModes (no BlockMove).
+ Two Accumulators, one DirectRegister with Bit 0..7 always zero.
+ Some 65C816 OpCodes to use them.
+
+-----------------------------------------------------------------------------
+Schlussworte:
+
+ Das C64 Kernal + Basic liefen ohne Probleme, es musste lediglich ein Byte
+ im Kernal geaendert werden, um ohne RasterzeilenInterrupt hochzufahren.
+ ($FF61 von $D0 auf $24 geaendert.)
+
+ Die zusaetzlichen Befehle/Adressierungsarten wurden getestet.
+ Es stand kein 65C816 (oder 65C816 Emulator) zur Verfuegung, also konnte
+ die Kompatibilitaet zum 65C816 nicht getestet werden.
+
+ DezimalModus wird nicht unterstuezt, kann aber nachgeruestet werden.
+
+ Der Prozessor signalisiert ueber AS=1 eine gueltige Adresse.
+ Dieses Signal wird vom Microcode erzeugt.
+ Theoretisch liesse sich durch ein komplettes Umschreiben des Microcodes
+ daraus ein periodischer phi2 machen. Habe ich aber nicht vor.
+
+.............................................................................
+
+Some final words:
+
+ C64 Kernal + Basic worked without problems, only one byte in the Kernal
+ had to be changed to boot without RasterLine interrupt.
+ (changed $FF61 from $D0 to $24.)
+
+ The additional OpCodes/AddressingModes have been tested.
+ There was no 65C816 (or 85C816 emulator) available, so the compatibility
+ to the 65C816 remains untested.
+
+ DecimalMode is not supported, but could be build in later.
+
+ The CPU indicates a valid address with AS=1.
+ This signal is generated by microcode.
+ Theoretically it could be possible to generate a periodic phi2 by rewriting
+ the whole microcode. Won't do that.
+
+-----------------------------------------------------------------------------
+
+ Viel Glueck/Erfolg/Spass beim Nachbau fuer Nicht_Kommerzielle Anwendung.
+ Have Luck/Success/Fun while rebuilding it for non_commercial purpose.
+
+
+Sorry for my bad English.

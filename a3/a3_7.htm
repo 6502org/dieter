@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>CM-1</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>CM-1</H2></CENTER>
+<HR>
+
+<P>Now to descibe a different "one Bit" concept:
+
+<P><img src="a3_cm.png">
+
+<P>Each one of the two Logic Units basically is a 74151 like 8:1 multiplexer.<BR>
+The select inputs A,B are read from data memory, while C is read from the Flags<BR>
+(Carry Flag, for instance.)<BR>
+Data inputs for the multiplexers are not shown in the block diagram,<BR>
+but you sure can imagine from our previous examples how to set them<BR>
+for configurating our Logic Units.
+
+<P>For instance: when building a full adder, Q is a three_input XOR,<BR>
+so we set the data inputs of the Q multiplexer to 10010110.<BR>
+Our carry output F to the Flags is active, when two or more<BR>
+of the inputs A, B, C are 1.<BR>
+So we set the F multiplexer inputs to 11101000.
+
+<P>A complete list for configurating the Logic Units would be very long:<BR>
+2 * 8 = 16 Bit, that's 65536 possible combinations.
+
+<P>Note, that the Flag "section" is different from the usual<BR>
+microprocessor architecture.<BR>
+<I>It consists of two parts:</I><BR>
+A "<B>scratch pad</B>" area of non_dedicated Flags, means that there<BR>
+isn't a definition which Flag becomes N, Z and so on...<BR>
+it entirely depends on the software, which uses the Flags.<BR>
+And a set of <B>I/O pins</B>, to communicate with the "outerworld"<BR>
+(other Bit serial processors or peripherals, for instance),<BR>
+or maybe for conditional instruction execution.
+
+<P>The instruction word for such a design tends to be rather large,<BR>
+especially when building a three operand machine, that could be able<BR>
+to read one Flag, and to write the result into another.<BR>
+Maybe there is only one sequencer, that contains the program counter,<BR>
+fetches the instructions from program memory, and applys them to all<BR>
+of the processors in parallel... and a processor only can choose<BR>
+to execute or to skip/discard the instruction.
+
+<P>Nevertheless, you may want to change/modify the design when trying<BR>
+to wire three such processors together to calculate a CORDIC algorithm.
+
+<P>To keep code size small, it might be a good idea to integrate a<BR>
+"repeat count" into each instruction word since we are going for<BR>
+chunks of eight or more Bits in data memory.<BR>
+But we would need three counters for generating the memory<BR>
+read/write address then.
+
+<P>Another question is, what to do with the first Bit when repeating<BR>
+an instruction several times, because we might want to have the Carry<BR>
+that goes into the first Bit set to 0 or 1 sometimes.
+
+<HR>
+
+<P><I>"What's the practical use of that thing ?"</I>,<BR>
+you may ask.
+
+<P>The Connection Machine (CM-1 or CM-2) had 65536 one Bit processors,<BR>
+each one had an ALU which was based on a (more or less) similar concept.
+
+<P>Applications circled around artificial intelligence, data encryption,<BR>
+image processing and such...
+
+<P>...But enough about computer science. Now for the practical use:<BR>
+If you happen to be an evil genius, out to build your own giant metal tarantula,<BR>
+which is moved by todays stepper motors (instead of steam powered stuff),<BR>
+you might want to calculate linear ramps for 64 motors with 64 Bit<BR>
+fixed point math.
+
+And the question is: what implementation would be more difficult ?<BR>
+Building a 64 Bit high speed ALU, which has a complicated carry mechanism,<BR>
+or 64 Bit serial processors running in parallel, controlled by a not_so_usual<BR>
+sequencer ?
+
+<P>Decisions, decisions...
+
+<P>If you have success, please tell us what country you live in...<BR>
+so we could have a chance to be as far away as possible.
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="a3_0.htm">[UP]</A>/
+<A HREF="a3_6.htm">[BACK]</A>
+<A HREF="a3_1.htm">[1]</A>
+<A HREF="a3_2.htm">[2]</A>
+<A HREF="a3_3.htm">[3]</A>
+<A HREF="a3_4.htm">[4]</A>
+<A HREF="a3_5.htm">[5]</A>       
+<A HREF="a3_6.htm">[6]</A>
+[7]
+<A HREF="a3_8.htm">[8]</A>
+                              
+<A HREF="a3_8.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2008
+</BODY>
+</HTML>
+

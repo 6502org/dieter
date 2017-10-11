@@ -1,0 +1,168 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>PLA1: Sequencer/Bus_control</TITLE>
+</HEAD>
+
+<BODY>
+<P><H2 ALIGN=CENTER>PLA1: Sequencer/Bus_control</H2>
+
+<HR>
+
+<P><B>PLA1</B> controls the sequencer, and read/write signals<BR>
+for the data_bus to off_CPU program/data_memory.
+
+<P><I>Note:</I><BR>
+<B>+</B> means, no transistor.<BR>
+<B>O</B> means, transistor (BC847 or BC857) at this location.
+
+<P><PRE>                 
+      !S0-O+++O++O++O+++++
+       S0-+OOO+OO+OO++++++
+      !S1-OOOO+++OOO++++++
+       S1-++++OOO+++O+++++
+      !S2-OOOOOOO+++O+++++
+       S2-+++++++OOO++++++
+     CMD7-++++++OOOO++++++
+    !CMD8-+++++O++++++++++
+     CMD8-++++++OOOO++++++
+   !CMD11-+++O++++++++++++
+    CMD11-+O++++++++++++++
+   !CMD12-+++O++++++++++++
+    CMD12-++O+++++++++++++
+!RES_FLAG-+OOO++++++++++++
+     TRUE-+OOO++++++++++++
+    PHI11-+++++++++O++++++
+   !CMD10-++++++++++O+++++  
+         -++++++++++++++++
+          ||||||||||||||||
+          O++OO++O++++++++-NS0
+          +OOOO+++++++++++-NS1
+          +++++OOO++++++++-NS2
+          ++++++++++++++++-
+          ++++++++++++++++-
+          ++++++++++++++++-
+          ++++++++++++++++-
+          ++++++++++O+++++-!OUT
+          ++++++++O+++++++-DIR
+          +++++++++O++++++-WE
+</PRE>
+
+<HR>
+
+<P><B>Now the state machine:</B>
+
+<P>NS2..0 is the value to be loaded into S2..0 at the start<BR>
+of the next machine cycle.
+
+<P>Note, that states not covered by this table will abort/terminate<BR>
+instruction execution, and force a new instruction fetch.<BR>
+<I>Like in step 1, when RESET is active, or TRUE<BR>
+(output of the flag multiplexer) is false/inactive.</I>
+
+<PRE>
+ S2..0 !RES_FLAG TRUE CMD12 CMD11 CMD8 CMD7  NS2..0
+
+ 000   x         x    x     x     x    x     001   // 0->1 
+ 001   1         1    x     1     x    x     010   // 1->2 
+ 001   1         1    1     x     x    x     010   // 1->2 
+ 001   1         1    0     0     x    x     011   // 1->3 
+ 010   x         x    x     x     x    x     011   // 2->3 address calc./indirect
+ 011   x         x    x     x     0    x     100   // 3->4 write acc/NULL
+ 011   x         x    x     x     1    1     100   // 3->4 write mem
+ 100   x         x    x     x     1    1     101   // 4->5 write mem
+</PRE>
+
+<HR>
+
+<P>Or, in a better readable form:
+<PRE>
+//fetch OpCode word
+<B>
+ 0->1
+</B>
+//fetch parameter word, and start address calculation
+//cycle trough state 2 and 3, if CMD12=1 or CMD11=1
+<B>
+ 1->2 if TRUE, no RESET, CMD11=1
+ 1->2 if TRUE, no RESET, CMD12=1
+ 1->3 if TRUE, no RESET, CMD12=CMD11=0 //immediate: do data calculation
+
+ 2->3 //address calculation/indirect
+</B>
+//do data calculation, finished if "write result back to PC"
+<B>
+ 3->4 if CMD8=0 //write acc/don't write
+
+</B>
+//write memory<B>
+ 3->4 if CMD8=CMD7=1 //memory write enable active
+ 4->5 if CMD8=CMD7=1
+</B>
+</PRE>
+
+<P>Or, as a diagram:
+<P><IMG SRC="mt15b_state.png">
+
+<HR>
+
+<P><B>The bus control:</B><BR>
+<PRE>
+ S2..0 CMD10 CMD8 CMD7 PHI11         
+
+ 100   x     1    1    x    W   =1 //set data_bus drivers to "write"
+ 100   x     1    1    1    WE  =1 //write strobe  
+ 010   0     x    x    x    !OUT=1 //disconnect external data_bus
+</PRE>
+
+<P>Or, in another form:
+
+<P><PRE><B>
+   W=  S2 & !S1 & !S0 &  CMD8  & CMD7 
+  WE=  S2 & !S1 & !S0 &  CMD8  & CMD7 & PHI11
+!OUT= !S2 &  S1 & !S0 & !CMD10
+</B></PRE>
+
+<P>DIR=1 turns memory data_bus buffer to output (CPU -> memory)
+
+<P>WE=1 controls write enable of external memory
+
+<P>!OUT=1 disconnects internal CPU data bus from memory,<BR>
+to transfer T0 into T1 trough CPU internal databus,<BR>
+if there is no indirection during address calculation.
+
+<HR>
+
+<P><B>An example, how memory may be connected to MT15:</B><BR>
+32 kWord RAM, located at address $0000...$7fff.
+
+<P><IMG SRC="mt15b_mem.png">
+
+<P>During MT15 test runs, I had<BR>
+RAM at $0000...$7fff<BR>
+I/O at $0800...$ffff
+
+<P>There wasn't any EPROM, because I used a PC parallel port (LPT)<BR>
+to take over the bus and to read/write the RAM while MT15 RESET<BR>
+was active.
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="mt15b_0.htm">[UP]</A>/
+<A HREF="mt15b_2.htm">[BACK]</A>
+<A HREF="mt15b_1.htm">[1]</A>
+<A HREF="mt15b_2.htm">[2]</A>
+[3]
+<A HREF="mt15b_4.htm">[4]</A>
+<A HREF="mt15b_5.htm">[5]</A>
+<A HREF="mt15b_6.htm">[6]</A>
+<A HREF="mt15b_7.htm">[7]</A>
+<A HREF="mt15b_8.htm">[8]</A>
+
+<A HREF="mt15b_4.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2005
+</BODY>
+</HTML>
+

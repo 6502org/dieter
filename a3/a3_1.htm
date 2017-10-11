@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Two-Pole-Double-Throw Relay Adder</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Two-Pole-Double-Throw Relay Adder</H2></CENTER>
+<HR>
+
+<P>
+We are starting with the well known one Bit full adder,<BR>
+which I did mention already in my previous ALU articles...<BR>
+Just in case you forgot (or you didn't read them):
+
+<P><img src="a3_add1.png">
+
+<P><B>To make it short, Q = A + B</B> + C_IN.
+<P><PRE>
+If <B>A = 1 and B = 1</B>, G = 1 and C_OUT passes the carry to the next higher Bit.
+If <B>A = 1 or  B = 1</B>, C_IN from the previous Bit is passed trough to C_OUT.
+</PRE>
+
+<P>Besides that, we generate Q with a three_input<BR>
+XOR logic gate from the input signals <B>A, B, C_IN.</B>
+
+<P>Let's suppose, we are using 74HCT CMOS logic.<BR>
+Component count for an 8 Bit adder would be:<BR>
+4* 74HCT86<BR>
+4* 74HCT08<BR>
+2* 74HCT32.
+
+
+<HR>
+<P>Now for a slightly different implementation:
+
+<P><img src="a3_add2.png">
+
+<P>Note the switch.
+
+<P>If <B>A = B</B>, the AND gate is connected to C_OUT.<BR>
+Means, that if <B>A = 1 and B = 1</B>, C_OUT is 1.<BR>
+If <B>A = 0 and B = 0</B>, C_IN can't get through.
+
+<P>If <B>A <> B</B>, either A or B is 1.<BR>
+The switch then routes C_IN to C_OUT.
+
+<P>Component count for 8 Bit:<BR>
+4* 74HCT86<BR>
+2* 74HCT08<BR>
+3* 74HCT4053.
+
+<P>So we need less components than with the previous schematic,<BR>
+and maybe the signal passes faster trough the switch than<BR>
+trough an AND/OR gate...<BR>
+(Take care: when wiring too many such switches in series,<BR>
+there is a chance that the capacitance of the 74HCT86 inputs<BR>
+may slow down your signal.)
+
+<P>We might suppose, that CMOS switches are used<BR>
+inside modern microcontrollers...<BR>
+<I>(This article was written in 2008.)</I>
+
+<HR>
+
+<P>Talking of switches, we now try something different:<BR>
+<I>Two-Pole-Double-Throw</I> Relays.
+
+<P><img src="a3_addr1.png">
+
+<P>It uses the same concept as our prevous 74HCT based schematic.
+
+<P>A, B control two relays, which emit our AND/XOR signals.<BR>
+P (propagate) will feed/propagate C_IN trough to C_OUT, if <B>A = 1 or B = 1</B>.<BR>
+G (generate) is used to generate C_OUT, if <B>A = 1 and B = 1</B>
+
+<P>Again, we use a three_input XOR to generate Q out of A, B, C_IN.
+
+<HR>
+
+<P><I>"Neat.",</I> you may say, <I>"but what is the use of turning a modern<BR>
+design into a boring implementation which uses technology <BR>from the past ?"</I>
+
+
+<P>
+Point is, that such relay adders already were in use before ICs, even transisors,<BR>
+were invented. And if we are digging a bit deeper, maybe by asking an electrician,<BR>
+we are getting a nice story of how to wire two switches together to control<BR>
+one light bulb...<BR>
+of course, it's called <B>"multiway switching"</B> then, instead of <B>"XOR logic gate"</B>.
+
+
+<P>Long time ago, Konrad Zuse did have plenty of trouble with the bureaucrats<BR>
+from the patent office. Looks like they did not believe in computers and didn't<BR>
+find the idea of building one worthy for being filed as a patent.<BR>
+On the bright side, his struggle did create plenty of documentation<BR>
+about what to do with relays...
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="a3_0.htm">[UP]</A>/
+<A HREF="a3_0.htm">[BACK]</A>
+[1]
+<A HREF="a3_2.htm">[2]</A>
+<A HREF="a3_3.htm">[3]</A>
+<A HREF="a3_4.htm">[4]</A>
+<A HREF="a3_5.htm">[5]</A>
+<A HREF="a3_6.htm">[6]</A>
+<A HREF="a3_7.htm">[7]</A>
+<A HREF="a3_8.htm">[8]</A>
+
+<A HREF="a3_2.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2008
+</BODY>
+</HTML>
+
+

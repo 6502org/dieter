@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Four-Pole-Double-Throw Relay Adder</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Four-Pole-Double-Throw Relay Adder</H2></CENTER>
+<HR>
+
+<P><B>Now for something more complicated.</B>
+
+<P>Let's imagine, our relays have more switches, and we would<BR>
+like to use only two <I>Four-Pole-Double-Throw</I> relays instead<BR>
+of four <I>Two-Pole-Double-Throw</I> relays.
+
+<P>First, we take a look at our three_input XOR gate.<BR>
+It's kind of obvious, that we are unable to build<BR>
+a three_input logic gate by using only two relays,<BR>
+isn't it ?
+
+<P>Nevertheless, there is a trick:
+
+<P><img src="a3_xorr.png">
+
+<P>If we happen to have one of the three input signals<BR>
+in "inverted" and "non inverted" version, it's possible.
+
+<P><I>In other words, we now use an "inverted"<BR>
+and a "non inverted" carry signal.</I>
+
+<HR>
+
+<P>For the high active (non inverted) carry signal, it's simple:<BR>
+If <B>A = 1 and B = 1</B> <I>(AND)</I> C_OUT is 1<BR>
+(tied to supply voltage, that is).
+
+<P>IF <B>A <> B</B> <I>(XOR)</I>, C_IN is routed towards C_OUT.
+
+<P><img src="a3_cyr1.png">
+
+<P>Note the cute trick, how to save one of the switches...
+
+<HR>
+
+<P>Now for the low active (inverted) carry.
+
+<P>IF <B>A <> B</B> <I>(XOR)</I>, /C_IN is routed towards /C_OUT,<BR>
+we already know this game.
+
+<P>If <B>A = 0 and B = 0</B> <I>(NOR)</I>, /C_OUT is set to inactive,<BR>
+what means logic 1.
+
+<P><img src="a3_cyr0.png">
+
+<P>Again, we could save a switch there...<BR>
+Noticed, that one contact of the switch that ties<BR>
+the output to 1 is free ?
+
+<HR>
+
+<P>Now to clobber the whole thing together:
+
+<P><img src="a3_addr2.png">
+
+<P>Oops, looks like we have saved another switch.
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="a3_0.htm">[UP]</A>/
+<A HREF="a3_1.htm">[BACK]</A>
+<A HREF="a3_1.htm">[1]</A>
+[2]
+<A HREF="a3_3.htm">[3]</A>
+<A HREF="a3_4.htm">[4]</A>
+<A HREF="a3_5.htm">[5]</A>
+<A HREF="a3_6.htm">[6]</A>
+<A HREF="a3_7.htm">[7]</A>
+<A HREF="a3_8.htm">[8]</A>
+
+<A HREF="a3_3.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2008
+</BODY>
+</HTML>
+

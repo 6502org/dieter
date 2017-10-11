@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Fast ripple carry</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Fast ripple carry</H2></CENTER>
+<HR>
+
+<P>Ripple carry is, basically, a slow thing.<BR>
+P propagates the input_carry through.<BR>
+G generates the output_carry.
+
+
+<P><IMG SRC="a2_slowrip.png">
+
+<P>Bad thing is, that we have a propagation delay<BR>
+of two NAND gates per Bit.
+
+<P>There is a trick, how to double the speed.<BR>
+But it requires open_collector (or open_drain) NANDs,<BR>
+and for the carry signal we have to change between<BR>
+low_active / high_active after each Bit.
+
+
+<P><IMG SRC="a2_ripple.png">
+
+<P>Now to describe, how it works.
+
+<P>If /C0 or G0 are active, there is a chance, that C1<BR>
+could become active.<BR>
+We know, if /P0 is 1 (inactive), C1 will not be active.<BR>
+So we use /P0 as a "kill carry" signal.
+
+<P>For generating /C2 from C1, we already know what to do.
+
+<P>Although ripple carry is still slow, it's an alternative<BR>
+to 74182_like parallel carry for ALUs with a small word size,<BR>
+like 8 Bit or less.
+
+<P>Also note, that building a 74182_like parallel carry has two<BR>
+disadvantages:<BR>
+The effort/time_delay from distributing the propagate, <BR>
+generate and carry signals.<BR>
+And the increased amount of gates/transistors.
+
+<P>So if ripple carry is supposed to be fast enough,<BR>
+it's cheaper to use it.
+
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="a2_0.htm">[UP]</A>/
+<A HREF="a2_6.htm">[BACK]</A>
+<A HREF="a2_1.htm">[1]</A>
+<A HREF="a2_2.htm">[2]</A>
+<A HREF="a2_3.htm">[3]</A>
+<A HREF="a2_4.htm">[4]</A>
+<A HREF="a2_5.htm">[5]</A>       
+<A HREF="a2_6.htm">[6]</A>
+[7]
+<A HREF="a2_8.htm">[8]</A>
+                              
+<A HREF="a2_8.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2005
+</BODY>
+</HTML>
+

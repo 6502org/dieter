@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>About JK flipflops</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>About JK flipflops</H2></CENTER>
+<HR>
+
+<P>The most commonly used JK flipflops were the<BR>
+7473 and the 7476.
+
+<P>Before you start experimenting, I would suggest<BR>
+that you take a close look at the datasheet,<BR>
+to check if the flipflop you are using is<BR>
+triggered at the rising or the falling edge<BR>
+of the clock signal.
+
+<P>For this article, we assume that the flipflop<BR>
+is triggered at the rising edge of the clock signal.
+
+<P><IMG SRC="a6_jk1.png">
+<P>"Toggle" means that Q turns from 0 to 1...<BR>
+or from 1 to 0.
+
+<P>Now you know, how to build a one_Bit counter.
+
+<HR>
+
+<P>Loading a Bit from the data bus is simple:
+
+<P><IMG SRC="a6_jk2.png">
+
+<P>If the enable signal LD is 1, the data is stored<BR>
+at the rising edge of CLK.
+
+<P>If LD=0, the J and K inputs of the flipflop are 0,<BR>
+and the data inside the flipflop won't change at<BR>
+the rising edge of CLK.
+
+<P>The open inputs at the OR gates are there to remind<BR>
+you that there might be some other AND gates<BR>
+(not shown in this schematic) which feed the JK<BR>
+inputs, since we want to build an ALU on the next<BR>
+page of this article.
+
+<HR>
+
+<P>Transfering data from one JK flipflop to another:
+
+<P><IMG SRC="a6_jk3.png">
+
+<P>You sure can imagine now, how to build a shift register.
+
+<HR>
+
+<P>One Bit bitslice of a shift register (Bit 1).
+
+<P><IMG SRC="a6_jk4.png">
+
+<P>SHL=1 shifts left,<BR>
+SHR=1 shifts right.
+
+<P>Note: for arithmetic shift right, you may want to<BR>
+surpress the SHR control signal for the uppermost<BR>
+Bit of the shift register.
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="a6_0.htm">[UP]</A>/
+<A HREF="a6_0.htm">[BACK]</A>
+[1]
+<A HREF="a6_2.htm">[2]</A>
+<A HREF="a6_3.htm">[3]</A>
+<A HREF="a6_4.htm">[4]</A>
+<A HREF="a6_5.htm">[5]</A>
+<A HREF="a6_6.htm">[6]</A>
+<A HREF="a6_7.htm">[7]</A>
+<A HREF="a6_8.htm">[8]</A>
+
+<A HREF="a6_2.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2012
+</BODY>
+</HTML>
+

@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Interrupts</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Interrupts</H2></CENTER>
+<P><CENTER>... or the lack thereof.</CENTER>
+<HR>
+
+<P>First, there is one thing you ought to know:<BR>
+If you try programming a loop which does nothing but to wait for an<BR>
+interrupt to happen, don't use<BR>
+<PRE>
+WAIT_FOREVER
+             WAIT_FOREVER;
+</PRE>
+because a 32 Bit jump disables the interrupt for the next instruction word,<BR>
+which also will be one and the same jump.<BR>
+So the interrupts will be permanently disabled.
+
+<P>Try<BR>
+<PRE>
+  PC--, nop, nop;
+</PRE>
+instead.
+
+<HR>
+
+<P>To simplify the CPU design, we decided that the CPU should not have any<BR>
+interrupt logic... besides generating a control signal which enables or<BR>
+disables all the interrupts in general.
+
+<P>The idea was, to have an interrupt controller outside the CPU, which<BR>
+triggers on the first cycle of an instruction fetch, takes over the bus,<BR>
+and then forges a 32 Bit word on the data bus with Bit 31 zero, what will<BR>
+cause the CPU to load said word into PC (before saving the old contents<BR>
+into LR, that is).
+
+<P>Unfortunately, it turned out that there is a little disadvantage to this strategy.<BR>
+Remember, that the CPU fetched a word from an address, which was<BR>
+supposed to contain an instruction from the normal program flow.<BR>
+The word was skipped/discarded by the interrupt controller, while PC<BR>
+(saved into LR) was incremented to the next word.
+
+<P>So we <B>skipped</B> a word in the program flow, and thus LR saved<BR>
+on stack contained <B>return address +1.</B><BR>
+We need to correct this when leaving the interrupt service routine later.
+
+<P>Remember the 6502, which uses a different format when popping the<BR>
+return address from stack for RTS and RTI ?<BR>
+We are going to have a similar effect...
+
+<HR>
+
+<P>Interrupt vecor table, each entry takes two 32 Bit words:<BR>
+<PRE>
+ org 0x00000000;
+
+ nop,        nop,     nop;        //Reset clears the program counter to 0.
+ COLDSTART_VECTOR;                //let's boot again.
+ I, SP-- nf, [SP]=LR, PC=[PC++];  //[--SP]=LR, PC=#ISR_1
+ ISR_1;                           //interrupt service routine 1
+ I, SP-- nf, [SP]=LR, PC=[PC++];  //[--SP]=LR, PC=#ISR_2
+ ISR_2;                           //interrupt service routine 1
+</PRE>
+...and so on.
+
+For this example, the interrupt controller would have to place 0x00000002<BR>
+or 0x00000004 etc. on the data bus, to make the CPU jump into the right <BR>
+line of code in our interrupt table.
+
+<HR>
+
+<P><B>Now to describe, what the ISR (interrupt service routine)<BR>
+should look like:</B>
+
+<P>First to save the registers.<BR>
+<I>Remember, that LR already was saved when we jumped the interrupt vector !
+</I>
+
+<P>ISR entry point:<BR>
+<PRE>
+ I, SP-- nf, [SP]=R5,  SP-- nf; //[--SP]=R5  
+ I, [SP]=R4, SP-- nf,  [SP]=R3; //[--SP]=R4, [--SP]=R3
+ I, SP-- nf, [SP]=R2,  SP-- nf; //[--SP]=R2
+ I, SP-- nf, R6=SR nf, [SP]=R6; //[--SP]=SR //workaround for the SR bug
+</PRE>
+
+<P><I>"nf" is the assembler notation for "do not not modify Flags".</I><BR>
+<I>"I" means "block interrupts for the next instruction word".</I>
+
+<P>Saving the registers takes 16 cycles.<BR>
+Since TREX needs four clock pulses for one cycle (or bus access),<BR>
+this would take 4 us on a 16 MHz TREX.
+<P>Note, that the vector table jump we did before this also took 7 cycles,<BR>
+what would be 1.75 us for a 16 MHz TREX.
+
+<P>(16 MHz TREX interrupt response time isn't quite overwhelming, but still<BR>
+better than for a 16 MHz 68000 using movem.l to save/restore the registers.)
+
+<P>Then to take care of the interrupt source and to do some stuff...
+
+<P>ISR exit:<BR>
+<PRE>
+ I, SR=[SP], SP++ nf,  R2=[SP]; //SR=[SP++], R2=[SP++]
+ I, SP++ nf, R3=[SP],  SP++ nf; //R3=[SP++] 
+ I, R4=[SP], SP++ nf,  R5=[SP]; //R4=[SP++], R5=[SP++]
+ I, SP++ nf, R6=[SP],  SP++ nf; //PC=[SP++]-1
+    R6-- nf, PC=R6 nf, nop    ;
+</PRE>
+
+<P>The return from an ISR takes 19 cycles (the CPU detects/skips NOPs),<BR>
+what would be 4.75 us on a 16MHz TREX.
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="tinst_0.htm">[UP]</A>/
+<A HREF="tinst_6.htm">[BACK]</A>
+<A HREF="tinst_1.htm">[1]</A>
+<A HREF="tinst_2.htm">[2]</A>
+<A HREF="tinst_3.htm">[3]</A>
+<A HREF="tinst_4.htm">[4]</A>
+<A HREF="tinst_5.htm">[5]</A>
+<A HREF="tinst_6.htm">[6]</A>
+[7]
+<A HREF="tinst_8.htm">[8]</A>
+
+<A HREF="tinst_8.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2007, 2008
+</BODY>
+</HTML>
+

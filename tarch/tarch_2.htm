@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Architectures</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Architectures</H2></CENTER>
+<HR>
+
+<P>To start simple:<BR>
+Back in 1994, Bradford J. Rodriguez introduced the PISC1:
+
+<P><IMG SRC="tarch_piscf1.png" alt="Copyright (c) 1994, Association for Computing Machinery">
+
+<P>This diagram is reproduced subject to the following copyright notice:         <BR>
+<SMALL>From the Proceedings of the 1994 ACM Symposium on Applied Computing.      <BR>
+Copyright (c) 1994, Association for Computing Machinery. Permission to copy      <BR> 
+without fee all or part of this material is granted provided that the copies are <BR> 
+not made or distributed for direct commercial advantage, the ACM copyright       <BR>
+notice and the title of the publication and its date appear, and notice is given <BR>
+that copying is by permission of the Association for Computing Machinery.        <BR>
+To copy otherwise, or to republish, requires a fee and/or specific ermission.</SMALL>
+
+<P><IMG SRC="tarch_pisc1.png">
+
+<P><B>The design shows a stunning simplicity:</B><BR>
+There is sort of a bi_port register file, the outputs feed the (74181 based) ALU<BR>
+and connect to address/data bus.
+
+<P>So it's possible to place the contents of a register (which we may call the<BR>
+address register) to the address bus, while transferring data between memory and<BR>
+another register (which we may call the data register), while the ALU is capable<BR>
+to increment/decrement the address and to write the result back into the address<BR>
+register.<BR>
+<I>Note, that all registers can be used as address or data register.</I>
+
+<P>If memory is inactive, the ALU can perform an operation between two registers,<BR>
+and write the result back into the register file.
+
+<P>Actually, the 74172 isn't exactly a bi_port register file, but nothing in the<BR>
+74xx family comes that close.<BR>
+<I>Problem is, that the 74172 is supposed to be extinct, and getting hands on<BR>
+such ICs could turn out to be impossible for the mere mortal.<BR>
+Since one 74172 contains eight 2 Bit registers, you would need eight such ICs<BR>
+for building a 16 Bit CPU.</I>
+
+<HR>
+
+<P>Back in 2003, Andrew holme did decide to use the PISC architecture for building<BR>
+his second TTL CPU.
+
+<P><IMG SRC="tarch_mark2.png">
+
+<P>It uses four AM29705 as register file.
+
+<P>The AM29705 was part of the (now extinct) AM29000 family of Bitslice ICs from<BR>
+AMD, and it was designed to add sixteen 4 Bit registers to an AM29203 or such.
+
+<P>Note, that the AM29705 has only one data input, and two data outputs.
+
+<P>Address and data bus outside the CPU are buffered by 74LS245.
+
+<HR>
+
+<P>Now for our entry in that category:
+
+<P><IMG SRC="tarch_trex.png">
+
+<P>The basic design of our CPU shows some additional features:<BR>
+74573 type transparent latches instead of the 74245 address and data bus buffers,<BR>
+and a shifter.
+
+<P>The 747181 ALU is unable to shift right (PISC1 and Mark2 don't have a<BR>
+"shift right" instruction),  we did decide to insert a shifter between ALU<BR>
+output and register file input.
+
+<P>A 74573 based transparent latch is used to read from the data bus,<BR>
+it is able to bypass the ALU and to write directly into the register file.
+
+<P>We did decide to insert 74573 latches into the address and data outputs<BR>
+of the CPU, a feature that might be nice for memory access with post_increment.
+
+<P>Post_increment means, reading a word from a memory address indicated by<BR>
+a register, then incrementing said register.<BR>
+With 74573 latches as in our design, there are two different approaches for<BR>
+implementing this addressing mode, and they all take two cycles:
+
+<P>Either the "traditional approach", in which CPU places the address on the bus,<BR>
+reads the data from the bus and writes it into the register file, and then<BR>
+increments the address register in the next cycle.<BR>
+Or to increment the register first, while freezing the address output latch in<BR>
+the next cycle in which the data is fetched from the bus and written into the<BR>
+register file.
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="tarch_0.htm">[UP]</A>/
+<A HREF="tarch_1.htm">[BACK]</A>
+<A HREF="tarch_1.htm">[1]</A>
+[2]
+<A HREF="tarch_3.htm">[3]</A>
+<A HREF="tarch_4.htm">[4]</A>
+<A HREF="tarch_5.htm">[5]</A>
+<A HREF="tarch_6.htm">[6]</A>
+<A HREF="tarch_7.htm">[7]</A>
+<A HREF="tarch_8.htm">[8]</A>
+
+<A HREF="tarch_3.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2007, 2008
+</BODY>
+</HTML>

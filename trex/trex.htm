@@ -1,0 +1,209 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>TREX</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>TREX</H2><BR>
+<U>T</U>TL <U>R</U>ISC <U>ex</U>periment</CENTER>
+<HR>
+
+<P><PRE><I>
+ -------------------------------------------------------
+| ...And god asked the stones:                          |
+| "Do you want to become hardware designers ?"          |
+| "No, we are not hard enough.",                        |
+| the stones replied.                                   |
+|                                                       |
+| So god, in his infinite wisdom,                       |
+| created something more stubborn than a piece of rock: |
+| the German electronics nerd.                          |
+|                                                       |
+| But even the hardest stone may crumble...             |
+ -------------------------------------------------------
+</I></PRE>
+
+<HR>
+<P><B>TREX was an experimental 32 Bit TTL RISC CPU.</B>
+
+<P><IMG SRC="trex_blinkenlight.jpg">
+
+<HR>
+
+<P>Back in 2006, I grouped up with a software guru...<BR>
+and we did start this little project here...<BR>
+<I>unfortunately, the project is dead now, the guru is gone,<BR>
+(I fully understand that, and we parted as friends),<BR>
+...and the PC with all the software tools and most of<BR>
+the project files had a hard disk crash.</I><BR>
+And as usual, there were no backups.
+
+<HR>
+
+<P>First we had some thoughts about using transistors, but during<BR>
+my DECL transistor logic experiments, two things went obvious:
+
+<P><B>First:</B> Building reliable transistorised DECL gates turned
+out to be <BR>more difficult as I thought, same thing for <I>distributing</I>
+the signals.
+
+<P><B>Second:</B> It turned out to be hard to estimate the size of the CPU
+<BR>(or the number of transistors).
+
+<HR>
+<P>Then I did stumble over some very cute 54LS181 ICs in a hobby shop,<BR>
+and I could... not... resist.
+
+<HR>
+
+<P>Unfortunately, the control circuitry of the CPU never ran out of bugs,<BR>
+and there was a day, when debugging it felt like visiting planet Klendathu.
+
+<P>And while debugging the CPU, I bumped into a burnout at my workplace<BR>
+back in August 2008, what separated me from hobby electronics for a very<BR>
+long time.
+
+<P>There is a random collection of some of the remaining (hardware related) files,<BR>
+but please note that this stuff is unfinished, untested, and contains bugs.<BR>
+<B>Thou shalt not try rebuilding it.</B>
+
+<P><A HREF="trex.zip">trex.zip</A>
+
+<P>Now the pictures:
+
+<HR>
+
+<P><IMG SRC="trex_io.jpg">
+
+<P><B>Peripheral/IO PCB.</B>
+
+<P>Three modules can be plugged on top, and three modules at the bottom.<BR>
+Currently, we have a timer, a PC keyboard interface, and a TTL UART.
+
+<P>The timer had some minor bugs, but they are fixed in the new PCB layout.
+
+<HR>
+
+<P><IMG SRC="trex_ecf.jpg">
+
+<P><B>Ethernet and CompactFlash.</B>
+
+<P>It would have been interesting to build a TTL based Ethernet controller,<BR>
+but because it would have had only 10 MBit (and we already had enough other<BR>
+important work to do), we decided against it.
+
+<P>Unfortunately, the DM9000 went out of production, and we had to modify<BR>
+our design a little bit to go with the DM9010.
+
+<HR>
+
+<P><IMG SRC="trex_mem.jpg">
+
+<P><B>Memory PCB.</B>
+
+<P>Note the little module plugged on top of the PCB.<BR>
+It's a 4 layer PCB, with 8 SRAMS (512 kB each) on top, and 8 SRAMs at the<BR>
+bottom. It's possible to plug up to 16 such modules into the big PCB,<BR>
+which means two stacks (4 modules each) on top of the big PCB,<BR>
+and 4 modules at the bottom.
+
+<P>Since one module carries 16 RAMs 512 kB each, the module has 8 MB RAM,<BR>
+and the big PCB would be able to carry 128 MB of 15 ns SRAM in total.<BR>
+Enough for running serious software...
+
+<P>Note: when defining one layer of a multilayer PCB as GND, make sure<BR>
+that the PCB manufacturer _really_ knows about this,<BR>
+else use GND polygons in the PCB layout.
+
+<P>The design also contains PCB space for four 3.3V regulators,<BR>
+just in case that 5V SRAMs might go out of production.
+
+<HR>
+
+<P><B>Now for the CPU.</B>
+
+<P><IMG SRC="trex_cpu_top.jpg">
+<P><IMG SRC="trex_cpu_bot.jpg">
+<P><IMG SRC="trex_cpu_side1.jpg">
+<P><IMG SRC="trex_cpu_side2.jpg">
+
+<P>Some pictures from top, bottom, and the side.
+
+<P>The CPU is a neat, compact "sandwich".<BR>
+The big PCB in the middle of said "sandwich" contains the bus interface<BR>
+and the status register.<BR>
+
+<P><IMG SRC="trex_cpu_mtop.jpg">
+<P><IMG SRC="trex_cpu_mbot.jpg">
+
+<P>A closer view of the big PCB, note the "high density" connectors.<BR>
+Three smaller PCBs are plugged into this big PCB:
+
+<P><IMG SRC="trex_tcu.jpg">
+
+<P>The control PCB with the instruction latch/decoder/sequencer has 4 layers,<BR>
+and contains quite a few GALs.
+
+<P>The other two PCBs carry 7 registers (biport register file built with 74574),<BR>
+a shifter, and a 74181 based ALU.
+
+<P><IMG SRC="trex_tpu.jpg">
+
+<P>Since each of the two identical PCBs/modules carries ALU and registers<BR>
+for only 16 Bit, two modules are required for a 32 Bit CPU.<BR>
+Note the ICs on top and at the bottom of the PCB.<BR>
+Yep, 37 ICs in total (four of them DIP24) on a two layer PCB. :-)
+
+<P>The hard_to_buy 74182 can be replaced by a GAL if necessary.
+
+<HR>
+
+<P>The "TTAP port" of the CPU can be connected to the LPT port of a PC,<BR>
+basically it's sort of a simplified JTAG interface, so it's possible to<BR>
+start/stop/single_step a program, to execute an instruction sent by the<BR>
+PC, and to read/write CPU registers...<BR>
+which makes it possible to read/write CPU memory.
+
+<P>Here a screenshot of a test program, doing an unsigned 32 * 32 Bit<BR>
+multiplication with a 64 Bit result.<BR>
+So 0xffffffff * 0xffffffff = 0xfffffffe00000001, and the program worked.
+
+<P><IMG SRC="trex_mult.jpg">
+
+<HR>
+
+<P><I>So much for watching the remains of dead/extinct fossiles.</I><BR>
+Rest in peace, my cute little dinosaur...
+
+<P>
+Looking at those pictures on a page in the internet is one thing.<BR>
+But entering your workshop after a full year of absence, cleaning<BR>
+up the desk from all those dead dinosaur guts is something<BR>
+completely different.
+
+<P>
+Because when you take all those PCBs in your hands again,<BR>
+you suddenly remember how much time and effort, how much<BR>
+sweat and tears went into a project which seemed to be<BR>
+doomed from the start...
+
+<P><B>
+And the thought that you wasted years of your life on<BR>
+something like this can take it out of you.</B> 
+
+<HR>
+<P>More technical details in the "articles" section:<BR>
+<UL>
+ <LI><A href="../tinst/tinst_0.htm">The TREX Instruction set </A></LI>
+ <LI><A href="../tarch/tarch_0.htm">The TREX Architecture    </A></LI>
+</UL>
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+
+<HR>
+<P>(c) Dieter Mueller 2008
+
+</BODY>
+</HTML>

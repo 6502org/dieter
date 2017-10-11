@@ -1,0 +1,164 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Multiple Programs</TITLE>
+</HEAD>
+<BODY>
+
+<P><CENTER><H2>Multiple Programs</H2></CENTER>
+
+<HR>
+
+<P>
+Now for something different.
+<P>
+The yellow lightbulbs are only turned on during a short moment.<BR>
+Looks like the red and green lightbulbs will have a much shorter<BR>
+lifespan than the yellow ones.<BR>
+We can compensate this by switching to a yellow blinking light<BR>
+at night, when there isn't much traffic.
+<P>
+Another interesting feature would be to enlarge the green phase<BR>
+of one traffic light and to shorten that of the other during<BR>
+rush hours, when lots of cars drive through into one direction.
+
+
+<P>
+So we have three "programs":<BR>
+Normal sequence, rush hour, and yellow blinking light.<BR>
+Two Bits should be enough to select them.<BR>
+A0..A3 of our EPROM are connected to the 74163 counter,<BR>
+so we take A4 and A5.<BR>
+A4=0 selects normal traffic, A4=1 selects rush hour.<BR>
+With A5, we switch from red/green phases to yellow blinking light.
+
+<P>
+<B>Note: we are dividing 64 Bytes of "program" memory into<BR>
+4 blocks, 16 Bytes each.</B>
+
+<P>
+We already know, how to write those three macros, so here an<BR>
+example of how to use them:
+<PRE>
+        ORG     $0000
+        SEQ1    ;normal sequence
+
+        ORG     $0010
+        RUSH_HOUR
+
+        ORG     $0020
+        YELLOW_BLINKENLIGHT
+
+        ORG     $0030
+        YELLOW_BLINKENLIGHT
+</PRE>
+<P>
+So far, it looks good.<BR>
+But there is one problem: if we just turn switches, we don't know,<BR>
+what "part" of the program our traffic lights are in.<BR>
+The length of the green phases is different, so there is a chance<BR>
+of unintentionally running a weird green/red/green sequence on all<BR>
+of the traffic lights around the crossing within a few seconds,<BR>
+after turning the switch on A4.
+
+
+<P>
+Car drivers won't be amused, and some may send letters to your office<BR>
+about how to improve your design...<BR>
+straight through the window, and weightened up with bricks.<BR>
+Since most of the suggestions would lack some technical background,<BR>
+we have to find our own solution.
+
+<P>
+Would be nice, if we could switch between "normal traffic" and "rush hour",<BR>
+when it's safe.<BR>
+Looks like fetching the status of both switches with a latch may help.<BR>
+<P>
+The best moment would be the start of the green phase for traffic light 1,<BR>
+when our counter turns to zero.<BR>
+Fortunately, we can use the signal at EPROM O7, that indicates the end<BR>
+of the "program".<BR>
+<B>But there is one more problem:</B>
+
+<P><IMG SRC="mpd_romt.png">
+
+<P>
+Note the red marked areas.
+<P>
+The counter changes the values at it's outputs QA..QC shortly after every<BR>
+rising edge on CLK.<BR>
+But it takes the EPROM some time to stabilize the values at it's outputs<BR>
+at O0..7.
+<P>
+With 74LS163 and a 70ns EPROM, it may take up to 100 ns after the rising<BR>
+edge on CLK, until O0..7 are valid.<BR>
+We only controlled LEDs, and the 74163 only reacts to the signal at !LD<BR>
+at the rising edge of CLK, when O7 was stable.<BR>
+We didn't mind, because timing/speed/propagation_delay was not important<BR>
+until now.<BR>
+But edge triggered TTL logic could become very confused from such a signal.
+
+
+<P>
+A good trick is, to take a 74374 latch, and to sample O0..O7 with the rising<BR>
+edge on CLK, when they are stable.<BR>
+The 74374 outputs O_0..O_7 will be clean/stable...<BR>
+but are valid one CLK cycle later.<BR>
+Neverthless, we now can use Q_7 to clock another 74374,<BR>
+that latches the two Bits from our switches when the counter flips to zero,<BR>
+and updates A4,A5 for "program start".
+
+<P>
+Instead of that, we could have used the 74377 synchronous latch, that features<BR>
+a clock_enable (what could be directly connected to O7).<BR>
+Another solution is to use/abuse a 74163 to work as a synchronous latch<BR>
+(by disabling counting, and connecting !LD to the !CLR input of our counter<BR>
+that feeds A0..3).
+
+
+<P><IMG SRC="mpd_romp.png">
+
+<P>
+Theoretically, with 74LS163 and a 70 ns EPROM, we could reach CLK frequencies
+up to 8 MHz.
+
+
+<P>
+From what we learned so far, we could build some weird things.<BR>
+<I>With a few variations in hardware (counters, EPROM, and CLK frequency),<BR>
+and some software to populate our EPROM with lookup tables, we could build a...
+</I><BR>
+<UL>
+<LI>traffic light, that may really work                      </LI>
+<LI>washing machine sequencer                                </LI>
+<LI>homebuilt doorbell, playing some of your favourite music </LI>
+<LI>CRT/LCD controller for your homebuilt computer           </LI>
+<LI>sine wave output for a digital function generator        </LI>
+<LI>stepper motor driver (two sinewaves, 90 degrees apart)   </LI>
+</UL>
+
+<P>
+And a few other odd things, instead of "only" using a microcontroller.<BR>
+Now for a short description, how to use what we learned in a homebuilt<BR>
+processor.
+
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="mpd_0.htm">[UP]</A>/
+<A HREF="mpd_5.htm">[BACK]</A>
+<A HREF="mpd_1.htm">[1]</A>
+<A HREF="mpd_2.htm">[2]</A>
+<A HREF="mpd_3.htm">[3]</A>
+<A HREF="mpd_4.htm">[4]</A>
+<A HREF="mpd_5.htm">[5]</A>
+[6]
+<A HREF="mpd_7.htm">[7]</A>
+<A HREF="mpd_8.htm">[8]</A>
+<A HREF="mpd_7.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2005
+</BODY>
+</HTM>

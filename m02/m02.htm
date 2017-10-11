@@ -1,0 +1,138 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD><TITLE>This is no 6502. This is no C64.</TITLE>
+</HEAD>
+<BODY>
+<P>
+<CENTER><H1>This is no 6502.</H1></CENTER>
+<CENTER><H1>This is no C64. </H1></CENTER>
+
+
+<HR>
+<P><PRE><I>
+ ------------------------------------
+| "Vorwaerts, wir muessen zurueck !" |
+ ------------------------------------
+</I></PRE>
+
+<HR>
+
+<P>Back in 2002, the 6502 disappeared out of all cataloges.<BR>
+<B>[Edit: The 6502 showed up at Mouser/Germany in 2012 again.]</B><BR>
+Wanted to know, if it's possible to build a binary compatible CPU<BR>
+with the things I had in the drawer: <BR>
+74LS parts, 27C512 EPROMs and a fast static RAM from an<BR>
+old 80386 motherboard.
+
+
+<P>Now here the results.
+<BR>Note, that the Bus timing is different from the 6502.
+
+<HR>
+
+<P>The CPU:
+<P>
+<TABLE cellPadding=3 border=1>
+  <TBODY>
+  <TR>
+    <TD bgColor=#9ec1fc><STRONG>File</STRONG></TD>
+    <TD bgColor=#9ec1fc><STRONG>Description</STRONG></TD></TR>
+  <TR>
+    <TD><A href="cpu.txt">cpu.txt</A></TD>
+    <TD>short description of the CPU 
+  </TD></TR>
+  <TR>
+    <TD><A href="system.jpg">system.jpg</A></TD>
+    <TD>big picture of the Computer</TD></TR>
+  <TR>
+    <TD><A href="cpu.jpg">cpu.jpg</A></TD>
+    <TD>CPU from the side</TD></TR>
+  <TR>
+    <TD><A href="cpu_1.jpg">cpu_1.jpg</A></TD>
+    <TD>CPU, PCB 1</TD></TR>
+  <TR>
+    <TD><A href="cpu_2.jpg">cpu_2.jpg</A></TD>
+    <TD>CPU, PCB 2</TD></TR>
+  <TR>
+    <TD><A href="m02_3.zip">m02_3.zip 
+    </A></TD>
+    <TD>Eagle3.55 schematics, layouts, SourceCode.</TD>
+  </TR>
+</TBODY></TABLE>
+<HR>
+
+<P>Schematics in JPG format: 
+<UL>
+  <LI><A href="m02jpg.zip">download zipped schematics</A> 
+  <LI><A href="m02jpg.htm">view schematics online (large pictures.)</A></LI>
+</UL>
+
+<HR>
+
+<P>Other pictures:
+<P>
+<TABLE cellPadding=3 border=1>
+  <TBODY>
+  <TR>
+    <TD bgColor=#9ec1fc><STRONG>Datei // File</STRONG></TD>
+    <TD bgColor=#9ec1fc><STRONG>Beschreibung // Description</STRONG></TD></TR>
+  <TR>
+    <TD><A href="crt.jpg">crt.jpg</A></TD>
+    <TD>CRT von der Seite // CRT from the side</TD></TR>
+  <TR>
+    <TD><A href="crt_1.jpg">crt_1.jpg</A></TD>
+    <TD>CRT, Platine 1 // CRT, PCB 1</TD></TR>
+  <TR>
+    <TD><A href="crt_2.jpg">crt_2.jpg</A></TD>
+    <TD>CRT, Platine 2 // CRT, PCB 2</TD></TR>
+  <TR>
+    <TD><A href="mem.jpg">mem.jpg </A></TD>
+    <TD>Speicher // Memory</TD></TR>
+  <TR>
+    <TD><A href="irq.jpg">irq.jpg </A></TD>
+    <TD>Tastatur, IRQ, Reset // Keyboard interface, IRQ, Reset.</TD></TR>
+  </TBODY>
+</TABLE>
+
+
+<HR>
+<P>Oops, It's 2008 already ?<BR>
+I'm attaching a ZIP file with the rest of the layouts/schematics<BR>
+for this project. They are partially untested, and there will be<BR>
+no support. <I>You have been warned.</I>
+
+<P><B>So if you build them and they won't work, don't blame me.</B><BR>
+From here on, you're on your own. Good luck and god speed...
+
+<P><A href="m02_noncpu.zip">download zipped files</A> 
+
+<HR>
+
+<P><PRE>
+[2016: Edit:                                                       ]
+[                                                                  ]
+[ Might be possible to give M02 a more 6502 compatible bus timing. ]
+[ This requires sampling A15..0 with 74573 transparent latches,    ]
+[ and using a different microcode.                                 ]
+[                                                                  ]
+[ Downside is, that the ALU would have to run 4 times faster       ]
+[ than the bus (4 MHz for a 1 MHz 6502 that is),                   ]
+[ but the M02 ALU wasn't able to go faster than 3 MHz.             ]
+[                                                                  ]
+[...and that's what had triggered my interest in ALU design.       ]
+
+[2016: Edit: some of the 65816 instructions probably have bugs...  ]
+</PRE>
+<HR>
+<P>More technical info can be found in the "articles" section:
+<UL>
+ <LI><A href="../a1/a1_1.htm"  >ALU design, part 1            </A></LI>
+ <LI><A href="../mpd/mpd_1.htm">Microprogramming for beginners</A></LI>
+</UL>
+
+<HR>
+<P><A href="../index.htm">[HOME]</A>
+
+<HR>
+
+<P>(c) Dieter Mueller 2002,2003,2004</BODY></HTML>

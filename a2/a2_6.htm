@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>NMOS ALU</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>NMOS ALU</H2></CENTER>
+<HR>
+
+<P>We travelled far through the land of bipolar logic design.<BR>
+But modern microprocessors use MOS transistors.
+
+<P>MOS field effect transistors have a very low input current,<BR>
+and it's possible to build nifty switches<BR>
+(as known from analog sample & hold amplifiers).<BR>
+You could use 74HCT4066 for experimenting.
+
+<P>Now to describe, what one Bit of ALU in a microprocessor<BR>
+could look like:
+
+<P><IMG SRC="a2_mosalu.png">
+
+<P>A,B are the two ALU_input busses.<BR>
+If no register connects to a bus, the bus is set to -1<BR>
+(all Bits high) by the pullup_resistors.<P>
+
+<P>What means, for decrementing A:<BR>
+No register is connected to B, so B=-1.<BR>
+We are passing A,B through to A',B'.<BR>
+Then we close the ADD switch at the ALU output.
+
+<P>For incrementing A, we turn B' to 0,<BR>
+force the carry_input active,<BR>
+and perform an addition.
+
+<P>For A-B, we only have to invert B, so that B'=!B.<BR>
+The rest works like with A+B.
+
+<P>For shifting A one Bit left, no register connects to B,<BR>
+and the SHL switch in front of the ALU is closed.<BR>
+When A'=A and B'=A, all left to do is selecting ADD.<BR>
+(Note, that two pullup resistors are now switched in parallel).
+
+<P>For shifting A one Bit right, no register connects to B.<BR>
+The pullup_resistors will turn all Bits on B to 1,<BR>
+so the generate_signal is set to A.<BR>
+The SHR switch connects the generate_signal<BR>
+to the next lower ALU_output.
+
+<P>Because we are using MOS transistors,<BR>
+we have another nice additional gimmick:<BR>
+The switches have a high impedance, when open.<BR>
+Logic gates with MOS transistors have a high input impedance.<BR>
+What means, when disconnecting A' from A (or B' from B),<BR>
+the input capacitance of the AND/OR gates (that produce<BR>
+the propagate/generate signals) can be used to build up<BR>
+a transparent latch, holding the logic level for a few<BR>
+microseconds.<BR>
+In other words: with that ALU design, we are getting<BR>
+a transparent latch (like 74373) between A, A' and B, B'<BR>
+for free.
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="a2_0.htm">[UP]</A>/
+<A HREF="a2_5.htm">[BACK]</A>
+<A HREF="a2_1.htm">[1]</A>
+<A HREF="a2_2.htm">[2]</A>
+<A HREF="a2_3.htm">[3]</A>
+<A HREF="a2_4.htm">[4]</A>
+<A HREF="a2_5.htm">[5]</A>
+[6]                          
+<A HREF="a2_7.htm">[7]</A>
+<A HREF="a2_8.htm">[8]</A>
+                              
+<A HREF="a2_7.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2005
+</BODY>
+</HTML>
+
+

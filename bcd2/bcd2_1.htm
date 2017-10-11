@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>9s complement basics</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>9s complement basics</H2></CENTER>
+<HR>
+
+<P>First, we are starting with a concept<BR>
+which you are already supposed to know...<BR>
+from some "ALU design" articles, for instance.
+
+<P>A simple 4 Bit binary adder/subtractor:
+
+<P><IMG SRC="bcd2_1c.png">
+
+<P><B>Q=A+B</B>:<BR>
+C_IN is a high_active carry,<BR>
+the multiplexer routes B to the adder B' input,<BR>
+it's simple.
+
+<P><B>Q=A-B</B><BR>
+is less simple to understand.<BR>
+Because we are using an adder,<BR>
+we need to do something like <B>Q=A+(-B)</B>.<BR>
+In other words: we have to <I>complement</I> B<BR>
+into a negative number.<BR>
+-B is the <I>2s complement</I> of B.
+
+<P>As we know from the school books:<BR>
+in order to convert B into a negative number,<BR>
+we first have to invert B into /B, then to add 1.
+
+<P>/B is the <I>1s complement</I> of B.<BR>
+The box labeled "1s complement" only contains<BR>
+four 7404 type inverters.<BR>
+For instance:<BR>
+the 1s complement of binary 0000 (decimal 0)<BR>
+is binary 1111 (decimal 15).
+
+<P><I>"But how to increment /B ?"</I>, you may ask.<BR>
+The simplest way is to set the ALU carry input to 1.<BR>
+So <B>Q=A-B</B> is done by this hardware as <B>Q=A+/B +1</B>
+
+<P>And because of that, C_IN now is a low_active borrow<BR>
+instead of a high_active carry.
+
+<HR>
+
+<P><I>"Yeah, every little kid knows this,<BR>
+but why is that guy lamenting<BR>
+about the boring basics again ?"</I>
+
+<P>Answer:<BR>
+To give you a better chance of understanding this:
+
+<P><IMG SRC="bcd2_9c.png">
+
+<P>A 4 bit BCD adder/subtractor.<BR>
+The concept is very similar to the binary adder/subtractor,<BR>
+only that we are using a 10s complement of B this time.
+
+<P>To be more exact: for Q=A-B, we do a 9s complement of B,<BR>
+and C_IN works as a low_active borrow.
+
+<P>Downside is, that we still are using a binary adder<BR>
+inside our schematic, so we have to correct the adder<BR>
+output if the result is greater than 9...<BR>
+but we are talking about this later.
+
+<HR>
+
+<P>Now a look inside the box labeled "9s complement".
+
+<P><IMG SRC="bcd2_9ct.png">
+
+<P>From the truth table above, four inverters won't do this time.
+
+<P>Here an example, of how the 9s complement was generated<BR>
+inside the Wang 700 calculator:
+
+<P><IMG SRC="bcd2_9c_wang.png">
+
+<P>For better readability of the schematic, I did draw an<BR>
+AND OR combination gate generating B2'.<BR>
+The Wang actually does this with NAND gates.
+
+<P>On the next page, I'll show a few more schematics<BR>
+for generating a 9s complement.
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="bcd2_0.htm">[UP]</A>/
+<A HREF="bcd2_0.htm">[BACK]</A>
+[1]
+<A HREF="bcd2_2.htm">[2]</A>
+<A HREF="bcd2_3.htm">[3]</A>
+<A HREF="bcd2_4.htm">[4]</A>
+<A HREF="bcd2_5.htm">[5]</A>
+<A HREF="bcd2_6.htm">[6]</A>
+<A HREF="bcd2_7.htm">[7]</A>
+<A HREF="bcd2_8.htm">[8]</A>
+
+<A HREF="bcd2_2.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2012
+</BODY>
+</HTML>
+

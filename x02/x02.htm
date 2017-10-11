@@ -1,0 +1,463 @@
+<HTML>
+<HEAD><TITLE>Beyond the realms of death</TITLE>
+</HEAD>
+<BODY>
+<CENTER><H1>X02</H1></CENTER>
+<H2>Initial set of blueprints for a 6502 compatible TTL CPU,<BR>
+ca. 340 ICs without the blinkenlights.</H2><BR>
+
+<P>'X' stands for "experimental", what is different from "production quality".
+
+<P>Estimated speed might be ca. 2 MHz with 74HCT,<BR>
+but the ICs used in here are supposed to be avaliable as 74ACT... somewhere.
+
+<PRE>
+  ---------------------------------------------------------------
+ |No plain fanfold paper could hold that fractal Puff.           |
+ |He grew so fast no plotting pack could shrink him far enough...|
+  ---------------------------------------------------------------
+</PRE>
+
+<P><HR>
+
+<P>Trying to do logic design at a certain degree of complexity<BR>
+while getting raked by crackers\spammers<BR>
+pretty much feels like<BR>
+trying to repair a mechanical wrist watch<BR>
+while getting raked by artillery.
+
+<P>So just running the project to the point where I could do<BR>
+a "core dump" of what I have so far took 5 years<BR>
+(when counting those unvoluntarily taken "breaks").
+
+<P>Initially, X02 was supposed to become a transistorized CPU.<BR>
+After a while, plans were cut back to building a mere TTL CPU.<BR>
+Eventually, I had no choice but to cancel the whole project.<BR>
+Basically, X02 now is just another "paper design".
+
+<P>So <B>be warned</B>, that the schematics on this page are untested,<BR>
+probably full of errors, and in no way optimized for speed or compactness.<BR>
+It may take you more than two years of hard work to turn all this stuff<BR>
+into something "useful"... whatever that means.<BR>
+It's just a "core dump" of a work which had been in progress<BR>
+while getting cancelled.
+
+<P>I'm not sure, if converting this design to VHDL<BR>
+would be worth the effort\trouble.
+
+<P>So X02 only would be interesting for you if you are out<BR>
+to build a TTL or transistor implementation of a 6502<BR>
+without resorting to microcode.
+
+<P><HR>
+
+<P>X02 supports the 65C02 instruction set,<BR>
+plus 23 instructions from the 65816:<BR>
+
+<PRE>
+TXY
+TYX
+
+BRL
+
+JSR (ABS,X)
+
+PEA
+PEI
+PER
+
+ORA d,s
+AND d,s
+EOR d,s
+ADC d,s
+LDA d,s
+STA d,s
+CMP d,s
+SBC d,s
+
+ORA (d,s),y
+AND (d,s),y
+EOR (d,s),y
+ADC (d,s),y
+LDA (d,s),y
+STA (d,s),y
+CMP (d,s),y
+SBC (d,s),y
+</PRE>
+
+<P>d,s feels similar to z,x<BR>
+except that "data is relative to SP and in page 1".<BR>
+<P>(d,s),y feels similar to (ind),y<BR>
+except that "pointer is relative to SP and in page 1".
+
+<P>The plan was, to fork the design into X03 later.<BR>
+X03 would have had a 24 Bit address bus and a 16 Bit direct register<BR>
+(following the M02 instruction set architecture).<BR>
+// a "poor man's 65816 without the 16 Bit
+
+<P><I>Since there is a big "gap" between 65C02 and 65816 architecture,<BR>
+I would have needed something like X03 as a "stepstone"<BR>
+when trying to aim for the 65816 someday.</I>
+
+<P><HR>
+
+<P>Now for a block diagram of the mill:<BR>
+Internal address\data_bus, ALU, registers.
+
+<P>A15..8, A7..0 connect to the external address bus.
+<P>ID7..0 and OD7..0 connect to the external data bus.
+
+<P>Simplified concept:
+
+<P><IMG SRC="x02_mill_s.png">
+
+<P>Actually, busses in X02 are uni_directional:
+
+<P><IMG SRC="x02_mill.png">
+
+<P>Boxes which are labeled "Latch" are transparent latches,<BR>
+their main purpose is to improve bus timing.<BR>
+For understanding the basic X02 concept just ignore them for now.
+
+<P><B>IAH, IAL</B> are registers between external data bus and
+internal address bus.
+
+<P><B>CGH, CGL</B> are constant generators, to be used<BR>
+when fetching interrupt vectors or when accessing page 0 or page 1 in memory.
+
+<P><B>TH, TL</B> are temporary registers, mainly used for address calculation.
+
+<P><B>TD</B> is a temporary date register to be used for read/modify/write
+operations.
+
+<P><B>P</B> is the status register.
+
+<P><B>ID</B> is the data input latch.
+
+<P><B>IR</B> is the instruction register.
+
+<P>Unlike most other 6502 "compatible" TTL implementations,<BR>
+X02 doesn't use a counter for incrementing PC.<BR>
+Instead, it has a <B>16 Bit incrementer\decrementer</B><BR>
+for incrementing/decrementing PC and SP.
+
+<P><I>Now for an example:</I><BR>
+While executing a JMP instruction, PCH:PCL feeds the internal address bus,<BR>
+and PC is incremented while the two Bytes containing the jump address<BR>
+are fetched into IAL, then IAH from external data bus.<BR>
+When fetching the <B>next</B> instruction from the external bus,<BR>
+X02 feeds the internal address bus with IAH:IAL (instead of PCH:PCL),<BR>
+this address is incremented and written into PCH:PCL.
+
+<P>X02 makes extensive use of such little tricks during address calculation.
+
+<P><HR>
+
+<P>Now for the instruction decoder\sequencer.
+
+<P><B>...Microcode ? What microcode ?</B>
+
+<P><IMG SRC="x02_smc.png">
+
+<P>The <B>instruction decoder</B> (ca. 30 TTL ICs)<BR>
+dissects the Byte from the instruction register,<BR>
+identifying instruction type and addressing mode.
+
+<P>Next, we have <B>a little lump of logic gates</B> (ca. 50 TTL ICs),<BR>
+generating some "product terms" out of instruction type,<BR>
+addressing mode, ALU carry output etc...
+
+<P><I>(When using a FPGA, you could implement most of those two function
+blocks by using a lookup table).</I>
+
+<P>Next, we have a 4 Bit <B>state machine</B>,<BR>
+basically a 74163 counter, counting from 0 to 8.
+
+<P>The control signals which enter the pipeline<BR>
+(control signals drive the mill in the next machine cycle)<BR>
+are generated by a lot of 74151 8:1 <B>multiplexers</B><BR>
+(one multiplexer per control signal).<BR>
+Multiplexers are fed by the state machine counter,<BR>
+and by those "product terms" who are generated by that<BR>
+odd lump of logic gates.
+
+<P>BTW:<BR>
+For some of the control signals, it requires less circuitry<BR>
+to focus on product terms where the signal is inactive<BR>
+(like when loading the data input latch).<BR>
+You would need to tap into the <B>inverted</B> output<BR>
+of the multiplexer then, of course.
+
+<P><HR>
+
+<P>The basic idea was, that executing 6502 instruction set<BR>
+is broken down into two parts:
+
+<P><B>0) "data phase":</B><BR>
+Either a machine cycle, in which the ALU reads a register,<BR>
+performs an operation, writes a register and modifies the flags,<BR>
+including BCD correction in decimal mode.<BR>
+Or a machine cycle, in which a register is written into memory,<BR>
+like the write cycle in STA, STX, STY etc.<BR>
+This also includes the write cycle in read/write/modify operations<BR>
+like when incrementing/decrementing/shifting a Byte in memory.
+
+<P><B>1) The rest</B><BR>
+Including address calculation sequence, reset\interrupt sequence,<BR>
+sequences for jumps, calls, returns etc.
+
+<P>;...................................................................
+
+<P>For instance:<BR>
+LDA ABS would read a Byte from memory, pass it through the ALU, then write
+it into ACC while modifying the flags.<BR>
+LDX ABS would read a Byte from memory, pass it through the ALU, then write
+it into X while modifying the flags.
+
+<P>Both instructions use the same addressing mode<BR>
+(the same state machine sequence that is),<BR>
+both instructions pass the Byte through the ALU and modify the flags in the same way.<BR>
+The only remarkable difference is that the ALU output is written
+into a different register.
+
+<P>Now for something funny:<BR>
+1) A CPU register might be read while ALU "data calculation".<BR>
+2) A CPU register might be read for STA, STX, STY etc.<BR>
+3) TD (temporary data register) might be read for writing the result of a
+read/modify/write instruction back to memory.
+
+<P>While examinig the OpCode Bit patterns, it suddenly became obvious<BR>
+that for all those three cases above the circuitries for reading<BR>
+a CPU register into ALU (or for writing it to memory)<BR>
+only do conflict for TSB, TRB.
+
+<P>So I decided to use just one circuitry for all three cases<BR>
+for selecting what register to read during "data phase".<BR>
+Note, that when writing a register to memory,<BR>
+the ALU output (and thus the ALU control signals) is irrelevant.
+
+<P>While further minimizing circuitry, it appeared that<BR>
+PHA, PLA etc. also have a "data phase".<BR>
+Technically, this also is true for PHP and PLP.
+
+<P>Instructions like CLC, SEC etc. also have a "data phase",<BR>
+in which the ALU emits either 0x00 or 0xff,<BR>
+to be written into one of the flags in the status register.
+
+<P>To make a long story short:<BR>
+The box labeled <B>data phase decoder</B> (ca. TTL 60 ICs)<BR>
+is nothing but a lookup table with output enable.<BR>
+The idea was, that a control signal from a multiplexer in the state machine sequencer<BR>
+just tells the data phase decoder to take over ALU, flag and register control,<BR>
+and to make them "do things" according to the Byte from the instruction register<BR>
+during "data phase".
+
+<P>What complicates things a bit is, that BCD correction in decimal mode<BR>
+requires an additional cycle after the ALU performed the calculation,<BR>
+and during BCD correction, the ALU inputs (including the carry input)<BR>
+should not change for getting a correct result.
+
+<P>So I ended up with two different output enable signals<BR>
+for the "data phase decoder":<BR>
+One signal, which enables data phase decoder ALU and register read control,<BR>
+and another signal which enables register write and flag write control.
+
+<P><HR>
+
+<P>Now for the flow diagrams, what is supposed to happen when.
+
+<P>It's amazing to watch, how a little bit of pre_emptive register loading<BR>
+and pre_emptive address calculating shrinks down address calculation<BR>
+for all those nifty addressing modes related to LDA, LDX, LDY, STA, STX, STY etc.<BR>
+to just <B>six innocent looking little boxes</B> in the state machine diagram.
+
+<P><IMG SRC="x02_sm1.png">
+
+<P>Instructions with addressing mode 'implied' take two machine cycles.<BR>
+Instructions with addressing mode 'immediate' take two machine cycles.<BR>
+So the state machine handles both addressing modes in exactly the same way.
+
+<P>Some circuitry in the instruction decoder identifies One_Byte_Instructions,<BR>
+and just prevents that PC is written with PC+1 in cycle '1'.<BR>
+<B>That's the only part of the control circuitry that is not pipelined.</B>
+
+<P>BTW:<BR>
+In the NMOS 6502, there seems to be some circuitry tied to the instruction register<BR>
+which seems to identify One_Byte_Instructions.<BR>
+Quite interesting, isn't it ?
+
+<P>TD (temporary data register) is set to 0 in cycle '1',<BR>
+because the STZ instruction stores the TD register to memory later.<BR>
+(Did steal this idea from Mike Barry's 65m32 concept.)
+
+<P>Now for part 2:
+<P><IMG SRC="x02_sm2.png">
+
+<P>According to the signal named "true", a conditional branch is either<BR>
+taken or not taken. The signal is generated by a 74151 multiplexer<BR>
+(controlled by Bit 7..5 of the instruction), which reads the flags<BR>
+from the status register.<BR>
+If Bit 4 of the instruction is 0, the "true" signal is forced active.<BR>
+This covers the un_conditional BRA instruction.
+
+<P>Ok, using/abusing TL as a temporary data register for PEA, PEI, PER<BR>
+isn't a clean solution...
+
+<P>Added PEA, PEI, PER pretty late to the design after realizing<BR>
+that implementing stack relative addressing modes won't be much fuss.
+
+<P>Illegal OpCodes will be absolutely different from the 6502, of course.<BR>
+Maybe you should do a redesign to make X02 handle illegal OpCodes like a BRK.<BR>
+This might give people a chance of emulating the missing opcodes by software.
+
+<P>BTW:<BR>
+It's a <B>pipelined design</B>, you need "to think one cycle ahead"<BR>
+when using those diagrams to generate product terms.<BR>
+The connections between the boxes and placement of a box into a<BR>
+certain "slot" in the diagram might be more important than<BR>
+just reading the text inside those boxes.<BR>
+Don't get distracted, take care.
+
+<P>Out of a gut feeling, I would dare to say that further optimisation<BR>
+of those diagrams above might be possible... but thinking _hurts_.
+
+<P><HR>
+
+<P>Technically, having a second accumulator and the XBA instruction<BR>
+isn't a big thing, I just skipped that part when planning X02.
+
+<P>What you would be going to need for handling XBA is:<BR>
+1) another data register (accumulator) named B (1*74574).<BR>
+2) instruction decoder\sequencer should generate a signal when detecting XBA.<BR>
+3) signal should toggle a flipflop, maybe when fetching the next instruction.<BR>
+4) a 74157 multiplexer is controlled by said flipflop.<BR>
+5) said multiplexer swaps read/write control signals for registers A,B.
+
+<P>Basically, it's similar to the mechanism used in the
+<A HREF="../tarch/tarch_7.htm"> TREX CPU </A>
+for "swapping" register 6 with register 7.
+
+<P><HR>
+
+<P>Diagrams for the "data phase decoder" lookup tables can be found<BR>
+in the <A HREF="x02_pf.zip">project files</A>,<BR>
+but you would need Eagle PCB layout software to open x02b.sch.
+
+<P>But be warned that my lookup tables probably contain some errors.
+
+<P>I'm suggesting to take OpenOffice or Excel,<BR>
+then to make a detailed list of instructions which have a "data phase",<BR>
+how they read/write registers and flags, how they control the ALU etc.,<BR>
+then to export the list as a plain CSV text file.
+
+<P>The next step would be to "haxor" a little C program which generates<BR>
+VHDL source code for lookup tables out of that text file...
+
+<P>It also might be interesting to "haxor" sort of a "graphical front end"<BR>
+for state machine diagrams which also exports into that CSV text file...<BR>
+It doesn't have to be an "Inkscape plugin", some crude tool running in a<BR>
+DOS text box probably would do.
+
+<P>Something you should redesign is interrupt handling.<BR>
+In the implementation on this page, X02 interrupt response<BR>
+takes two more clock cycles compared to the original 6502.<BR>
+To simplify the design, I _always_ increment PC in cycle '0',<BR>
+and to compensate for this, I'm decrementing PC in cycle '1'<BR>
+if an  interrupt was detected.
+
+<P>For a TTL implementation, using a 74163 counter as a sequencer<BR>
+looks like the best choice.<BR>
+But for a FPGA or transistor implementation, it could be interesting<BR>
+to try if replacing the counter with sort of a shift register would result<BR>
+in a further simplification of the "product terms".
+
+<A HREF="https://de.wikipedia.org/wiki/Schrittkette">Wikipedia: Schrittkette</A>.<BR>
+No English version of this text available on Wikipedia, sorry.<BR>
+"Schrittkette" is a German word, used when implementing<BR>
+a sequencer by using flipflops forming sort of a shift register<BR>
+when writing PLC code.
+
+<P>Point is, that during 16 Bit address calculation we have to "insert"<BR>
+an additional machine cycle when there was a carry when calculating<BR>
+the lower 8 Bits... for incrementing/decrementing the upper 8 Bits<BR>
+in the next clock cycle.<BR>
+
+<P>Another idea for speeding up a FPGA implementation would be<BR>
+to do flag modification one cycle after an ALU "data phase operation"<BR>
+by just holding some of the ALU input and output signals in latches.<BR>
+This would break the "lenght" of the signal path for generating the V_Flag.<BR>
+Unfortunately, this also probably would break with the concept<BR>
+of executing "branch not taken" within two clock cycles...
+<P>BTW:<BR>
+
+What "the world could need" would be a BSR instruction,<BR>
+a mix of BRL and JSR for calling subroutines.
+
+<P><HR>
+
+<P>In the TTL implementation of X02 on this page,<BR>
+there are transparent latches between internal and external address bus,<BR>
+mainly to improve bus timing.<BR>
+But I forgot to mention that they freeze during address or data calculation<BR>
+to prevent having garbage on the external address bus by accident.
+
+<P>Problem is, that a "stray read" during "data phase", during read/modify/write<BR>
+or during address calculation might affect flags in 65xx peripheral chips,<BR>
+take care.
+
+<P>In a FPGA implementation, there would be two options:<BR>
+Either to freeze the flipflops in the control pipeline<BR>
+which are responsible for address register output enable.<BR>
+Or to store the effective address back into TH:TL<BR>
+by passing it through the incrementer... by not incrementing.
+
+<P>Also, I started to wonder why I didn't write the result of BXX and BRL<BR>
+into PCH:PCL instead of writing it into TH:TL.
+
+<P>Compared to the 65816, PEA and PEI take an additional cycle.<BR>
+This can be fixed if the data input latch ID can be read from<BR>
+the internal data bus.<BR>
+Maybe this also would simplify the ALU related equations a little bit,<BR>
+because then we only would have to increment/decrement/shift<BR>
+only one of the ALU inputs instead of both of them.
+
+<P>It's an interesting question, if a VHDL implementation<BR>
+of the X02 instruction decoder\sequencer could be compacted<BR>
+into one big lookup table feeding one level of "logic units",<BR>
+(or macrocells) because the address inputs of the lookup table<BR>
+would change only after instruction fetch...
+
+<P>Maybe somebody someday could build sort of a barrel processor...<BR>
+but this wouldn't be my battle anymore, sorry.
+
+<P><HR>
+<SMALL>
+
+<P><I>It's a pity, that for some of the kids nowaday<BR>
+making easy money at other people's cost<BR>
+is more interesting than toying with technology.</I>
+
+<P><I>If something you systematically do<BR>
+leads to supression of technical knowledge<BR>
+and puts an end to cool hobby projects,<BR>
+what are you good for as a "hacker", anyway ?</I>
+
+</SMALL>
+<P><HR>
+
+<P>Good luck and god speed,<BR>
+I'm out.
+
+<P><HR>
+<P>
+<A HREF="../index.htm">[UP]</A>
+
+<HR>
+<P>(c) Dieter Mueller 2015
+
+<P>BTW: the secret involves not watching TV and staying away from "social media".
+
+<P>
+</BODY>
+</HTML>
+

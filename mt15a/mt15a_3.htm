@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Logic gates</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Logic gates</H2></CENTER>
+<HR>
+
+<P>Now to describe the logic gates, used in MT15.
+
+<P>Did first experiments with BC547/BC557 transistors at a 5V supply.
+
+<P>The story, how it came to BC847/BC857 SMD transistors powered<BR>
+with 2.5V would fill a complete article.
+
+<P>Point is, that PCB size is a <B>primary cost factor</B>.
+
+<P>Did not notice any difference between standard BC547/BC557 and<BR>
+SMD BC847/BC857 in electrical parameters during experimentation.
+
+<P>Most of the logic gates used in MT15 are open_collector TTL NANDs.<BR>
+(TTL = transistor transistor logic).
+
+<P><IMG SRC="mt15a_nand.png">
+
+<P>Note the speed_up capacitor in parallel to the two 1N4148.<BR>
+220pF should work, but since it was difficult to buy them in a<BR>
+sort of 0204 SMD package, I did solder 1nF capacitors instead.
+
+<P>NAND means "negated AND". So if A=HIGH and B=HIGH, Q=LOW.<BR>
+Treshold voltage at the inputs is about 1.3V, so connecting them<BR>
+to outputs from 74xx integrated logic ICs shouldn't be a problem.
+
+<P>When connecting the output of the transistorised logic gate<BR>
+to 74xx logic, please use 74HCT/74ACT.<BR>
+<I>74LS/74F would require a modification of the pullup_resistor<BR>
+at the output.</I>
+
+<P>Under optimal test conditions (2.5V supply, A,B are driven with<BR>
+74xx, low capacitance at Q, etc.), propagation delay from A,B to Q<BR>
+is around <B>35ns.</B><BR>
+Under "real_world" conditions, with long PCB traces, expect<BR>
+something between 50..60ns.
+
+<P>Supply voltage should be 2.4V to 2.6V.<BR>
+Don't forget to place one 100nF capacitor into the power supply<BR>
+of each logic gate.
+
+<P>Now for another neat trick:
+
+<P><IMG SRC="mt15a_nand1.png">
+
+<P>Since the gates have open_collector outputs, it is possible<BR>
+to wire the outputs from multiple gates together to one single<BR>
+330 Ohm pullup resistor.
+
+<P>The result would be a AND/NOR combination.<BR>
+MT15 makes use of this feature.
+
+<P>For more examples what to do with AND/NOR,<BR>
+please consult/dissect old 74LS/74S datasheets.
+
+<HR>
+
+<P>Now for something pretty evil:<BR>
+<B>CTL</B>, complementary transistor logic.
+
+<P><IMG SRC="mt15a_and.png">
+
+<P>Basically, we take the PNP intputs from our NAND gate,<BR>
+and attach a NPN transistor.
+
+<P>The rest is known from ECL emitter dotting.
+
+<P>Trick is, to select the pullup/pulldown_resistors in a way,<BR>
+that a 1.3V input signal level may result in a (nearly) 1.3V<BR>
+output signal, <BR>for keeping/maintaining treshold level of the<BR>
+TTL logic gates connected to the output.
+
+<P>Now for some neat open_emitter wiring:
+
+<P><IMG SRC="mt15a_and1.png">
+
+<P>MT15 uses such things inside the carry logic,<BR>
+and in the instruction decoder/sequencer.
+
+<P>CTL is fast, but has three disadvantages:<BR>
+There is a chance to waste/burn more energy than with ECL,<BR>
+it collects (and passes through) any "dirt" at the input signals.
+
+<P><IMG SRC="mt15a_level.png">
+
+<P>And, since there are no inverters, it doesn't amplify.<BR>
+<I>Please don't take the picture above too optimistic,<BR>
+it's for 3.3V  CTL..</I><BR>
+<I>2.5V CTL has a maximum output level of ca. 1.85V.</I>
+
+<P>Connecting more than three such AND/OR combinations<BR>
+in series could be considered to be a <B>bad strategy</B><BR>
+for building a reliable design.
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="mt15a_0.htm">[UP]</A>/
+<A HREF="mt15a_2.htm">[BACK]</A>
+<A HREF="mt15a_1.htm">[1]</A>
+<A HREF="mt15a_2.htm">[2]</A>
+[3]
+<A HREF="mt15a_4.htm">[4]</A>
+<A HREF="mt15a_5.htm">[5]</A>
+<A HREF="mt15a_6.htm">[6]</A>
+<A HREF="mt15a_7.htm">[7]</A>
+<A HREF="mt15a_8.htm">[8]</A>
+
+<A HREF="mt15a_4.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2005
+</BODY>
+</HTML>
+

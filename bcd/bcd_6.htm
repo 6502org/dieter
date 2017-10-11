@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>A test</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>A test</H2></CENTER>
+<HR>
+
+<P>Tried to test the schematic with a simple program.
+
+<P><PRE>
+
+  C0=0               C0=1
+ 0123456789ABCDEF   0123456789ABCDEF
+0..........******0 0..........******0
+1.........*******1 1.........*******1
+2........********2 2........********2
+3.......*********3 3.......*********3
+4......**********4 4......**********4
+5.....***********5 5.....***********5
+6....************6 6....************6
+7...*************7 7...*************7
+8..**************8 8..**************8
+9.***************9 9.***************9
+A****************A A****************A
+B****************B B****************B
+C****************C C****************C
+D****************D D****************D
+E****************E E****************E
+F****************F F****************F
+ 0123456789ABCDEF   0123456789ABCDEF
+</PRE>
+
+<P>C0 is the ALU carry input.<BR>
+<P>C4' is the carry output (with pseudo_tetrade detection).
+
+<P><B>It's row + column,</B><BR>
+'.' indicates that C4'=0,<BR>
+'*' indicates that C4'=1.
+
+<P>Examples:<BR>
+C0=0, 8+1+0= 9 -> C4'=0,<BR>
+C0=0, 9+1+0=10 -> C4'=1,<BR>
+C0=1, 8+1+1=10 -> C4'=1,<BR>
+C0=1, 9+1+1=11 -> C4'=1.
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="bcd_0.htm">[UP]</A>/
+<A HREF="bcd_5.htm">[BACK]</A>
+<A HREF="bcd_1.htm">[1]</A>
+<A HREF="bcd_2.htm">[2]</A>
+<A HREF="bcd_3.htm">[3]</A>
+<A HREF="bcd_4.htm">[4]</A>
+<A HREF="bcd_5.htm">[5]</A>
+[6]
+<A HREF="bcd_7.htm">[7]</A>
+
+<A HREF="bcd_7.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2006
+</BODY>
+</HTML>
+
+

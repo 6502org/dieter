@@ -1,0 +1,62 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Flipflops</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Flipflops</H2></CENTER>
+<HR>
+
+<P>Now to describe the architecture of the flipflops used in MT15.<BR>
+First, a simple, transparent latch with buffered outputs.
+
+<P>The "traditional" approach, as known from school books:
+
+<P><IMG SRC="mt15a_ff1.png">
+
+<P>Looks like we could eliminate the inverter at the input:
+
+<P><IMG SRC="mt15a_ff2.png">
+
+<P>Since we are using open_collector NANDs, it's<BR>
+possible to replace one NAND with an inverter:
+
+<P><IMG SRC="mt15a_ff3.png">
+
+<P>This sort of flipflop is used in the instruction_latch,<BR>
+the flags, and the sequencer.
+
+
+<HR>
+
+<P>Now to describe the flipflops, used in the one_Bit register_slices:
+
+<P><IMG SRC="mt15a_ff4.png">
+
+<P>Main difference to our previous flipflop schematic:<BR>
+An open_collector NAND with output_enable, connecting to a bus.<BR>
+(bus pullup_resistor not shown).
+
+<P>Note that T0,T1 have multiple outputs with different output_enables.
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="mt15a_0.htm">[UP]</A>/
+<A HREF="mt15a_3.htm">[BACK]</A>
+<A HREF="mt15a_1.htm">[1]</A>
+<A HREF="mt15a_2.htm">[2]</A>
+<A HREF="mt15a_3.htm">[3]</A>
+[4]
+<A HREF="mt15a_5.htm">[5]</A>
+<A HREF="mt15a_6.htm">[6]</A>
+<A HREF="mt15a_7.htm">[7]</A>
+<A HREF="mt15a_8.htm">[8]</A>
+
+<A HREF="mt15a_5.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2005
+</BODY>
+</HTML>
+

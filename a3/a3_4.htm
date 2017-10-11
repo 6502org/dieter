@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Relay ALU</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Relay ALU</H2></CENTER>
+<HR>
+
+<P>But back to Relays.
+
+<P>Here an example of how to build two 4:1 multiplexers,<BR>
+which route the inputs PS0..PS3 to P, and GS1..GS3 to G,<BR>
+depending on the signals at the select lines A, B.
+
+<P><img src="a3_lur.png">
+
+<P>To make it look more simple:
+
+<P><img src="a3_lu.png">
+
+<P>Now imagine, we would remove the two relays connected<BR>
+to A, B which emit the propagate/generate signals in our<BR>
+four relay adder, and use the two 4:1 multiplexers instead...
+
+<P><img src="a3_alur1.png">
+
+<P>Some examples for configurating the multiplexers<BR>
+to work as Logic Units:
+
+<P><PRE>
+  GS   PS
+ 3210 3210
+
+ 0000.0000 Q=0x00
+ 0000.1111 Q=0xff
+
+ 0000.1010 Q=A
+ 0000.1100 Q=B
+ 0000.0101 Q=/A
+ 0000.0011 Q=/B
+
+ 0000.1110 Q= A| B
+ 0000.1101 Q=/A| B
+ 0000.1011 Q= A|/B
+ 0000.0111 Q=/A|/B
+
+ 0000.1000 Q= A& B
+ 0000.0100 Q=/A& B
+ 0000.0010 Q= A&/B
+ 0000.0001 Q=/A&/B
+
+ 0000.0110 Q=  A^B
+ 0000.1001 Q=/(A^B)
+
+ 1000.0110 Q=A+B
+ 0100.1001 Q=/A+B=B-A
+ 0010.1001 Q=A+/B=A-B
+
+ 1010.0000 Q=A<<1 //shift left
+ 1100.0000 Q=B<<1 //shift left
+
+</PRE>
+
+<P>You might want to tie C_IN inactive for logic functions,<BR>
+and shifting an input right will take some additional circuitry.
+
+<P>Also, note that C_IN is a high active carry for A+B,<BR>
+and a low active borrow for A-B and B-A.
+
+<P>By the way, GS0 always seems to be 0 for all combinations<BR>
+that make sense.
+
+<P>Nevertheless, it's interesting that we could build<BR>
+a one Bit ALU slice with more functionality than the 74181<BR>
+by using only five relays.<BR>
+(four, if one of them happens to have enough switches.)
+
+<P><I>For more details about multiplexer based ALUs,<BR>
+please consult/dissect my previous two articles<BR>
+about ALU design.</I>
+
+<HR>
+<PRE>
+[2016: Edit: You recognize the pioneer by the arrows in his back.             ]
+[Don't miss Jeroen Brinkman's Mercia Relay Computer ALU based on multiplexers.]
+
+</PRE>
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="a3_0.htm">[UP]</A>/
+<A HREF="a3_3.htm">[BACK]</A>
+<A HREF="a3_1.htm">[1]</A>
+<A HREF="a3_2.htm">[2]</A>
+<A HREF="a3_3.htm">[3]</A>
+[4]
+<A HREF="a3_5.htm">[5]</A>
+<A HREF="a3_6.htm">[6]</A>
+<A HREF="a3_7.htm">[7]</A>
+<A HREF="a3_8.htm">[8]</A>
+
+<A HREF="a3_5.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2008
+</BODY>
+</HTML>
+

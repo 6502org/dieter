@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Conclusion</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Conclusion</H2></CENTER>
+<HR>
+
+<P>Addressing modes with postincrement/predecrement<BR>
+may simplify stack operations.
+
+<P>An option to push a register on stack, after incrementing<BR>
+PC to the next instruction, and before loading the register<BR>
+with a new value, could also give a nice rts instruction.
+
+<P><I>Although, a dedicated SP (StackPointer) register inside<BR>
+the CPU instead would be a better thing.</I>
+
+<HR>
+<P>Two index registers (like X,Y) would be nice.<BR>
+Also an addressing mode like <B>(IND),Y</B> as with the 6502 to<BR>
+simplify things like building a screen editor.
+
+<HR>
+<P>With more registers and addressing modes, the instruction set<BR>
+encoding will have to change.<BR>
+But then, the old concept would require more than 16 Bits.
+
+<P>Another idea would be using two levels of encoding.<BR>
+Means, some sort of "PALs/GALs", that decode a more CISC_like<BR>
+16 Bit Opcode into, lets say, a MT15_like format...<BR>
+just with more Bits.<P>
+
+<HR>
+<P>Some of the things mentioned in here may be useful for you,<BR>
+when designing your own instruction set, and some may not.
+
+<P>Dissecting machine code, generated from compilers out of C_sourcecode,<BR>
+may also be a help to make up your decision.<BR>
+<I>Be warned, that your relationship to some popular microcontrollers<BR>
+may become "strained" from any attempts of doing so.</I>
+
+<P>But, of course, you're still on your own when inventing an instruction<BR>
+set for your hobby CPU.
+
+<P>That's all for now.
+
+<HR>
+
+<P><PRE><I>
+[2012: Edit: why did nobody tell me,                   ]
+[ that I was about to re_invent the Data General Nova ?]
+</I></PRE>
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="mt15i_0.htm">[UP]</A>/
+<A HREF="mt15i_6.htm">[BACK]</A>
+<A HREF="mt15i_1.htm">[1]</A>
+<A HREF="mt15i_2.htm">[2]</A>
+
+<A HREF="mt15i_3.htm">[3]</A>
+<A HREF="mt15i_4.htm">[4]</A>
+<A HREF="mt15i_5.htm">[5]</A>
+<A HREF="mt15i_6.htm">[6]</A>
+<A HREF="mt15i_7.htm">[7]</A>
+[8]
+
+
+
+<P>(c) Dieter Mueller 2005
+</BODY>
+</HTML>
+
+

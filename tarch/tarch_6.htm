@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>The bug stops here</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>The bug stops here</H2></CENTER>
+<HR>
+
+<P>First some words on how to connect the 74181 to the registers:
+
+<P><IMG SRC="tarch_alupath1.png">
+
+<P>'src' selects the source register, 'dst' the destination register.<BR>
+Since "R2=R3-R2" would be highly impractical, and the 74181 doesn't support<BR>
+B-A, the choice of how to place the register select is clear.
+
+<HR>
+
+<P>The design is spread over multible PCBs, and at some point during the design<BR>
+phase, I lost the overview, <B>and connected the external address and data bus<BR>
+in the wrong way !</B>
+
+<P>Sometimes it's hard to stay concentrated on your hobby projects over a long<BR>
+time... when you happen to have a job and a life.
+
+<P><IMG SRC="tarch_alupath2.png">
+
+<P>You see the problem.<BR>
+If the Status Register output feeds the ALU B input, the CPU is unable of<BR>
+writing the Status register directly to memory.<BR>
+If the Status Register output would feed the ALU A input, it can't be the<BR>
+destination of an ALU operation...<BR>
+we wouldn't be able to do fast Bit manipulation on the output signals/ports<BR>
+of the status register then !
+
+<P><B>Unfortunately, there wasn't enough PCB space left to have buffers<BR>
+which allow feeding R0 into both ALU inputs.</B>
+
+<P>And that's why you should transfer R0 into R6, and then write R6 to memory<BR>
+instead, sorry for the inconvenience.
+
+<P>Other effects: if we would have a true bi_port register file, we would loose<BR>
+cycles for post_increment memory access. So better change this when building<BR>
+your own design.
+
+<P>Out of paranoia, PC is fed into both ALU inputs when incremented, same thing<BR>
+for LA/R5 and the SKIP/CONT instruction. So this part of the design will work...
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="tarch_0.htm">[UP]</A>/
+<A HREF="tarch_5.htm">[BACK]</A>
+<A HREF="tarch_1.htm">[1]</A>
+<A HREF="tarch_2.htm">[2]</A>
+<A HREF="tarch_3.htm">[3]</A>
+<A HREF="tarch_4.htm">[4]</A>
+<A HREF="tarch_5.htm">[5]</A>
+[6]
+<A HREF="tarch_7.htm">[7]</A>
+<A HREF="tarch_8.htm">[8]</A>
+
+<A HREF="tarch_7.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2007, 2008
+</BODY>
+</HTML>
+

@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>CMOS tricks</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>CMOS tricks</H2></CENTER>
+<HR>
+
+<P><IMG SRC="a4_majres.png">
+
+<P>Three resistors, and a 74HC/AC CMOS gate.<BR>
+<I>(All resistors have the same value.)</I>
+
+<HR>
+
+<P><B>From now on, we suppose that our logic gates<BR>
+are powered with 5V.</B>
+
+<P><I>For the input of a logic gate, treshold voltage is<BR>
+what "separates" the LOW from the HIGH.</I>
+
+<P>While TTL compatible logic (74LS/ALS/F/HCT/ACT)<BR>
+has a treshold voltage of ca. <B>1.3 V</B>,<BR> 
+CMOS compatible logic (40xx, 74HC/AC)<BR>
+has a treshold voltage of half the supply voltage,<BR>
+<B>what means 2.5 V.</B>
+
+<P>I'm leaving out quite a few little details here,<BR>
+but to be on the safe side, apply to the input<BR>
+of a CMOS gate:
+
+<P><I>for logic HIGH</I> more than ca. <B>3.33 V</B><BR>
+(more than two third of the supply voltage).
+
+<P><I>for logic LOW</I> less than ca. <B>1.67 V</B><BR>
+(less than one third of the supply voltage).
+
+<HR>
+
+<P><B>Warning:</B> logic gates with bipolar output<BR>
+transistors (74LS/ALS/F) don't give out the full<BR>
+supply voltage, so don't use them to drive those<BR>
+resistors.
+
+Let's suppose, that we use 74HC/HCT/AC/ACT<BR>
+outputs to drive the resistors at the A,B or C <BR>
+input of our majority gate with either<BR>
+(nearly) <B>0V</B>, or (nearly) <B>5V</B>.
+
+<P><I>(We now ignore the low input current of the<BR>
+CMOS gate, and the voltage drop at the MOS<BR>
+output transistors when sending current<BR>
+through them.)</I>
+
+<P>If all inputs of our majority gate have the same<BR>
+logic level, it's easy:
+
+<P><IMG SRC="a4_maj_eq.png">
+
+<HR>
+
+<P>If two inputs are LOW and one input is HIGH,<BR>
+our resistors form up a voltage divider:
+
+<P><IMG SRC="a4_maj_hll.png">
+
+<P>And through our voltage divider, there will flow<BR>
+a current of <B>I = 5V / (1.5 * R)</B>
+
+<P>For instance, if R = 470 Ohm, I = 7.1 mA.
+
+<P>At the input of our CMOS gate, we would have<BR>
+a voltage of (0.5 * R) * I = 1.67 V...<BR>
+in other words, one third of the supply voltage.
+
+<HR>
+
+<P>If one input is low and two inputs are high,<BR>
+we would have exactly the same current as in the<BR>
+previous example.
+
+<P><IMG SRC="a4_maj_hhl.png">
+
+<P>Except that the voltage at the input of the<BR>
+CMOS gate would be R * I = 3.33 V...<BR>
+two third of the supply voltage.
+
+<HR>
+
+<P>So much for theory.<BR>
+<B>Warning:</B> to be on the safe side, the current you<BR>
+sink/source with a 74HC/HCT/AC/ACT better<BR>
+should be less than 7.8 mA,<BR>
+<B>so you better use resistors with more than 470 Ohm.</B>
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="a4_0.htm">[UP]</A>/
+<A HREF="a4_1.htm">[BACK]</A>
+<A HREF="a4_1.htm">[1]</A>
+[2]
+<A HREF="a4_3.htm">[3]</A>
+<A HREF="a4_4.htm">[4]</A>
+<A HREF="a4_5.htm">[5]</A>
+<A HREF="a4_6.htm">[6]</A>
+<A HREF="a4_7.htm">[7]</A>
+<A HREF="a4_8.htm">[8]</A>
+
+<A HREF="a4_3.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2009
+</BODY>
+</HTML>

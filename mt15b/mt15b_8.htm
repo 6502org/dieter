@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Conclusion</TITLE>
+</HEAD>
+
+<BODY>
+<P><H2 ALIGN=CENTER>Conclusion</H2>
+
+<HR>
+
+<P>MT16 would have been a short form for<BR>
+<I>"My transistorised 16 Bit CPU."</I>
+
+<P>As the name indicates, MT15 would not qualify as a<BR>
+"full/complete" 16 Bit CPU.<BR>
+There isn't a dedicated JSR/RTS instruction, and it makes<BR>
+no efficient use of program memory.
+
+<P>It would be nice to have a JSR command like with some<BR>
+Forth CPUs.<BR>
+Means, OpCode Bit 15 = 0 would indicate a 16 Bit word<BR>
+containing the address of a subroutine to be executed.
+
+<P>Program memory use would be more efficient with a higher<BR>
+encoded instruction set,<BR>
+dividing a 16 Bit word into an 8 Bit OpCode and an 8 Bit parameter.<BR>
+<I>So we could handle pointers like with the 6502 in a "Zero_page".</I>
+
+<P>For 16 Bit parameters, $80 (decimal -128) in the 8 Bit parameter field<BR>
+may indicate to fetch the next 16 Bit word as the "real" parameter.<BR>
+<I>(Some of you probably remember the 68020 branch instructions...<BR>
+or the addressing modes requiring the extension word...)</I>
+
+
+<P>Addressing modes like postincrement/predecrement would also have<BR>
+been a nice thing.
+
+<P><B>Of course, I am dreaming.</B>
+
+<P>The situation was, that I did solder plenty of SMD components for<BR>
+at least six months, without knowing if MT15 would ever work at all.<BR>
+So I wanted to go with an architecture and an instruction set as simple<BR>
+as possible.
+
+<P>But since I learned something while building it, there could be some<BR>
+educational value to this project.
+
+<P>Some of you should have noticed already, that the use of transparent<BR>
+latches for T0, T1 makes the CPU a little bit inefficient.<BR>
+Unfortunately, building reliable, capacitive coupled, edge triggered<BR>
+flipflops with a propagation delay < 1us with low_frequency transistors<BR>
+may turn out to be difficult.
+
+<P><I>You sure could imagine, how to build a better CPU.</I>
+
+<P>Now to take a break, before trying to further improve my skills<BR>
+in building flipflops and logic gates.
+
+<P><B>Starting wo wonder,</B> what to build next...
+
+<HR>
+
+<P>Well.<BR>
+You have seen, how to build your own CPU from simple components,<BR>
+that are supposed to be still in production in the year 2035.
+
+<P>And that things, that look simple at first sight, may take<BR>
+more time to develop than those who look complicated.
+
+<P>Nervertheless, you shouldn't try to build such things at home.
+
+<HR>
+
+<P><B>One final warning:</B><BR>
+
+Building your own CPU may increase your knowledge, how things work.<BR>
+Increasing your knowledge may be hazardous to your health.<BR>
+You can't buy anything for knowledge.<BR>
+And it only may ruin your good nights sleep, when knowing too much.<BR>
+
+<P><I>Life is easier, when swimming with mainstream, and not against it.
+</I>
+
+<P>So please, close this text and don't think about building own computers<BR>
+any further.
+
+<P><I>...so much for the use of reversed psychology.</I>
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="mt15b_0.htm">[UP]</A>/
+<A HREF="mt15b_7.htm">[BACK]</A>
+<A HREF="mt15b_1.htm">[1]</A>
+<A HREF="mt15b_2.htm">[2]</A>
+<A HREF="mt15b_3.htm">[3]</A>
+<A HREF="mt15b_4.htm">[4]</A>
+<A HREF="mt15b_5.htm">[5]</A>
+<A HREF="mt15b_6.htm">[6]</A>
+<A HREF="mt15b_7.htm">[7]</A>
+[8]
+
+
+
+<P>(c) Dieter Mueller 2005
+</BODY>
+</HTML>

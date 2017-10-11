@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>ALU design, Part 6</TITLE>
+</HEAD>
+
+<BODY>
+<P><H1 ALIGN=CENTER>ALU design</H1><BR>
+<H2 ALIGN=CENTER>Part 6</H2>
+
+<P><CENTER>The power of JK flipflops</CENTER>
+
+<HR>
+<P><PRE><I>
+ ----------------------------------------------------
+| When Till Eulenspiegel did take a job at a bakery, |
+| he asked his new boss:                             |
+| "What am I supposed to bake ?"                     |
+| "Owls and long tailed monkeys, of course",         |
+| came the gruff/impatient/sarcastic reply.          |
+| So Till did.                                       |
+| The oddly shaped cookies became a big success...   |
+| after Till went fired, of course.                  |
+ ----------------------------------------------------
+</I></PRE>
+<HR>
+
+<P><B>Warning: the things in this article are untested.</B>
+
+<P>Don't expect anything to work as intended.
+
+<P>You may want to do some experimenting on your own...<BR>
+and to write some articles about it.
+
+<P>The source of some of those ideas were the schematics<BR>
+of the Imlac PDS-1 computer (avaliable at Bitsavers).
+
+<P>When digging into said schematics, don't get confused<BR>
+by such things as labeling the MSB as Bit 0 and the LSB<BR>
+as Bit 15 on a 16 Bit databus.
+
+<P>Always be aware, that we are talking about the <B>PDS-1</B><BR>
+in this article, which used an ALU based on JK flipflops.<BR>
+<I>The <B>PDS-1D</B> ALU was 74181 based, don't mix this up.</I>
+
+<P>Also, things in the schematics certainly won't look<BR>
+as nice, simple and obvious (at least I hope so) as<BR>
+the things described in this article.
+
+<P>I don't claim to fully understand the Imlac,<BR>
+and I'm not trying to rebuild some part of it.<BR>
+You are on your own.
+
+<P>Good luck.
+
+<HR>
+<UL>
+<LI><A HREF="a6_1.htm">About JK flipflops         </A></LI>
+<LI><A HREF="a6_2.htm">Logic mode                 </A></LI>
+<LI><A HREF="a6_3.htm">Arithmetic mode            </A></LI>
+<LI><A HREF="a6_4.htm">Two Bit lookahead carry    </A></LI>
+<LI><A HREF="a6_5.htm">GAL ALU: accumulator       </A></LI>
+<LI><A HREF="a6_6.htm">GAL ALU: carry chain       </A></LI>
+<LI><A HREF="a6_7.htm">GAL ALU: equations         </A></LI>
+<LI><A HREF="a6_8.htm">GAL ALU: test program      </A></LI>
+</UL>
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>/
+<A HREF="a6_1.htm"    >[NEXT]</A>
+
+
+<HR>
+<P>(c) Dieter Mueller 2012
+</BODY></HTML>
+
+

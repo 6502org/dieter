@@ -1,0 +1,175 @@
+<HTML>
+<HEAD><TITLE>...4C D2 FF</TITLE>
+</HEAD>
+<BODY>
+<CENTER><H1>X22 &lt; 6522</H1></CENTER>
+
+<P>An experimental attempt of building something like a 6522<BR>
+with 74XX TTL chips.
+
+<P>The design might have some issues,<BR>
+try reading the schematics at your own risk...<BR>
+you better check, if the circuitry which detects timer overflow<BR>
+works as intended... I think it doesn't work as intended.
+
+<P>I\O and bus connectors are supposed to be compatible<BR>
+to Daryl Rictor's SBC-2.
+
+<P>It was the first project after two years of inactivity,<BR>
+and I had some problems getting started with hobby electronics again,<BR>
+so a few things might not be optimal...<BR>
+like placement of some of those 100 nF capacitors.
+<P><HR>
+
+<P>X22 seemed to have worked with a Rockwell R65C02-2<BR>
+running at 4 MHz.
+
+<P><B>Test setup:</B>
+<P>Bottom: my DRC2 SBC, which is supposed to be compatible to the SBC-2.<BR>
+<P>2B22 bus interface is plugged into DRC2.<BR>
+X22 backplane is plugged into the 2B22 bus interface.<BR>
+
+<P>Plugged into the X22 backplane, we have:<BR>
+1* 1PA22, Port A module         <BR>
+1* 1PB22, Port B module         <BR>
+2* 1H22, handshake module       <BR>
+2* 1T22, timer module           <BR>
+1* 1TC22, timer control module  <BR>
+1* 1SR22, shift register module <BR>
+1* 1I22, interrupt module
+
+<P><IMG SRC="x_22.jpg">
+
+<P><HR>
+
+<P><B>X22 backplane:</B>
+<P><IMG SRC="x22.jpg">
+
+<P>Jumper\switch in the upper right area is for enabling the blinkenlights.<BR>
+
+<P>Two pin jumper in the upper left area only is for testing the hardware<BR>
+without 1TC22 and 1SR22, leave it OPEN.
+
+<P>Three pin jumper in the upper left area is for connecting<BR>
+the interrupt output to either NMI or IRQ.
+
+<P><HR>
+
+<P><B>2B22 bus interface</B>
+<P><IMG SRC="2b22.jpg">
+
+<P>The jumper field in the lower right area is for the chip select.
+
+<P>The jumpers in the lower left area are for deactivating<BR>
+some of the address lines when using the bus interface<BR>
+in a project which requires less than 16 registers.<BR>
+For the X22 project, set them as marked on the PCB.
+
+<P><HR>
+
+<P><B>1PA22 Port A module</B>
+<P><IMG SRC="1pa22.jpg">
+
+<P>Port A has open collector outputs.
+
+<P>There is a pullup resistor network for the port lines<BR>
+in the schematic and layout of the port lines.<BR>
+
+<P>I suggest to solder a single row precision socket into the PCB,<BR>
+to make sure that you are able to try different resistor values,<BR>
+or to go without pullup resistors if necessary.
+
+<P><HR>
+
+<P><B>1PB22 Port B module</B>
+<P><IMG SRC="1pb22.jpg">
+
+<P>Port B has three state outputs.
+
+<P>There is a pullup resistor network for the port lines<BR>
+in the schematic and layout of the port lines.<BR>
+
+<P>I suggest to solder a single row precision socket into the PCB,<BR>
+to make sure that you are able to try different resistor values,<BR>
+or to go without pullup resistors if necessary.
+
+<P>BTW: Port A module and Port B module have identical pinouts.
+
+<P><HR>
+
+<P><B>1H22 handshake module</B>
+<P><IMG SRC="1h22.jpg">
+
+<P>Two identical handshake modules required.
+
+<P>One handles CA1 and CA2, the other handles CB1 and CB2.
+
+<P>I suggest to set the jumper to:<BR>
+CLOSED when the module handles CA1 and CA2,<BR>
+OPEN when the module handles CB1 and CB2.
+
+<P><HR>
+
+<P><B>1T22 16 Bit timer module</B>
+<P><IMG SRC="1t22.jpg">
+
+<P>Two identical timer modules required,<BR>
+one works as timer 1, the other as timer 2.
+
+<P>Timer 2 has less functionality than timer 1,<BR>
+so the module which does timer 2 would require less chips<BR>
+than the module which does timer 1.<BR>
+For more details, see page 1 of the schematics.
+
+<P>...Nevertheless, it simplifies testing when just soldering<BR>
+all of the ICs into both PCBs.
+
+<P>BTW: failed to buy synchronous down counters.
+
+<P>So I just took 74163 synchronous up counters<BR>
+and inverted their inputs and outputs with 7404,<BR>
+to make them up_counters look like down_counters<BR>
+for the CPU...
+
+<P><HR>
+
+<P><B>1TC22 timer control module</B>
+<P><IMG SRC="1tc22.jpg">
+
+<P>This module controls timer 1 and timer 2.
+
+<P><HR>
+
+<P><B>1SR22 shift register module</B>
+<P><IMG SRC="1sr22.jpg">
+
+<P>The 6522 shift register with all these odd operating modes...
+
+<P>Except that the 1SR22 has separate shift registers<BR>
+for transmit and receive.
+
+<P>When 1SR22 shifts out data, it also shifts in data from PB5,<BR>
+what allows "full duplex mode".
+
+<P><HR>
+
+<P><B>1I22 interrupt module</B>
+<P><IMG SRC="1i22.jpg">
+
+<P>Interrupt: status and enable Bits.
+
+<P>The 100 nF capacitors are hidden below the IC sockets.
+
+<P><HR>
+
+<P><A HREF="x22.zip">x22 project files</A>
+
+<P><HR>
+<P>
+<A HREF="../xp.htm">[UP]</A>
+
+<HR>
+<P>(c) Dieter Mueller 2015
+
+</BODY>
+</HTML>

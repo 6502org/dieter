@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Another approach on stacks</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Another approach on stacks</H2></CENTER>
+<HR>
+
+<P>On the previous page, we did use <B>pre_increment</B> and <B>post_decrement.</B><BR>
+<PRE>Which means, that the stackpointer is
+decremented <B>before</B> <I>writing</I> a word on the stack, and
+incremented <B>after </B> <I>reading</I> the word back from the stack.</PRE>
+
+<P>So the stackpointer would always point to the last word which was<BR> 
+written/pushed on stack, pretty much like with 6809 and 68k.
+
+<HR>
+
+<P>Now to describe a different approach, like used by 6800 and 6502:
+
+<P><B>post_increment</B> and <B>pre_decrement.</B>
+<PRE>Which means, that the stackpointer is
+decremented <B>after </B> <I>writing</I> a word on the stack, and
+incremented <B>before</B> <I>reading</I> the word back from the stack.</PRE>
+
+<P>So the stackpointer would always point to the <B>next free location</B><BR>
+on stack, on which the next word would have to be written.
+
+<P><B>Now for the assempler macros:</B><BR>
+<PRE>
+pha     MACRO
+        sta@  SP  ;*SP=ACC
+        dec&  SP  ;SP--     //WARNING: take care of the Flags.
+        ENDM
+
+pla     MACRO
+        inc&  SP  ;SP++    
+        lda@  SP  ;ACC=*SP
+        ENDM
+</PRE><BR>
+
+<P><I>"So what ? The code won't be any faster or smaller", you might say.</I>
+
+<HR>
+
+<P>Point is, that might help to reduce code size when using subroutines.<BR>
+Thanks to <I>David Cary</I>, who sent me some code and some text about it.
+
+<P>First, we define three macros:
+
+<P><PRE>
+jsr#    MACRO  addr
+        mvr1@  PC to SP  ;write PC+1 to the next free location on stack
+        jmp#   addr      ;the address on stack would point to the jmp#.
+        ENDM      
+</PRE>
+
+<P>At the entry point of the subroutine, we're going to correct the value<BR>
+on stack by <I>incrementing it by 2</I>... so that said value would be the address<BR>
+of the instruction word which comes <B>after the #jmp</B> in the previous macro.
+
+So we need a macro to be placed at the <B>entry point</B> of each subroutine:<BR>
+<PRE>
+prolog  MACRO
+        inc@   SP  ;     // first to correct the return address
+        inc@   SP  ;     // by incrementing it by 2.    
+        dec&   SP  ;SP-- // SP points to the next free location on stack.
+        ENDM       ;     // (again, take care of the flags.)
+</PRE>
+
+<P>Now the return macro to be placed <B>at the end</B> of the subroutine:<BR>
+<PRE>
+rts     MACRO
+        inc&   SP  ;SP++ // SP now points to the return address.
+        jmp@   SP  ;     // which will be loaded into PC. that's all.
+        ENDM
+</PRE>
+
+<P>So a subroutine would look like that:<BR>
+<PRE>
+sub_foo prolog     ; // macro for correcting the return address.
+        ;
+        ; do some stuff
+        ;
+        rts        ; // macro for leaving the subroutine.
+</PRE>
+
+<P>The code <I>won't be faster</I> than with the jsr example on the previous page,<BR>
+but it takes only two instructions for <B>calling</B> a subroutine<BR>
+instead of six, since incrementing/decrementing of the stackpointer<BR>
+and correcting the return address now happens <I>inside</I> the subroutine.
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="mt15i_0.htm">[UP]</A>/
+<A HREF="mt15i_5.htm">[BACK]</A>
+<A HREF="mt15i_1.htm">[1]</A>
+<A HREF="mt15i_2.htm">[2]</A>
+<A HREF="mt15i_3.htm">[3]</A>
+
+<A HREF="mt15i_4.htm">[4]</A>
+<A HREF="mt15i_5.htm">[5]</A>
+<A HREF="mt15i_6.htm">[7]</A>
+[7]
+<A HREF="mt15i_8.htm">[8]</A>
+
+<A HREF="mt15i_8.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2008
+</BODY>
+</HTML>

@@ -1,0 +1,124 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Multiplexer_ALU improved</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Multiplexer_ALU improved</H2></CENTER>
+<HR>
+
+<P>After building an ALU with transistors,<BR>
+I figured out that the multiplexer_ALU<BR>
+from my first article could be optimized.
+
+<P>For A+B, the old design used an OR gate<BR>
+for producing the propagate_signal.<BR>
+Figured out, that using an XOR instead would be better.
+
+<P>Simplified block diagram, one Bit shown:
+
+<P><IMG SRC="a2_malu2.png">
+
+<P>For those, who didn't read the first article:
+
+<P>The 74153 contains two 4:1 multiplexers.<BR>
+If we want to use such a multiplexer as a configurable<BR>
+logic gate (or LU, logic unit), all we have to do is<BR>
+to use the select inputs as data,<BR>
+and the data inputs as select.
+
+<P>To make it short, the ALU inputs A,B are used as<BR>
+select lines, and some sort of lookup_table is placed<BR>
+at the 4 data inputs of each multiplexer to define<BR>
+the results.
+
+<P>The two multiplexers produce the propagate and generate signals.<BR>
+Example: For A+B:<BR>
+Propagate means, one ALU input is 1, and the input carry<BR>
+will be propagated to the next higher Bit.<BR>
+Generate means, both ALU inputs are 1, and a carry<BR>
+will be generated for the next higher Bit.
+
+<P>As we know from school, the sum of a binary full adder<BR>
+can be generated with two XOR gates.<BR>
+So for adding two Bits, we configurate the propagate LU<BR>
+to XOR, and feed this signal into another XOR, together<BR>
+with the carry input. That's all.
+
+<P>Shifting the Bits left is, basically, a special form<BR>
+of addition.<BR>
+Shifting right requires a 2:1 multiplexer.
+
+<P>Now the lookup_tables for the LUs:<BR>
+GS0..3 is connected to the data inputs of the generate LU,<BR>
+PS0..3 is connected to the data inputs of the propagate LUs.
+
+<P><PRE>
+
+  GS   PS
+ 3210 3210
+
+ 0000.0000 Q=0x00
+ 0000.1111 Q=0xff
+
+ 0000.1010 Q=A
+ 0000.1100 Q=B
+ 0000.0101 Q=/A
+ 0000.0011 Q=/B
+
+ 0000.1110 Q= A| B
+ 0000.1101 Q=/A| B
+ 0000.1011 Q= A|/B
+ 0000.0111 Q=/A|/B
+
+ 0000.1000 Q= A& B
+ 0000.0100 Q=/A& B
+ 0000.0010 Q= A&/B
+ 0000.0001 Q=/A&/B
+
+ 0000.0110 Q=  A^B
+ 0000.1001 Q=/(A^B)
+
+ 1000.0110 Q=A+B
+ 0100.1001 Q=/A+B=B-A
+ 0010.1001 Q=A+/B=A-B
+
+ 1010.0101 Q=A+$FF=A-1
+ 1100.0011 Q=B+$FF=B-1
+
+ 1010.0000 Q=A<<1 //shift left
+ 1100.0000 Q=B<<1 //shift left
+
+</PRE>
+
+<P>For most commands (those who make sense),<BR>
+GS0 is inactive.
+
+<P>If we only want to have a limited functionality<BR>
+like with the 74181 (no B-A, no shift left B),<BR>
+GS2 is inactive.<BR>
+In that case, we don't make use of all the logic gates<BR>
+inside 4:1 multiplexer that produces the generate_signal.
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="a2_0.htm">[UP]</A>/
+<A HREF="a2_0.htm">[BACK]</A>
+[1]
+<A HREF="a2_2.htm">[2]</A>
+<A HREF="a2_3.htm">[3]</A>
+<A HREF="a2_4.htm">[4]</A>
+<A HREF="a2_5.htm">[5]</A>
+<A HREF="a2_6.htm">[6]</A>
+<A HREF="a2_7.htm">[7]</A>
+<A HREF="a2_8.htm">[8]</A>
+
+<A HREF="a2_2.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2005
+</BODY>
+</HTML>
+
+

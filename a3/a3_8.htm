@@ -1,0 +1,177 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>8 Bit ALU with Bit manipulation</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>8 Bit ALU with Bit manipulation</H2></CENTER>
+<HR>
+
+<P>So far, we have seen a few examples how to do arithmetic<BR>
+with a one Bit CPU that wasn't designed to do arithmetic.
+                                                               
+<P>Now for some examples, how to use an 8 Bit CPU for Bit manipulation.
+
+<P>For instance, there is the famous/infamous 8031 (or 8051) family<BR>
+of microcontrollers.
+
+<P>Famous when building a small programmable logic controller, because<BR>
+the Carry Flag can operate a little bit like the Result Register<BR>
+in our MC14500, although with less functionality...<BR>
+Infamous when it comes to running C code, because there only is<BR>
+one single 16 Bit pointer for acessing external memory,<BR>
+but we're going off topic again.
+
+<P>Let's imagine we want to implement Bit manipulation<BR>
+in our self_built 8 Bit TTL CPU.<BR>
+The 8031 encodes the number of the Bit in a Byte to be addressed as<BR>
+a part of the memory address, and I wouldn't recommend that approach.<BR>
+For 68k, the number of the Bit is either located in a register,<BR>
+or it is part of the instruction word.
+
+<HR>
+
+<P>Anyhow, we have 8 Bits to select, so we take a 74138 decoder,<BR>
+which converts a three Bit number from our instruction word etc.<BR>
+into an 8 Bit "bitmask".<BR>
+Note, that the 74138 has low_active outputs, means that all Bits are 1,<BR>
+except for the active/selected Bit, which is 0.
+
+<P>We then have to buffer the bitmask by a 74245 before feeding it<BR>
+into the ALU, because there are also a few other registers that<BR>
+connect to this ALU input.
+
+<P>Now an example how to set a Bit:
+
+<P><img src="a3_set.png">
+
+<P>Let's suppose, that the Bit number is two, or binary 010.<BR>
+The 74138 generates binary 11111011.<BR>
+The ALU is configurated to invert this pattern to 00000100,<BR>
+and then performs a logic OR with a Byte from memory,<BR>
+which is overwritten by the result.<BR>
+It's easy.
+
+<HR>
+
+<P>Clearing a Bit also is simple:
+
+<P>If the ALU is set to AND, the Bit in memory is cleared.
+
+<P><img src="a3_clear.png">
+
+<HR>
+
+<P>Now to toggle a Bit.<BR>
+Means, if the selected Bit was 0, its set to 1.<BR>
+And if the selected Bit was 1, it's set to 0.
+
+<P>The ALU is configurated to XNOR, means the bitmask from<BR>
+the 74138 is inverted before we do XOR with memory.<BR>
+Point is, when inventing one input of an XOR gate,<BR>
+it turns into XNOR.
+
+<P><img src="a3_toggle.png">
+
+<HR>
+
+Maybe we are going to need two groups of SET, CLEAR, TOGGLE instructions:<BR>
+Unconditional instructons that are always executed, and conditional<BR>
+instructions tied to the status of a Flag, which might be useful<BR>
+to emulate flipflops when running PLC code.
+
+<HR>
+
+<P>Now that we know how to manipulate a Bit in memory, we take care<BR>
+about the problem how to get a Bit from memory into a Flag.
+
+<P>One approach would be, connecting a 74151 8:1 multiplexer to the<BR>
+data bus, to extract the selected Bit and send it into sort of a<BR>
+Flag/"Register".
+
+<P>But we're trying something more difficult instead:<BR>
+First we generate the bitmask with the 74138, like binary 11111011 again.<BR>
+We invert it inside the ALU to 00000100, and then perform a logic AND with<BR>
+the Byte from memory, so the result would be either 00000000, or 00000100.
+
+<P>We now have to check, if the ALU output is zero, or something different.<BR>
+Fortunately, we already had built sort of an 8_input NOR gate in our CPU<BR>
+for all the other arithmetic/logic operations.
+
+<P>It usually woud directly connect to the Zero Flag, but we now place<BR>
+a Logic Unit (LU) in between.<BR>
+For the usual set of arithmetic/logic operations, the LU just passes<BR>
+through the signal from the NOR gate.<BR>
+But when we test a Bit in memory, this signal would be 1, when the Bit was 0.
+
+<P>Means, if we want to copy a Bit from memory into the Zero Flag, we would<BR>
+have to configurate the LU to invert the signal.<BR>
+You sure can imagine, how to read the complement of a Bit.
+
+<P><I>Always be aware about the <B>polarity</B> of the signal from the<BR>
+zero detection logic when testing Bits. You also could use a 74688<BR>
+comparator to test for zero instead of building an 8_input NOR gate.</I>
+
+<P><img src="a3_test.png">
+
+<P>And since we have a LU in there, we are able to perform any<BR>
+logic operation there is between Memory and Zero Flag,<BR>
+like with the MC14500.
+
+<HR>
+
+<P>Now to take care about how to write the Flag back into memory.
+
+<P>We know how to set and to clear a Bit, so we attach a 2:1 multiplexer<BR>
+to the ALU, to make it switch between "set" and "clear" mode,<BR>
+depending on the content of the Flag.<BR>
+And the rest is simple...
+
+<P><img src="a3_wback.png">
+
+<P>When having a "write complement" instruction, we either need an XOR<BR>
+to invert the signal from the Flag, or we somehow might exchange the<BR>
+"SET" and "CLEAR" ALU configuration words before they enter the<BR>
+2:1 multiplexer.
+
+<HR>
+
+<P>Another question is, if it's a good idea to use the Zero Flag<BR>
+as a "Result Register" for logic operations.<BR>
+For instance, when conditionally loading a timer etc. with a constant,<BR>
+the Zero Flag might get corrupted, so it could be a good idea to use the<BR>
+Carry Flag instead... or to be able to choose between Zero and Carry Flag<BR>
+by software.
+
+<P>We also could spend a few thoughts on stack support.<BR>
+If we happen to have a long/complicated set of logic equations, we might<BR>
+consider that AND precedes OR, pretty much like * precedes + in arithmetic.
+
+<P>Most CPUs already have an instruction that pushes the status register<BR>
+(which contains all the Flags) on stack, so we could think about having<BR>
+an addressing mode to pop a Byte from stack for instructions that read<BR>
+a Bit from memory to set/modify our "Result Register".
+
+<P>That's all for now.<BR>
+On to <A HREF="../a4/a4_0.htm"> part 4.</A>
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="a3_0.htm">[UP]</A>/
+<A HREF="a3_7.htm">[BACK]</A>
+<A HREF="a3_1.htm">[1]</A>
+<A HREF="a3_2.htm">[2]</A>
+<A HREF="a3_3.htm">[3]</A>
+<A HREF="a3_4.htm">[4]</A>
+<A HREF="a3_5.htm">[5]</A>
+<A HREF="a3_6.htm">[6]</A>
+<A HREF="a3_7.htm">[7]</A>
+[8]                           
+
+
+<P>(c) Dieter Mueller 2008
+</BODY>
+</HTML>
+
+

@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>74181 arithmetic mode</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>74181 arithmetic mode</H2></CENTER>
+<P><CENTER><H3>M=0</H3></CENTER>
+<HR>
+
+<P>For a detailed list of 74181 operations, please consult the 74LS181/
+74S181 datasheet.<BR>
+(In all examples mentioned here: high_active A,B,F and low_active
+carry at the 74181 I/O_pins)<BR>
+For convenience, we call the F_outputs Q, like in all other ALU examples.
+
+
+<P><IMG SRC="a2_74181a.png">
+
+<P>Basically, it works a bit like the first version of my multiplexer_ALU<BR>
+mentioned in the previous article.
+
+<P><B>Q=A+B:</B><I> S3..0 = 1001</I><BR>
+The blue marked ANDs are active, so that !P=!(A|B) and !G=!(A&B).<BR>
+To make it short, a NOR for !P and a NAND for !G, like in the 74283.<BR>
+The first XOR emits 0, wenn !P=!G.<BR>
+Means, it emits 1, when !P is active, and !G is inactive...<BR>
+so we have the first half adder.<BR>
+Now the second XOR as the other half_adder, adding the Carry.<BR>
+It's easy.
+
+<P><B>Q=A-B:</B><I> S3..0 = 0110</I><BR>
+The red marked ANDs are active.<BR>
+Basically it's like A+B, with B inverted.<BR>
+Note: borrow is low_active, like with the 6502.
+
+<P><B>Q=A+1:</B><I> S3..0 = 0000</I><BR>
+Generate is inactive. Propagate is A. ALU output is A+Carry_input.<BR>
+All we have to do is to force the Carry_input to active.
+
+<P><B>Q=A-1:</B><I> S3..0 = 1111</I><BR>
+When enabling the red and blue marked ANDs, we have A+(B|!B),<BR>
+what is identical to A+1.<BR>
+The ALU will perform an addition, acting like all B_Inputs would be 1.<BR>
+What would be the same as adding -1, or decrementing.
+
+<P><B>Q=A+A:</B><I> S3..0 = 1100</I><BR>
+Both generate_ANDs are active, so the B_signals will be eliminated<BR>
+(because !B|B=1), setting the propagate and generate signals to A.<BR>
+To make it short, we are adding A with A, what is identical<BR>
+to shifting A left.
+
+
+<P><B>Note: 74181 can't shift right.</B>
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="a2_0.htm">[UP]</A>/
+<A HREF="a2_3.htm">[BACK]</A>
+<A HREF="a2_1.htm">[1]</A>
+<A HREF="a2_2.htm">[2]</A>
+<A HREF="a2_3.htm">[3]</A>
+[4]
+<A HREF="a2_5.htm">[5]</A>
+<A HREF="a2_6.htm">[6]</A>
+<A HREF="a2_7.htm">[7]</A>
+<A HREF="a2_8.htm">[8]</A>
+
+<A HREF="a2_5.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2005
+</BODY>
+</HTML>
+

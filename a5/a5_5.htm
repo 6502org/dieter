@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>The Wang 700 ALU</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>The Wang 700 ALU</H2></CENTER>
+<HR>
+
+<P>Now some words about the Wang 700 calculator.<BR>
+To be more exact: about the schematic of the PCB<BR>
+<B>logiblock ALU 5918</B>.
+
+<P>(Schematics are available at oldcalculatormuseum.com)
+
+<P>If you happen to have interest to dig into the schematic,<BR>
+this block diagram may be useful because things are not that<BR>
+obvious to find in the schematic, which makes heavy use of<BR>
+7400 and 7410 NAND gates... plus a few 7451.
+
+<P>(Omittet the control signals for better readibility.)
+
+<P><IMG SRC="a5_wang1.png">
+
+<P>What happens inside the boxes "9s complement" and<BR>
+"BCD correction" is a case for the article<BR>
+<A HREF="../bcd2/bcd2_3.htm">BCD arithmetic, part 2</A>.
+
+<P>The rest looks pretty obvious... except for one thing.<BR>
+If you would try to build a logic unit according to the<BR>
+school books, implementing AND, OR, XOR probably<BR>
+would look like this:
+
+<P><IMG SRC="a5_wang2.png">                                    
+
+<P>But the Wang 700 uses a different approach:
+
+<P><IMG SRC="a5_wang3.png">
+
+<P>(Ignore the data line from the SHR box.)
+
+<P>Note the blue marked control signals AND, XOR.<BR>
+<B>AND=1, XOR=0</B> gives you A AND B.<BR>
+<B>AND=0, XOR=1</B> gives you A XOR B.<BR>
+<B>AND=1, XOR=1</B> gives you A OR B.
+
+<P>And here the reason, why:
+
+<P><IMG SRC="a5_wang4.png">
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="a5_0.htm">[UP]</A>/
+<A HREF="a5_4.htm">[BACK]</A>
+<A HREF="a5_1.htm">[1]</A>
+<A HREF="a5_2.htm">[2]</A>
+<A HREF="a5_3.htm">[3]</A>
+<A HREF="a5_4.htm">[4]</A>
+[5]
+<A HREF="a5_6.htm">[6]</A>
+<A HREF="a5_7.htm">[7]</A>
+<A HREF="a5_8.htm">[8]</A>
+
+<A HREF="a5_6.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2012
+</BODY>
+</HTML>
+

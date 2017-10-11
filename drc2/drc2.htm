@@ -1,0 +1,246 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>DRC2</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>DRC2</H2></CENTER>
+<P><CENTER><H3>A 6502 single board computer</H3></CENTER>
+<HR>
+
+<P><PRE><I>
+ --------------------
+| Improve the world, |
+| kick a spammer.    |
+ --------------------
+</I></PRE>
+
+<HR>
+
+<P>2013: After nearly 5 years of absence from hobby electronics,<BR>
+I built a 6502 single board computer for getting started again.
+
+<P>So please don't complain if things look less clean<BR>
+than in my old/previous projects.
+
+<P><IMG SRC="drc2.jpg">
+<P><IMG SRC="drc2_bd.png">
+
+<P>DRC2 is (more or less) based on Daryl Rictor's SBC2.<BR>
+<I>// I just like the elegance/simplicity of the SBC2 concept.</I>
+
+<P><PRE>
+CPU:        Pin 1 of the 6502 can be connected to GND with a jumper,
+            so it's  possible to use a WDC 6502 and non_WDC 6502.
+
+Memory map: I'm using the same address decoder as the SBC2.
+            $0000..$7EFF RAM
+            $7F50..$7F5F first  6522
+            $7F60..$7F6F second 6522
+            $7F70..$7F7F 6551 (alternatively 6850)
+            $8000..$FFFF ROM
+
+RAM:        32 kB RAM... minus the I/O space.
+
+ROM:        always 32 kB. 
+            27256 EPROM, 28256 FLASH...
+            or a 27512 EPROM with the upper or lower half of it's 64 kB
+            mapped to CPU memory, depending on the jumper setting. 
+
+I/O:        2 * 6522, 1* 6551.
+            9 pin male SUB_D connector for RS232.
+            The pinout for I/O connectors and bus expansion connectors
+            is supposed to be compatible to the SBC2.
+
+            To be on the safe side, I inserted 100 Ohm resistors
+            between the 6522 I/O pins and the I/O connectors.
+
+            Interrupt signals from the 6522s and the 6551 are ANDed
+            together by using a 7421, so it's possible to use ICs from WDC
+            (which have a push/pull output) and ICs from other vendors
+            (which have open collector output).
+
+Reset:	    TL7705.
+            It isn't the best reset IC out there, because it is sensitive
+            to spikes in the power supply, and it probably won't work well
+            if VCC is below 3.6V...    
+            but I had some of those ICs in the drawer.
+
+Clock:      Two TTL metal can oscillators, plus a 74393 
+            and some jumpers for dividing down the oscillator outputs:
+            16 MHz oscillator -> 4, 2, 1 MHz for the CPU,
+            3.6864 MHz oscillator -> 1.8432 MHz for the 6551 ACIA.
+
+            // Decided against building oscillators by using 7404 TTL gates
+            // for reliability reasons.
+</PRE>
+
+<P>After building the first prototype, I had to notice that it's<BR>
+a bit difficult to buy the 6551 ACIA, so I added the feature<BR>
+of alternatively using a 6850 UART as an afterthought\kludge.
+
+<P>Unfortunately, there only was place at the bottom of the PCB<BR>
+for integrating the IC socket for the 6850, and when using a 6850,<BR>
+the 3.6864 MHz oscillator has to be replaced by a 2.4576 MHz oscillator,<BR>
+because there wasn't enough PCB space for implementing a :3 divider,<BR>
+sorry.
+
+<P>// Note to myself: next time, better leave enough space in your<BR>
+// PCB layout for soldering in a ZIF (zero insert force) socket later.<BR>
+// This simplifies testing/debugging software.
+
+<P>During the test runs, I noticed that "overclocking" the SBC at 4 MHz<BR>
+(not with the ICs shown in this picture, of course)<BR>
+is possible with some 65Cxx parts, but I wouldn't recommend this<BR>
+for reliable operation of the SBC.
+
+<HR>
+
+<P>For interfacing a PS/2 keyboard to a 6522, I'm using this here:
+
+<P><IMG SRC="drc2_ps2kb.jpg">
+
+<P>Basically two 74164 shift registers for serial/parallel conversion,<BR>
+and a 74HC14 based retriggerable monoflop which recognizes the end<BR>
+of the data transmission from the keyboard and latches the data<BR>
+from the shift registers into a 74574.<BR>
+
+<P>...had no 74595 in the drawer, sorry.<BR>
+
+<P>Wanted to have a simple interface without using a microcontroller.<BR>
+Downside is, that it isn't possible to write data to the PS/2<BR>
+keyboard for changing repeat rate, turning on/off the LEDs etc.
+
+<P>I plugged the module to port A of the 6522 at 0x7F5x,<BR>
+a rising edge on CA1 indicates that a valid Byte<BR>
+which was sent from the keyboard is at PA7..0.
+                      
+<HR>
+
+<P>Now to present the D04 CRT/LCD controller to the public.
+
+<P><B>Please be aware, that D04 is sort of a "crude hack"...</B><BR>
+because compared to D03 (which offered a similar functionality),<BR>
+D04 has about half the size of D03.<BR>
+If I would build somehing like this again,<BR>
+I sure would do a few things quite different... :)
+
+<P>DRC2 (single board computer) and D04 (CRT/LCD controller)<BR>
+are mounted together as a "sandwich":
+
+<P><IMG SRC="drc2_sandwich.jpg">
+
+<P>D04 can display monochrome 40*25 text,<BR>
+and 320*200 graphics (similar to the C64 HIRES format).<BR>
+It also can display both things simultaneously,<BR>
+mixed together by 7486 XOR gates.
+
+<P>// note: 7486 (XOR gates) and 7432 (OR gates) have identical pinout.
+
+<P>D04, the CRT/LCD controller PCB:
+
+<P><IMG SRC="d04.jpg">
+<P><IMG SRC="d04_bd.png">
+
+<P>It can drive a CRT and a 320*240 LCD in parallel<BR>
+(at least in theory). 50 Hz vertical sync.
+
+<P>D04 "snoops" the 6502 bus for write cycles to 0x0400..0x7fff,<BR>
+holds address and data in 74574 latches, and performs one write<BR>
+cycle per microsecond into its own display memory.
+
+<P>So the CPU RAM is "mirrored" into the CRT RAM.<BR>
+The advantage of this approach is, that D04 runs independent<BR>
+from the CPU with its own clock generator.
+
+<P>During the test runs, it worked with CPU speeds up to 4 MHz,<BR>
+but I would not recommend to go beyound 2 MHz to be on the safe side.<BR>
+// For instance, STA ABS has 3 read cycles, one write cycle.
+
+<P>For generating display memory adress and sync/control signals,<BR>
+I'm using a 15 Bit counter (2 * 74393), plus a 27512 EPROM<BR>
+which contains a lookup table.
+
+<P>I'm using port B of the 6522 at 0x7F5x to configurate the<BR>
+CRT/LCD controller: selecting which 1 kB text page is displayed,<BR>
+turning on/off graphics, selecting an 8 kB graphics page, etc.<BR>
+There wasn't enough PCB space left to integrate a 74273 etc.<BR>
+into D04 for doing this, sorry.
+
+<P><PRE>
+PB4..PB0: selects the text     page to be displayed (32 pages, 1 kB each)
+PB6..PB5: selects the graphics page to be displayed ( 4 pages, 8 kB each)
+PB7     : = 0 enables graphics (default: 1)
+CB1     : senses the 50 Hz vertical sync of the CRT/LCD controller
+CB2     : switches the character set to be displayed (default: 1)
+</PRE>
+
+<P>There sure is a lot of stuff on that PCB,<BR>
+because running the timing independent from the CPU,<BR>
+supporting a LCD and displaying text plus graphics<BR>
+bloats the design a little bit.
+
+<P>// If you would be displaying only text, coupled to the CPU timing,<BR>
+// without graphics and LCD, the design sure would be a lot smaller.
+
+<HR>
+
+<P>Some further experiments:<BR>
+(hand wired stuff without layout and schematic)
+
+<P>Implemented something like a SPI interface by using<BR>
+ a 6522 shift register plus a 74164 for receiving the Bits.
+
+<P>Wrote sort a basic driver for initializing a MMC card,<BR>
+looks like reading a 512 Byte block from the MMC worked.<BR>
+Didn't try to _write_ the MBR, sorry.<BR>
+BTW: since the MMC runs at 3.3V, I'm using a 74LVC245<BR>
+as a level converter for the SPI interface.
+
+<P>Also, I tried connecting the ENC28J60 Ethernet controller IC.<BR>
+But the problem with the 6522 is, that the clock output for the<BR>
+shift register is high by default.<BR>
+From the datasheet, the ENC28J60 insists to have SCK low<BR>
+for at least 210 ns before chip select goes inactive...<BR>
+else, it isn't possible to read/write the MII/PHY registers<BR>
+of the ENC28J60.
+
+<P>Fixed the problem with a 7474 flipflop, which is set<BR>
+at the first rising edge of the 6522 shift register clock output,<BR>
+and reset by another I/O pin of the 6522 before chip select<BR>
+is turned inactive.<BR>
+The clock output of the 6522 is ANDed by using a 7408 with<BR>
+the output of that flipflop to generate a propper SCK signal<BR>
+for the ENC28J60.<BR>
+
+<P>Initializing the ENC28J60 worked, and I was able to copy<BR>
+multicast packets from the controller to CPU memory when<BR>
+connecting said controller to a PC by using a CAT5 patch cable.<BR>
+Woot.
+
+<P><B>But my problem now is, that I'm not much of a coder.</B> :)<BR>
+As for April 2013, I don't dare to place code which looks<BR>
+that ugly into public, sorry.
+
+<P>This all was enough work for now, and I'm now taking<BR>
+a break before trying to figure out what to do next.
+
+<HR>
+Eagle 3.55 Layouts and schematics<BR>
+for DRC2, D04, and a PS/2 keyboard interface:<BR>
+<A HREF="drc2_01.zip">drc2_01.zip</A>
+
+<P><B>Download and rebuild this at your own risk.</B>
+
+<P>I'm intentionally trying to keep things a bit messy and chaotic:<BR>
+First, because this saves me time.<BR>
+Second, because this reduces the interest/value for commercial use.
+
+<HR>
+
+<A HREF="../index.htm">[HOME]</A>
+
+<P>(c) Dieter Mueller 2013
+
+</BODY>
+</HTML>

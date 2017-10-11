@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>GAL ALU: accumulator</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>GAL ALU: accumulator</H2></CENTER>
+<HR>
+
+<P>...and the question is:<BR>
+what would it look like, when we are trying to build<BR>
+a GAL22V10 based ALU from the things we learned<BR>
+in this article so far.
+
+<P>One Bit bitslice: (Bit 1 shown)
+
+<P><IMG SRC="a6_alu1.png">
+
+<HR>
+
+<P>With only 8 product terms, the data path sure<BR>
+is relatively small. Downside is, that arithmetic<BR>
+operations usually take two steps (two clock cycles,<BR>
+that is).
+
+<P>For logic operations, four AND gates are forming<BR>
+a 4:1 multiplexer, as described in "ALU design, part 2".
+
+<P><PRE>
+S4=0 selects logic mode:
+
+S3..0
+
+ 0000 Q=0
+ 1111 Q=-1 //all Bits set
+
+ 1010 Q=A
+ 1100 Q=B
+ 0101 Q=/A
+ 0011 Q=/B
+
+ 1110 Q= A| B
+ 1101 Q=/A| B
+ 1011 Q= A|/B
+ 0111 Q=/A|/B
+
+ 1000 Q= A& B
+ 0100 Q=/A& B
+ 0010 Q= A&/B
+ 0001 Q=/A&/B
+
+ 0110 Q=A^B
+ 1001 Q=/(A^B)
+</PRE>
+
+<HR>
+
+<P>Two additional AND gates are needed for shifting the<BR>
+accumulator Bits left or right.
+
+<P>To form an XOR gate for inverting the accumulator Bit<BR>
+according to the carry input in arithmetic mode,<BR>
+we need two more AND gates, and that's all.
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="a6_0.htm">[UP]</A>/
+<A HREF="a6_4.htm">[BACK]</A>
+<A HREF="a6_1.htm">[1]</A>
+<A HREF="a6_2.htm">[2]</A>
+<A HREF="a6_3.htm">[3]</A>
+<A HREF="a6_4.htm">[4]</A>
+[5]
+<A HREF="a6_6.htm">[6]</A>
+<A HREF="a6_7.htm">[7]</A>
+<A HREF="a6_8.htm">[8]</A>
+
+<A HREF="a6_6.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2012
+</BODY>
+</HTML>
+

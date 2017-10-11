@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Definitions</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Definitions</H2></CENTER>
+<HR>
+
+<P>First some boring basics.
+
+<P>For all examples mentioned in here, we are using 8 Bit signed values.
+
+<P>The <I>uppermost</I> Bit indicates the sign:<BR>
+<B>0</B> = positive,<BR>
+<B>1</B> = negative.
+
+<P>With 8 Bit, we have a range of -128 to +127:
+
+<PRE>
+  <I>binary  </I> hex  <B>decimal</B>
+^ <I>01111111</I> 0x7f <B>+127   </B>
+| <I>01111110</I> 0x7e <B>+126   </B>
+| ...
+| <I>00000010</I> 0x02 <B>  +2   </B>
+| <I>00000001</I> 0x01 <B>  +1   </B>
+0 <I>00000000</I> 0x00 <B>   0   </B>
+| <I>11111111</I> 0xff <B>  -1   </B>
+| <I>11111110</I> 0xfe <B>  -2   </B>
+| ...
+| <I>10000010</I> 0x82 <B>-126   </B>
+| <I>10000001</I> 0x81 <B>-127   </B>
+v <I>10000000</I> 0x80 <B>-128   </B>
+</PRE>
+
+<P>Problem is, when subtracting 1 fom -128, we won't have -129.<BR>
+The result won't fit into 8 Bit, so the value would roll over to +127.
+
+<P>Also, when adding 1 to +127, it won't fit into 8 Bit,<BR>
+giving us -128 as a result.
+
+<P>The main purpose of the V_Flag is, to indicate that such an overflow had
+happened:<BR>
+The signed result from add/subtract did not fit into 8 Bit (for our example),
+<BR>and the sign Bit became corrupted.
+
+<P>Strange thing is, that the flag, indicating this <U><B>O</B></U>verflow
+<BR>is called <U><B>V</B></U> in some microprocessor's datasheets,
+instead of O.<BR>
+<I>Don't know, why... beats me.</I>
+
+<P>Now some examples for the 6502:<BR>
+'.' means V_Flag cleared,<BR>
+'*' means V_Flag set.
+
+<HR>
+
+<P>Hexadecimal values, carry inactive.<BR>
+Column + row, Bit 0..3 always zero.<BR>
+Example: 0x70+0x10 would corrupt the sign Bit and set the V_Flag.
+
+<PRE>
+A+B, D_Flag=0, C_Flag=0:                                                                   
+
+ +0123456789ABCDEF
++ 0000000000000000
+00................
+10.......*........
+20......**........
+30.....***........
+40....****........
+50...*****........
+60..******........
+70.*******........
+80........********
+90........*******.
+A0........******..
+B0........*****...
+C0........****....
+D0........***.....
+E0........**......
+F0........*.......
+</PRE>
+
+<HR>
+
+<P>Hexadecimal values, borrow inactive.<BR>
+Column - row, Bit 0..3 always zero.<BR>
+Example: 0x80-0x10 would corrupt the sign Bit and set the V_Flag.
+
+<PRE>
+A-B, D_Flag=0, C_Flag=1:
+
+ +0123456789ABCDEF
+- 0000000000000000
+00................
+10........*.......
+20........**......
+30........***.....
+40........****....
+50........*****...
+60........******..
+70........*******.
+80********........
+90.*******........
+A0..******........
+B0...*****........
+C0....****........
+D0.....***........
+E0......**........
+F0.......*........
+</PRE>
+
+<HR>
+
+<P><I>Note, that CMP does not affect the V_Flag on the 6502.</I>
+
+<P>For the NMOS 6502, it looks like the V_Flag seems to ignore<BR>
+the BCD_correction, so it won't work well in decimal mode.
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="v_0.htm">[UP]</A>/
+<A HREF="v_0.htm">[BACK]</A>
+[1]
+<A HREF="v_2.htm">[2]</A>
+<A HREF="v_3.htm">[3]</A>
+<A HREF="v_4.htm">[4]</A>
+
+<A HREF="v_2.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2005
+</BODY>
+</HTML>
+

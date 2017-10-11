@@ -1,0 +1,151 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>GAL ALU: test program</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>GAL ALU: test program</H2></CENTER>
+<HR>
+
+<P><PRE>
+/*
+
+ to simplify things, we don't shift left/right when testing this design.
+
+;S4..S0: control Bits
+;
+;00000 A =  0         (zero)
+;00001 A =  A  NOR  B
+;00010 A =  A  AND /B
+;00011 A = /B
+;00100 A = /A  AND  B
+;00101 A = /A         (also: first step of decrement A)
+;00110 A =  A  XOR  B (also: first step of ADC)
+;00111 A =  A NAND  B
+;01000 A =  A  AND  B
+;01001 A =  A XNOR  B (also: first step of SBC)
+;01010 A =  A         (do nothing)
+;01011 A =  A   OR /B
+;01100 A =  B
+;01101 A = /A   OR  B
+;01110 A =  A   OR  B
+;01111 A =  1         (all Bits set = -1)
+;10xx0 A =  SHL A     (shift A left)
+;10xx1 A =  SHR A     (shift right)
+;11x00 A =  A + Ci    (increment takes only one step with Ci carry input set)
+;11x01 second step of SBC (Ci is low_active borrow, like with the 6502)
+;11x10 second step of ADC (Ci is high_active carry)
+;11x11 second step of decrement A (Ci should beset to 1)
+
+@define shl " S4 * /S3 * /S0"
+@define shr " S4 * /S3 *  S0"
+@define cy  " S4 *  S3"
+
+*/
+
+int alu(int *cout, int cin, int ia, int ib, int is)
+{
+  int oq, a[8], b[8], c[8], s[8];
+  int i,j;
+  int cy;
+
+  for(i=0;i<8;i++)
+  {
+    a[i]=0; if(ia&1) a[i]=-1; ia>>=1;
+    b[i]=0; if(ib&1) b[i]=-1; ib>>=1;
+    s[i]=0; if(is&1) s[i]=-1; is>>=1;
+  }
+
+  cy=s[4]&s[3];
+
+
+c[0]= cin;
+c[1]= cy & c[0] & a[0] | cy & s[0] & ~a[0] & ~b[0] | cy & s[1] & ~a[0] & b[0];
+c[2]= cy & c[0] & a[0] & a[1] | cy & s[0] & ~a[0] & a[1] & ~b[0] | cy & s[1] & ~a[0] & a[1] & b[0]
+   | cy & s[0] & ~a[1] & ~b[1] | cy & s[1] & ~a[1] & b[1];
+
+c[3] = cy & c[2] & a[2] | cy & s[0] & ~a[2] & ~b[2] | cy & s[1] & ~a[2] & b[2];
+c[4] = cy & c[2] & a[2] & a[3] | cy & s[0] & ~a[2] & a[3] & ~b[2] | cy & s[1] & ~a[2] & a[3] & b[2]
+   | cy & s[0] & ~a[3] & ~b[3] | cy & s[1] & ~a[3] & b[3];
+
+//only for testing, if the stuff above fails:
+/*
+c[0]= cin;
+c[1]= cy & c[0] & a[0] | cy & s[0] & ~a[0] & ~b[0] | cy & s[1] & ~a[0] & b[0];
+c[2]= cy & c[1] & a[1] | cy & s[0] & ~a[1] & ~b[1] | cy & s[1] & ~a[1] & b[1];
+c[3]= cy & c[2] & a[2] | cy & s[0] & ~a[2] & ~b[2] | cy & s[1] & ~a[2] & b[2];
+c[4]= cy & c[3] & a[3] | cy & s[0] & ~a[3] & ~b[3] | cy & s[1] & ~a[3] & b[3];
+*/
+
+a[0] = cy  & c[0] & ~a[0] | cy & ~c[0] & a[0]
+    | ~s[4] & s[3] &  a[0] &  b[0] | ~s[4] & s[2] & ~a[0] &  b[0]
+    | ~s[4] & s[1] &  a[0] & ~b[0] | ~s[4] & s[0] & ~a[0] & ~b[0];
+
+a[1] = cy  & c[1] & ~a[1] | cy & ~c[1] & a[1]
+    | ~s[4] & s[3] &  a[1] &  b[1] | ~s[4] & s[2] & ~a[1] &  b[1]
+    | ~s[4] & s[1] &  a[1] & ~b[1] | ~s[4] & s[0] & ~a[1] & ~b[1];
+
+a[2] = cy  & c[2] & ~a[2] | cy & ~c[2] & a[2]
+    | ~s[4] & s[3] &  a[2] &  b[2] | ~s[4] & s[2] & ~a[2] &  b[2]
+    | ~s[4] & s[1] &  a[2] & ~b[2] | ~s[4] & s[0] & ~a[2] & ~b[2];
+
+a[3] = cy  & c[3] & ~a[3] | cy & ~c[3] & a[3]
+    | ~s[4] & s[3] &  a[3] &  b[3] | ~s[4] & s[2] & ~a[3] &  b[3]
+    | ~s[4] & s[1] &  a[3] & ~b[3] | ~s[4] & s[0] & ~a[3] & ~b[3];
+
+  oq=0;
+  for(i=7; i>=0; i--) {oq<<=1; if(a[i]) oq++;}
+  *cout=c[4];
+  return(oq);
+}
+
+int main(void)
+{
+  int a,b,s,cin,cout;
+
+  a=0;
+  while(1)
+  {
+    printf("b=");   scanf("%x",&b); if(b==0x1234) break;
+    printf("s=");   scanf("%x",&s);
+    printf("cin="); scanf("%x",&cin); if(cin) cin=-1;
+
+    a=alu(&cout,cin,a,b,s);
+    printf("\n%x %02x\n", cout&1, a&0xff);
+  }
+
+  return(0);
+}
+
+</PRE>
+<HR>
+
+<P>That's the C program which I used for testing the concept.<BR>
+Be warned, that it may require some work to turn this into<BR>
+something useful. This code is only a starting point.
+
+<P>I don't know if it works as intended, so be warned.
+
+<P>That's all for now.<BR>
+On to <A HREF="../a7/a7_0.htm"> part 7.</A>
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="a6_0.htm">[UP]</A>/
+<A HREF="a6_7.htm">[BACK]</A>
+<A HREF="a6_1.htm">[1]</A>
+<A HREF="a6_2.htm">[2]</A>
+<A HREF="a6_3.htm">[3]</A>
+<A HREF="a6_4.htm">[4]</A>
+<A HREF="a6_5.htm">[5]</A>
+<A HREF="a6_6.htm">[6]</A>
+<A HREF="a6_7.htm">[7]</A>
+[8]
+
+
+
+<P>(c) Dieter Mueller 2012
+</BODY>
+</HTML>
+

@@ -1,0 +1,170 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Some basics</TITLE>
+</HEAD>
+
+<BODY>
+<P><H2 ALIGN=CENTER>Some basics</H2>
+
+<HR>
+
+<P>First to recall the MT15 data path:
+
+<P><IMG SRC="mt15b_path.png">
+
+<HR>
+
+<P><B>Second, the MT15 instruction set:</B>
+
+<P><PRE>
+
+ |15 14 13|12 11 10| 9| 8  7| 6| 5  4| 3  2  1  0|
+ |--------|--------|--|-----|--|-----|-----------|
+<B> |F2|F1|F0|A2|A1|A0|S |W1|W0|MF|M1|M0|C3|C2|C1|C0|</B>
+  -----------------------------------------------
+  \ cond / \ addr / |  \ w / |  \cin/ \  alu    /
+   ------   ------  |   ---  |   ---   ---------\
+     |        |     |    |   |    |              \
+     |        |     |    |   | 00 ALU_C_in=0      \ 
+     |        |     |    |   | 01 ALU_C_in=C_Flag  |
+     |        |     |    |   | 1x ALU_C_in=1       |
+     |        |     |    |   |                     |   ALU_out =
+000 true      |     |    | 0 keep___Flags     0000 AND reg& mem
+001 if_I=1    |     |    | 1 modify_Flags     0001 ANN reg&!mem
+010 if_N=0    |     |    |                    0010 ORA reg| mem
+011 if_N=1    |     | 00 don't_write          0011 XOR reg^ mem
+100 if_Z=0    |     | 01 write_ACC            0100 MVR reg
+101 if_Z=1    |     | 10 write_PC             0101 MVM mem
+110 if_C=0    |     | 11 write_memory         0110 DEC mem-1
+111 if_C=1    |     |                         0111 SET $FFFF
+              |     0 ALU_source=ACC          1000 CLR $0000
+          000 #d16  1 ALU_source=PC           1001 ADD reg+mem
+          001 #d16                            1010 SUB reg-mem
+          010  d16+PC                         1010 SBU mem-reg
+          011 [d16+PC]                        1100 SRR reg >>1
+          100  d16+ACC                        1101 SRM mem >>1
+          101 [d16+ACC]                       1110 SLR reg <<1
+          110  d16                            1111 SLM mem <<1
+          111 [d16]
+
+</PRE>
+
+<HR>
+
+<P><B>Now to define, what is supposed to happen when, how, and why.</B>
+
+<P><IMG SRC="mt15b_flow.png">
+
+<P><B>Two things to clarify:</B><BR>
+First, the <I>red number</I> in the yellow little boxes determines,<BR>
+what step the state machine actually is in.<BR>
+Second, not to forget, MT15 latches are <I>transparent</I>.
+
+<P>At the end of a step (that is one machine cycle), the ALU result<BR>
+may be written into T0, or into T1.<BR>
+
+<P>Problem is, when loading ACC/PC with T0, result should be written in T1.<BR>
+This also works in a reversed order: read T1, write T0.<BR>
+Unfortunately, Read/write T0, or read/write T1 has to be avoided at any cost<BR>
+<I>...spoken literally.</I>
+
+<HR>
+
+<P>Instruction execution happens in the following kind of order:
+<PRE>
+ <B>Step 0  :</B> fetch OpCode, RESET_FLAG and INT_FLAG.
+ <B>Step 1,2:</B> prepare to fetch parameter, address calculation.
+ <B>Step 3  :</B> data calculation, update status register (Flags).
+ <B>Step 4,5:</B> write back result of data calculation.
+</PRE>
+
+<P><B>Now to go more into detail.</B>
+
+<P><B>Step 0:</B> <I>Opcode fetch.</I><BR>
+Load Instruction Register (IR) from DataBus.<BR>
+Load external RESET and INT signals into RESET_FLAG, INT_FLAG.<BR>
+Prepare to increment Program Counter (PC), so it would point<BR>
+to the parameter of the instruction.
+
+<P><B>Step 1:</B> <I>Skip/Execute, start address calculation.</I><BR>
+<B>If RESET</B> is active, prepare to set PC to $0000 and goto Step 0.<BR>
+(So PC <I>is $0000</I>, when reset goes inactive in step 0.)
+
+<P>Else, use the Flag_multiplexer (controlled by OpCode Bit 13..15),<BR>
+to conditionally disregard or execute the instruction.<BR>
+<B>If FALSE</B> (means, multiplexer output is 0), prepare to fetch<BR>
+the next Instruction and goto Step 0.<BR>
+<B>Else</B>, go on with instruction execution, and prepare to fetch<BR>
+the parameter.
+
+<P><B>IF</B> addressing mode is #, what means immediate, skip all further<BR>
+address calculation and goto Step 3, that would be data calculation.<P>
+
+For all the other remaining addressing modes:<BR>
+Effective Address (EA) would be:
+<UL>
+ <LI>The 16 Bit parameter, that we may call d16.</LI>
+ <LI>ACC+d16, with accumulator (ACC) working as index register.</LI>
+ <LI>PC+d16+1, d16 would be a <I>signed offset</I> relative to the<BR>
+     OpCode   word of the next instruction.</LI>
+</UL>
+
+<P><B>Step 2:</B> <I>direct/indirect.</I><BR>
+Effective Address has to be stored into T1 at the end of this cycle.<BR>
+<B>If indirect</B>, load T1 with contents of the word in memory indicated<BR>
+by the result from step 1.<BR>
+<B>Else</B>, transfer the result from step 1 into T1 (the blue, inefficient<BR>
+looking box).
+
+<P><B>Step 3:</B> <I>Data calculation.</I><BR>
+T1 points to a word in memory, that is send into the ALU, together<BR>
+with a register (ACC or PC).<BR>
+Status_Register (Flags N,Z,C) may be modified by the result.
+
+<P>If the result of this data calculation shall be written into PC<BR>
+(the "JUMP" instruction), we just go back to step 0,<BR>
+without incrementing PC.
+
+<P><B>Step 4:</B> <I>write back</I><BR>
+<I>What means, decide what else to do with the result.</I>
+
+<P>Result could be thrown away (perhaps for comparing two numbers,<BR>
+what should only modify the flags), or written back into ACC.<BR>
+In those two cases, we could now prepare to fetch the next instruction,<BR>
+and go back to step 0.
+
+<P>The result could also written back to memory, what requires two<BR>
+steps (step 4,5).<BR>
+Note, that the address to be written to is stable for the step before<BR>
+and after the write cycle (that red box).<BR>
+Found it important, to have the address clean while writing.<BR>
+After that, we go back to step 0 for fetching the next instruction.
+
+<P><B>And that's all.</B>
+
+<HR>
+
+<P><I>Woud be a good idea, if you are going print out this page,</I><BR>
+before we start digging into the five PLAs at <B>transistor level</B><BR>
+at the next five pages of this article, <I>wouldn't it ?</I>
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="mt15b_0.htm">[UP]</A>/
+<A HREF="mt15b_1.htm">[BACK]</A>
+<A HREF="mt15b_1.htm">[1]</A>
+[2]
+<A HREF="mt15b_3.htm">[3]</A>
+<A HREF="mt15b_4.htm">[4]</A>
+<A HREF="mt15b_5.htm">[5]</A>
+<A HREF="mt15b_6.htm">[6]</A>
+<A HREF="mt15b_7.htm">[7]</A>
+<A HREF="mt15b_8.htm">[8]</A>
+
+<A HREF="mt15b_3.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2005
+</BODY>
+</HTML>

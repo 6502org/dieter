@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>The Bendix G20 adder</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>The Bendix G20 adder</H2></CENTER>
+<HR>
+
+<P>I'm not exactly sure about the practical value of implementing<BR>
+this design, but because it looks very different from everything<BR>
+else I have seen so far, I felt a need to mention it.
+
+<P>Note, that this article only gives you a simplified concept about<BR>
+what things really may look like.<BR>
+And that I'm using a different notation from the original description.
+
+<P>The original description (available at Bitsavers) is written<BR>
+like one of them boring scientific publications, be warned.
+
+<HR>
+
+<P>One adder cell:
+
+<P><IMG SRC="a7_g20_l1.png">
+
+<P><B>G</B> (generate) generates a carry if A=1 and B=1.
+
+<P><B>PC</B> (propagate carry) propagates a carry from the previous Bit<BR>
+if A=1 or B=1.
+
+<P><B>K</B> (kill) indicates, that A=0 and B=0, and that no carry<BR>
+comes out of the adder cell regardless of the carry input.
+
+<P><B>PK</B> (propagate kill) says that no carry propgates through<BR>
+from the previous Bit.
+
+<HR>
+
+<P>Now to pack the adder cell schematic into a cute little box:
+
+<P><IMG SRC="a7_g20_s1.png">
+
+<P>And to connect four Boxes for building a 4 Bit adder.
+
+<P><IMG SRC="a7_g20_c1.png">
+
+<HR>
+
+<P>Logic signals at the Q0 adder:
+
+<P><IMG SRC="a7_g20_t1.png">
+
+<HR>
+
+<P>An idea for a fast lookahead carry.<BR>
+The original text calls this a "leap frog" carry chain.<BR>
+Note the signals LFK (leap frog kill) and LFC (leap frog carry).
+
+<P><IMG SRC="a7_g20_f1.png">
+
+<P>And yes, I did draw this a bit different from the original text.<BR>
+The two_input OR gates only are drawn to simplify things,<BR>
+you could replace the four_input NOR gates inside the Q3 adder<BR>
+by five_input NOR gates for getting rid of said OR gates.
+
+<P>Would be interesting to find out what takes less logic gates:<BR>
+Building a 74182 based fast lookahead carry adder...<BR>
+or building a fast adder "the Bendix way".
+
+<HR>
+
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="a7_0.htm">[UP]</A>/
+<A HREF="a7_5.htm">[BACK]</A>
+<A HREF="a7_1.htm">[1]</A>
+<A HREF="a7_2.htm">[2]</A>
+<A HREF="a7_3.htm">[3]</A>
+<A HREF="a7_4.htm">[4]</A>
+<A HREF="a7_5.htm">[5]</A>
+[6]
+<A HREF="a7_7.htm">[7]</A>
+<A HREF="a7_8.htm">[8]</A>
+
+<A HREF="a7_7.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2012
+</BODY>
+</HTML>
+

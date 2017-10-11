@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>74181 logic mode</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>74181 logic mode</H2></CENTER>
+<P><CENTER><H3>M=1</H3></CENTER>
+<HR>
+
+<P>In logic mode, the (internal) carry_outputs<BR> 
+from the carry chain are all forced to 1.<BR>
+This turns the second XOR into an inverter.
+
+<P>For the first XOR, it doesn't matter if both inputs are high<BR>
+or low_active... as long as they have the same "polarity".<BR>
+To simplify things, we imagine them to be high_active.
+
+<P><IMG SRC="a2_74181l.png">
+
+<P>Now to define, what happens on X,Y:<BR>
+<PRE>
+S3,S2=00: Y=0
+S3,S2=01: Y=A&/B
+S3,S2=10: Y=A& B
+S3,S2=11: Y=A
+
+S1,S0=00: X=A
+S1,S0=01: X=A| B
+S1,S0=10: X=A|/B
+S1,S0=11: X=1
+
+<B>Q=1, if X=Y.</B>
+</PRE>
+
+<p>
+<div align="left"><left>
+<table border="1" cellpadding="3">
+ <tr>
+  <td bgcolor="#9EC1FC"><strong>Q=/(X^Y)=     </strong></td>
+  <td bgcolor="#9EC1FC"><strong>S3..0         </strong></td>
+  <td bgcolor="#9EC1FC"><strong>Y=            </strong></td>
+  <td bgcolor="#9EC1FC"><strong>X=            </strong></td>
+ </tr>
+ <tr><td>/A      </td><td>0000    </td><td>0       </td><td>A       </td></tr>
+ <tr><td>A       </td><td>1111    </td><td>A       </td><td>1       </td></tr>
+ <tr><td>/B      </td><td>0101    </td><td>A&/B    </td><td>A|B     </td></tr>
+ <tr><td>B       </td><td>1010    </td><td>A&B     </td><td>A|/B    </td></tr>
+ <tr><td>0       </td><td>0011    </td><td>0       </td><td>1       </td></tr>
+ <tr><td>-1      </td><td>1100    </td><td>A       </td><td>A       </td></tr>
+ <tr><td> A| B   </td><td>1110    </td><td>A       </td><td>A|/B    </td></tr>
+ <tr><td>/A| B   </td><td>1000    </td><td>A&B     </td><td>A       </td></tr>
+ <tr><td> A|/B   </td><td>1101    </td><td>A       </td><td>A|B     </td></tr>
+ <tr><td>/A|/B   </td><td>0100    </td><td>A&/B    </td><td>A       </td></tr>
+ <tr><td> A& B   </td><td>1011    </td><td>A&B     </td><td>1       </td></tr>
+ <tr><td>/A& B   </td><td>0010    </td><td>0       </td><td>A|/B    </td></tr>
+ <tr><td> A&/B   </td><td>0111    </td><td>A&/B    </td><td>1       </td></tr>
+ <tr><td>/A&/B   </td><td>0001    </td><td>0       </td><td>A|B     </td></tr>
+ <tr><td>A^B     </td><td>0110    </td><td>A&/B    </td><td>A|/B    </td></tr>
+ <tr><td>/(A^B)  </td><td>1001    </td><td>A&B     </td><td>A|B     </td></tr>
+</table>
+</left></div>
+<P>
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="a2_0.htm">[UP]</A>/
+<A HREF="a2_4.htm">[BACK]</A>
+<A HREF="a2_1.htm">[1]</A>
+<A HREF="a2_2.htm">[2]</A>
+<A HREF="a2_3.htm">[3]</A>
+<A HREF="a2_4.htm">[4]</A>
+[5]
+<A HREF="a2_6.htm">[6]</A>
+<A HREF="a2_7.htm">[7]</A>
+<A HREF="a2_8.htm">[8]</A>
+
+<A HREF="a2_6.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2005
+</BODY>
+</HTML>
+

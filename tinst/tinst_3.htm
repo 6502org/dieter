@@ -1,0 +1,206 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Instruction set</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Instruction set</H2></CENTER>
+<HR>
+
+<P><I>At some point, we decided for a "C" styled assembly language syntax,<BR>
+so don't get confused...</I>
+
+<P>The TREX CPU has only 13 instructions in total.
+
+<HR>
+
+<P>First for the JMP/JSR instruction:<BR>
+<PRE>
+32 Bit instruction word:
+    
+    ------------------------------------
+   |0|     31 Bit Jump/Call Address     |
+    ------------------------------------
+   31                                  0
+</PRE>
+
+<P>Like with Forth CPUs, Bit 31 = 0 causes a jump/call to an address.
+
+<P>The 32 Bit word is loaded into PC, the old PC contents (pointing<BR>
+to the next instruction word) are saved into LR as a return address,<BR>
+and the interrupt for the next 32 Bit instruction is blocked:<BR>
+because there is no difference in JMP/JSR for this CPU.
+
+<P>When jumping a subroutine, the first thing has to be done is saving<BR>
+the LR on stack (that's why we block the interrupt), and the last<BR>
+thing is to read this return address back from stack and to write<BR>
+it into PC.
+
+<HR>
+
+<P><PRE>
+    ------------------------------------
+   |1|I|  Slot 1  |  Slot 2  |  Slot 3  | 
+    ------------------------------------
+   31                                  0
+</PRE>
+
+<P>Bit 31 = 1 means, that we have three 10 Bit instructions<BR>
+(Slot 1, Slot 2, Slot 3), which are executed left to right.<BR>
+The SKIP instruction can be used to discard/skip the following<BR>
+instructions inside a 32 Bit instruction word.<P>
+
+<P>Bit 30: I=1 blocks the interrupts for the next 32 Bit instruction<BR>
+word, you may need this if LR is in use...
+
+<P>Now to describe the three 10 Bit instructions, also known as<BR>
+"Instruction Triples" in detail.
+
+<HR>
+
+<P>There are eight <B>primary</B> <I>(dual operand)</I> instructions,<BR>
+and four <B>secondary</B> <I>(single operand)</I> instructions.
+
+<PRE>
+SKIP 000atlcccc
+SUB  001fdddsss, sss != PC, Rd-=Rs
+ADD  010fdddsss           , Rd+=Rs
+MVM  011rdddaaa           , r=0:[Ra]=Rd, r=1:Rd=[Ra] or Rd=[PC++]
+MVR  100fdddsss           , Rd = Rs
+AND  101fdddsss, sss != PC, Rd&= Rs
+XOR  110fdddsss, sss != PC, Rd^= Rs
+OR   111fdddsss, sss != PC, Rd|= Rs
+
+ROR  001fddd111           , Rd>>=1 with carry
+SHR  101fddd111           , Rd>>=1 
+DEC  110fddd111           , Rd--
+INC  111fddd111           , Rd++
+</PRE>
+
+<P><B>And that's all.</B>
+
+<HR>
+
+<P>For all instructions but MVM and SKIP/CONT, it's rather simple:
+
+<P><B>'f'</B>=1: instruction modifies flags (default for the assembler).<BR>
+<B>'f'</B>=0: instruction does not modify flags.
+
+<P><B>ddd</B> selects the destination register Rd,<BR>
+<B>sss</B> selects the source register Rs.
+
+<HR>
+
+<P>For MVM, the instruction which reads/writes memory,<BR>
+the 'f' Bit has a different meaning: read/write control.<BR>
+<B>'r'</B>=0: write to memory, [Ra]=Rd.<BR>
+<B>'r'</B>=1: read from memory, Rd=[Ra].
+
+<P><B>Note: MVM doesn't modify flags.</B>
+
+<P>
+Also, the register select Bits have a slightly different meaning:<BR>
+<B>ddd</B> selects the data register Rd, and <B>aaa</B> selects the address register Ra<BR>
+to be used for the memory transfer.
+
+<P>Note, that a MVM which uses PC as address register also increments<BR>
+the PC, it's known as the "immediate" addressing mode, used to load<BR>
+a literal value into a register.<BR>
+<I>PC=[PC++] is a valid instruction.</I>
+
+<HR>
+
+<P>Now for the most complicated instruction of all: SKIP/CONT.
+
+<P>The SKIP instruction (Bit 'l'=0) checks a condition, and skips/discards<BR>
+all the other instruction triples in a 32 Bit word to come when said<BR>
+condition is true.
+
+<P>The CONT instruction (Bit 'l'=1) basically does the same thing as SKIP,<BR>
+but it also loads LR/R5 into the PC while saving the old PC contents into<BR>
+LR/R6, if the condition is true.
+
+<P>To check the condition, <B>cccc</B> selects a Bit in SR/R0:<BR>
+<PRE>
+cccc
+0000 C
+0001 Z
+0010 V
+0011 N
+0100 I4
+...
+1111 I15
+</PRE>
+
+<P>The 't' Bit is compared with the Bit selected, and if both Bits have<BR>
+the same value, the condition is true, causing the SKIP to trigger.
+
+<P>For instance, the instruction triple 0000100000 would check the C Flag,<BR>
+and if said Flag is 1, the condition is true.
+
+<P>If the 'a' Bit is 1, the condition <B>always</B> is true.<BR>
+An "always true" SKIP in the last instruction triple is encoded as a<BR>
+STOP instruction, which causes the CPU (and the emulator) to stop.<BR>
+Might be useful for debugging.
+
+<P><B>Bug warning: TREX CPU rev.1 hardware will not stop,<BR>
+if there is a NOP in Slot 2 and a STOP in Slot 3.</B>
+
+<HR>
+
+Now for some "instructions" not mentioned so far.
+
+<P>There is no SHL (shift left) instruction.<BR>
+SHL is a special form of ADD, like <I>Reg += Reg.</I><BR>
+<B>Note, that this affects the V Flag.</B><BR>
+<I>Building a 64 Bit shift which sets the Flags in the correct way would be<BR>
+going to be tough, sorry for the inconvenience.</I>
+
+<P>Per definition, a NOP is a MVR (move register), which doesn't modify<BR>
+flags, and uses the same register as source and destination.
+
+<P>For clearing a register (setting it to Zero), use the XOR instruction.<BR>
+<I>Reg ^= Reg</I> will do it.
+
+<P>Two's complement:<BR>
+<PRE>
+ R6^=R6, R6-=R2, R2=R6;
+</PRE>
+
+<P>Swapping two registers without using R6 (the old XOR swap trick):<BR>
+<PRE>
+ R2^=R3, R3^=R2, R2^=R3;
+</PRE>
+
+<P>There isn't a "compare" instruction, so you would have to use the SUB<BR>
+instruction instead, maybe with R6 working as a "scratchpad area".<BR>
+<B>Example: how to compare a register to a literal value:</B><BR>
+<PRE>
+ R6=[PC++], R6-=R2, NOP;
+ .word LITERAL_VALUE;
+</PRE>
+Note, that this compare does #-R2, like the SUBLW instructions in<BR>
+some PIC microcontrollers, not R2-# as for most of the other CPUs.<BR>
+<I>So take care when testing the flags.</I>
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="tinst_0.htm">[UP]</A>/
+<A HREF="tinst_2.htm">[BACK]</A>
+<A HREF="tinst_1.htm">[1]</A>
+<A HREF="tinst_2.htm">[2]</A>
+[3]
+<A HREF="tinst_4.htm">[4]</A>
+<A HREF="tinst_5.htm">[5]</A>
+<A HREF="tinst_6.htm">[6]</A>
+<A HREF="tinst_7.htm">[7]</A>
+<A HREF="tinst_8.htm">[8]</A>
+
+<A HREF="tinst_4.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2007, 2008
+</BODY>
+</HTML>
+

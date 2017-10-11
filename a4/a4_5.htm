@@ -1,0 +1,125 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>ALU design</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>ALU design</H2></CENTER>
+<HR>
+
+<P>Imagine, that you would try to build an<BR>
+ALU with the basic functionality<BR>
+AND, OR, XOR, ADD.
+
+<P><IMG SRC="a4_alu.png">
+
+<P><B>You may need some additional circuitry<BR>
+outside the ALU:</B><BR>
+<UL>
+<LI>to invert B for calculating A-B,</LI>
+<LI>to set B to zero for passing through A<BR>
+(or for incrementing A by forcing the ALU carry input to 1),</LI>
+<LI>to set B to -1 (all Bits high) for decrementing A,</LI>
+<LI>and maybe some circuitry for shifting A left and right<BR>
+(some 74245, for instance).</LI>
+</UL>
+
+<P>All those things already went explained in my<BR>
+previous articles about ALU design, so we now<BR>
+skip this part.
+
+<HR>
+
+<P>Here a schematic for one Bitslice of the ALU:
+
+<P><IMG SRC="a4_alu1.png">
+
+<P><B>The blue boxes connect to the control signals.</B>
+
+<P>The carry chain is built with a majority gate<BR>
+based on a CMOS AND.<BR>
+To change the functionality from ADD to XOR,<BR>
+the carry chain is simply turned off, reducing<BR>
+the three_input XOR gate (built from two 2_input<BR>
+XOR gates) of the full adder to a simple 2_input<BR>
+XOR gate fed from the ALU inputs A and B.
+
+<P>Our ALU has a three state output, so the<BR>
+output of said XOR is buffered with a 74HC125<BR>
+(...or 74HC245).
+
+For the AND/OR functionality, there is another<BR>
+majority gate which can be configurated to work<BR>
+as an AND/OR gate.<BR>
+To simplify things, we just took another buffer.
+
+<P><B>Warning:</B><BR>
+be aware of the current which the inputs of your<BR>
+majority gates will sink/source.<BR>
+The red marked resistor would be going to be a<BR>
+problem if you go for speed and low resistor<BR>
+values.<BR>
+<I>It may be a good idea to place a buffer in<BR>
+front of the resistor for every Bitslice of<BR>
+the ALU.</I>
+
+<HR>
+
+<P>Now for another idea:
+
+<P><IMG SRC="a4_alu2.png">
+
+<P>A 74HC/AC245 will give a very compact 8 Bit<BR>
+carry chain.
+
+<P>The rest of the functionality is hidden<BR>
+inside the 74251 8:1 multiplexer...<BR>
+which, by the way, has a LOW active output enable.
+
+<P>The select inputs A,B,C of the multiplexer<BR>
+are tied to the ALU inputs: A,B and carry input.
+
+<P>The functionality of the multiplexer is set by the<BR>
+data inputs I7..0, which now work as control<BR>
+lines (MSB first):<BR>
+<PRE><B>
+AND: 10001000
+OR : 11101110
+XOR: 01100110
+ADD: 10010110
+</B></PRE>
+
+<P>Downside is, that generating the control signals<BR>
+may require a few additional logic gates.
+
+<P>By the way: when setting the control word to<BR>
+10101010, the ALU will pass through the input A,<BR>
+11001100 will pass through the ALU input B.
+
+<P><I>For more details, please consult/dissect my<BR>
+previous articles about using multiplexers<BR>
+for ALU design.</I>
+
+<P>Now for some more boring theory...
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="a4_0.htm">[UP]</A>/
+<A HREF="a4_4.htm">[BACK]</A>
+<A HREF="a4_1.htm">[1]</A>
+<A HREF="a4_2.htm">[2]</A>
+<A HREF="a4_3.htm">[3]</A>
+<A HREF="a4_4.htm">[4]</A>
+[5]
+<A HREF="a4_6.htm">[6]</A>
+<A HREF="a4_7.htm">[7]</A>
+<A HREF="a4_8.htm">[8]</A>
+
+<A HREF="a4_6.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2009
+</BODY>
+</HTML>
+

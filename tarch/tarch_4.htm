@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Shift, Zero, Overflow</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Shift, Zero, Overflow</H2></CENTER>
+<HR>
+
+<P>Now to explain, how "shift right" works.
+
+<P>Imagine two 74573 transparent latches, wired together like that:
+
+<P><IMG SRC="tarch_shr.png">
+
+<P>IC1 simply passes the ALU output through, when there is no "shift right".<BR>
+For "shift right", the outputs of IC1 are turned off, and IC2 takes over.<BR>
+Note, how the inputs of IC2 are connected.<BR>
+I1 becomes Q0, I2 becomes Q1 and so on, so the Byte which is passed through IC2<BR>
+is shifted right by one Bit. It's easy.
+
+<P>Another option would have been using 74257 multiplexers instead of 74573 latches,<BR>
+but buying 74257 is more difficult than buying 74573.<P>
+
+<P><I>(And when trying to build a pipelined CPU, you could replace the 74573 by 74574<BR>
+edge triggered latches and hide the shifter "inside" the pipeline.)</I>
+
+<P>The shifter in TREX is a bit more complicated than the previous example, imagine<BR>
+a third 74573 which reads the external data bus, with outputs connected to Q0..7<BR>
+from IC1 and IC2. You sure can imagine, that this would require three output enable<BR>
+signals...
+
+<P>Also, the bus is 32 Bit wide, so passing the ALU output through, shifting it right<BR>
+or reading a value from the external data bus takes 3 * 4 = 12 <B>74573</B> in total.
+
+<HR>
+
+<P>For detecting that the 32 Bit shifter output is zero, we basically would need a<BR>
+32 input NOR gate.
+
+<P>One approach would be to take four 7425 (each one containing two NOR gates<BR>
+with four inputs), and to connect the outputs of the eight NOR gates to the inputs<BR>
+of a 7430 NAND. But it's difficult to buy 7425 nowadays.<BR>
+(Note, that you would have to invert the output of the 7430 before writing it<BR>
+into the zero flag.)
+
+<P><IMG SRC="tarch_zero1.png">
+
+<P>Another approach would be resorting to the 7427, which contains three NOR gates,<BR>
+each gate has three inputs.<BR>
+But it might complicate the PCB layout, and an 8 input 7430 NAND wouldn't be<BR>
+enough for testing the outputs of 11 NOR gates, so it's either improvising something<BR>
+with one 7408, or replacing the 7430 with a 74133 13 input NAND gate.
+
+<P>Since we are using 74688 8 Bit comparators in another part of the CPU (and as<BR>
+part of the address decoder on all the peripheral/memory PCBs to come), we did<BR>
+decide for a different approach: using four 74688 to compare each Byte from the<BR>
+shifter output against zero, and a 74151 multiplexer configurated to work as a<BR>
+4 input NOR, so that the signal routed to the zero flag has the right polarity.
+
+<P><IMG SRC="tarch_zero2.png">
+
+<HR>
+
+<P>The overflow detection works exactly like in my article about the V_Flag:<BR>
+a 74151 with select inputs connected to the uppermost Bit of the ALU data inputs<BR>
+and output, fed by a "lookup table" generated from the ALU control signals.
+
+<P>A31, B31 and Q31 (or F31 in the schematic) are pins on the 74181 ALU IC<BR>
+which processes the uppermost 4 Bits of the data.
+
+<P><IMG SRC="tarch_v.png">
+
+<P>Ok, so this schematic is a little bit simplified...
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="tarch_0.htm">[UP]</A>/
+<A HREF="tarch_3.htm">[BACK]</A>
+<A HREF="tarch_1.htm">[1]</A>
+<A HREF="tarch_2.htm">[2]</A>
+<A HREF="tarch_3.htm">[3]</A>
+[4]
+<A HREF="tarch_5.htm">[5]</A>
+<A HREF="tarch_6.htm">[6]</A>
+<A HREF="tarch_7.htm">[7]</A>
+<A HREF="tarch_8.htm">[8]</A>
+
+<A HREF="tarch_5.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2007, 2008
+</BODY>
+</HTML>
+

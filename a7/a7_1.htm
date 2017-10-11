@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>The 74381/74382</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>The 74381/74382</H2></CENTER>
+<HR>
+
+<P>A proof, that building an ALU with multiplexers really works.
+
+<P>I'm now drawing things a bit different from the 74381/74382<BR>
+datasheet, simplifying the one or other part.
+
+<P><IMG SRC="a7_382_b.png">
+
+<P>Basically we have a 4 Bit ALU, that consists of four one Bit<BR>
+logic units (which emit the propagate signals P and the generate<BR>
+signals G), some circuitry labeled "command mapping" to convert<BR>
+the three control signals S2..S0 into the 8 control signals which<BR>
+configurate/drive the logic units... plus the CEN signal,<BR>
+which enables the carry chain in arithmetic mode.
+
+<P>Oh, and I nearly forgot to mention the XOR gates which are fed<BR>
+by the propagate signals and the carry chain.
+
+<P>74381 emits /P and /G signals, what makes this IC interesting<BR>
+for building fast/big ALUs by linking said ICs together with a 74182...<BR>
+which is described later in this article.
+
+<P>74382 lacks the /P and /G outputs, but features a carry and overflow<BR>
+output instead, what will do for building 8 Bit ALUs.
+
+<HR>
+
+<P>Now to take a look into the boxes which are labeled "logic unit".
+
+<P><IMG SRC="a7_382_lu.png">
+
+<P>/PS3..0, /GS3..0 have to be low_active, because the multiplexers<BR>
+have inverted outputs.<P>
+
+<HR>
+
+<P>A list, of what operation the ALU should do according to the<BR>
+S2..S0 control signals... and what the control signals inside<BR>
+the ALU should look like to make this possible:
+
+<P><IMG SRC="a7_382_ct.png">
+
+<P>And here the circuitry that turns S2..0 into said signals:
+
+<P><IMG SRC="a7_382_cm.png">
+
+<P>Note, that /GS1 always is 1.
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="a7_0.htm">[UP]</A>/
+<A HREF="a7_0.htm">[BACK]</A>
+[1]
+<A HREF="a7_2.htm">[2]</A>
+<A HREF="a7_3.htm">[3]</A>
+<A HREF="a7_4.htm">[4]</A>
+<A HREF="a7_5.htm">[5]</A>
+<A HREF="a7_6.htm">[6]</A>
+<A HREF="a7_7.htm">[7]</A>
+<A HREF="a7_8.htm">[8]</A>
+
+<A HREF="a7_2.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2012
+</BODY>
+</HTML>
+

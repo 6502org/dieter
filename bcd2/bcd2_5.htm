@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>some +6/-6 circuits</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>some +6/-6 circuits</H2></CENTER>
+<HR>
+
+<P>But back on topic:<BR>
+adding +6 to a number for BCD correction.
+
+<P>And here a neat +6 schematic, drawn from the<BR>
+info gathered out of the 100181 datasheet:
+
+<P><IMG SRC="bcd2_p6l.png">
+
+<P><B>Warning:</B><BR>
+For input values greater than 9,<BR>
+this schematic won't work !
+
+<P>The next page discusses the 100181,<BR>
+so I felt a need to mention said schematic here.
+
+<P><IMG SRC="bcd2_p6t.png">
+
+<P>If you want to add 6 to the full range of numbers<BR>
+from 0..15, the problem obviously is generating B3'.
+
+<P><IMG SRC="bcd2_p6_xt.png">
+
+<P>A schematic derived from this table:
+
+<P><IMG SRC="bcd2_p6_x1.png">
+
+<P>A different implementation of the schematic above:
+
+<P><IMG SRC="bcd2_p6_x2.png">
+
+<HR>
+
+<P>To make the set complete:<BR>
+adding -6 to a number:<BR>
+<I>(or subtracting +6)</I>
+
+<P><IMG SRC="bcd2_m6t.png">
+
+<P>...Had to "invent" my own solution.<BR>
+The Q2' signal:
+
+<P><IMG SRC="bcd2_m6q2.png">
+
+<P>The Q3' signal:
+
+<P><IMG SRC="bcd2_m6q3.png">
+
+<P>And now my schematic for subtracting 6 from a number:
+
+<P><IMG SRC="bcd2_m6l.png">
+
+<P>...Of course, the circuitry for generating Q3'<BR>
+looks a little bit complicated.
+
+<P>When building 100181 styled BCD arithmetic,<BR>
+you only have to subtract 6 from a set of numbers<BR>
+from 6..15, and in that case, you could simplify<BR>
+the schematic above for generating Q3' pretty much:
+
+<P><IMG SRC="bcd2_m6s.png">
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="bcd2_0.htm">[UP]</A>/
+<A HREF="bcd2_4.htm">[BACK]</A>
+<A HREF="bcd2_1.htm">[1]</A>
+<A HREF="bcd2_2.htm">[2]</A>
+<A HREF="bcd2_3.htm">[3]</A>
+<A HREF="bcd2_4.htm">[4]</A>
+[5]
+<A HREF="bcd2_6.htm">[6]</A>
+<A HREF="bcd2_7.htm">[7]</A>
+<A HREF="bcd2_8.htm">[8]</A>
+
+<A HREF="bcd2_6.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2012
+</BODY>
+</HTML>
+

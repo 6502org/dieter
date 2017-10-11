@@ -1,0 +1,66 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>74181 with V_Flag</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>74181 with V_Flag</H2></CENTER>
+<HR>
+
+<P>The previous example is nice when using an adder, like the 74283.<BR>
+Problem is, that with ALU chips like the 74181, we don't have access to B'.
+
+<P><I>So we have to build our own B'.</I><BR>
+For A+B, we could use the previous example.<BR>
+For B-A, we have to invert A7.<BR>
+For A-B, we have to invert B7.
+
+<P><IMG SRC="v_andor1.png">
+
+<P>I'm aware, that using colours in an article could look like a sign of
+incompetence.<BR>
+But it's only to mark/emphasize the three different modes of operation.
+
+<P>Well, we would need six 4_Input_ANDs, one 6_Input_OR, and three inverters.
+<BR>Could be done with 3*7420, 1*7430, and 0.5*7404.
+
+<P>Fortunately, the 74151 features a nice AND/OR_combination,<BR>
+that could be used to solve our problem.<BR>
+We have three enable_lines, called A+B, B-A, A-B in that example,<BR>
+only one of them could be active at a time.
+
+<P><I>You sure mentioned the numbers in the AND gates.<BR>
+Please compare them to the 74151_Inputs in this schematic:</I>
+
+<P><IMG SRC="v_74151.png">
+
+<P>Now for the 74181.<BR>
+There is no B-A.
+
+<P>Signals at the 74181 control lines (A,B high_active):<BR>
+<PRE>
+A+B: S3..0 = 1001
+A-B: S3..0 = 0110
+</PRE>
+
+<P>So we take S0 for indicating A+B, and S1 for indicating A-B.
+
+<P><IMG SRC="v_74181.png">
+
+<P>That's all for now.<P>
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="v_0.htm">[UP]</A>/
+<A HREF="v_3.htm">[BACK]</A>
+<A HREF="v_1.htm">[1]</A>
+<A HREF="v_2.htm">[2]</A>
+<A HREF="v_3.htm">[3]</A>
+[4]
+
+
+<P>(c) Dieter Mueller 2005
+</BODY>
+</HTML>
+

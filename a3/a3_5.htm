@@ -1,0 +1,190 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>MC14500 and arithmetic</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>MC14500 and arithmetic</H2></CENTER>
+<HR>
+
+<P>Now for something different: one Bit processors.
+
+<P>The best example for a very simple architecture<BR>
+is the <B>MC14500</B>, which was intended to be used<BR>
+as "programmable logic controller" for industrial<BR>
+applications.
+
+<P><img src="a3_145s.png">
+
+<P>We have data memory, a temporary register RR,<BR>
+and a Logic Unit.<BR>
+Note, that it isn't designed to do any arithmetic.
+
+<P>I'm leaving out quite a few details, like that it's<BR>
+possible to write not only RR to memory, but also the<BR>
+complement of RR.<BR>
+Or that the data from memory and the "DIN" Flag go<BR>
+through an AND gate, before the data enters the Logic Unit.<BR>
+Program memory also isn't shown, or the circuitry related<BR>
+to fetching an instruction and such.
+
+<P>Now an example about building a one Bit full adder:
+
+<P><img src="a3_145add.png">
+
+<P>The schematic looks a bit unusual, because it's<BR>
+optimised for the MC14500 instruction set...<BR>
+which contains XNOR, but no XOR.
+
+<P><I>(Carry has to be set to 0 before processing the first Bit).</I>
+
+<P><PRE>
+ADD1: ;Q=A+B+C -> ;Q = A^B^C, C = A&C | B&C | A&B
+
+      LD   A ;three_input XOR: A, B, C.
+      XNOR B
+      XNOR C
+      STO  Q ;store the result into Q
+
+      LD   A ;if A = 1 or B = 1
+      OR   B ;(we don't have an XOR instruction)
+      AND  C ;and a carry goes in
+      STO  C ;the carry is propagated to the next Bit.
+
+      LD   A ;if A = 1 and B = 1
+      AND  B
+      OR   C ;generate a carry.
+      STO  C 
+</PRE>
+
+<P>We could still optimise:
+
+<P><PRE>
+ADD1: ;Q=A+B+C -> ;Q = A^B^C, C = A&C | B&C | A&B
+
+      LDC  A ;three_input XOR: A, B, C.
+      XNOR B ;RR = A^B
+      XNOR C
+      STOC Q ;store the result into Q
+
+      XNOR C ;set RR back to A^B. If A = 1 or B = 1...
+      AND  C ;and a carry goes in
+      STO  C ;the carry is propagated to the next Bit.
+
+      LD   A ;if A = 1 and B = 1
+      AND  B
+      OR   C ;generate a carry.
+      STO  C 
+</PRE>
+
+<P>Now for a subtraction:
+
+<P><I>(Carry has to be set to 1 before processing the first Bit.)</I>
+
+<P><PRE>
+SUB1: ;Q=A+/B+C -> ;Q = A^/B^C, C = A&C | /B&C | A&/B
+
+      LD   B
+      XNOR A ;RR = /(A^B), what isn't different from A^/B
+      XNOR C
+      STOC Q ;store the result into Q
+
+      XNOR C ;set RR back to A^/B. If A = 1 or B = 1...
+      AND  C ;and a carry goes in
+      STO  C ;the carry is propagated to the next Bit.
+
+      LD   A ;if A = 1 and B = 0
+      ANDC B
+      OR   C ;generate a carry.
+      STO  C
+</PRE>
+
+<P>Note, that for these programs, Q shouldn't overwrite A or B.
+
+<P>For A-B, all we had to do was inverting B.<BR>
+For decrementing A, we could assume that B is always 1.<BR>
+For incrementing A, B is 0, except for the first Bit...<BR>
+for which either B = 1 or C = 1.
+
+<P>Adding Carry to a bit in memory:<BR>
+(Carry has to be set to 1 before incrementing a variable in memory)
+
+<P><PRE>
+INC1: ;A=A+C -> ;A = A^C, C = A&C
+
+      LD   A
+      XNOR C ;if A = C, RR = 1.
+      STOC A 
+      AND  C ;if A = 1 and C = 1, generate a carry.
+      STO  C
+</PRE>
+
+<P>Decrementing:<BR>
+(carry has to be set to 0 before processing the first Bit)
+
+<P><PRE>
+DEC1: ;Q=A+1+C -> ;A = /(A^C), C = A|C
+
+      LD   A
+      XNOR C
+      STO  A
+      XNOR C ;get old A back into RR
+      OR   C
+      STO  C
+</PRE>
+
+<P>You sure can imagine, how to optimize the code when<BR>
+processing the first Bit for the increment/decrement example.
+
+<P>Now for a dirty trick:
+
+<P><PRE>
+ADTO1:;A=A+B+C ;don't know exactly, why this works...
+
+      LD   A
+      XNOR B
+      XNOR C
+      STO  A ;A = A^B^C
+      XNOR B
+      AND  C
+      STO  C
+      LDC  A
+      AND  B
+      OR   C
+      STO  C
+</PRE>
+
+<P>There are different approaches for writing a program<BR>
+which works as a full adder, but they usually always seem<BR>
+to take more than 10 instructions.<BR>
+Means, when a 2 MHz MC14500 performs Q=A+B on two Bytes<BR>
+in memory, it's at least four times slower than a 1 MHz 6502.
+
+<P>Writing your own "arithmetic software package" might be<BR>
+technically possible, if you happen to have a good macro assembler...<BR>
+and enough program memory.
+
+<P>However, not everything that is technically possible makes sense.<BR>
+(And not everything that makes sense is technically possible.)
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="a3_0.htm">[UP]</A>/
+<A HREF="a3_4.htm">[BACK]</A>
+<A HREF="a3_1.htm">[1]</A>
+<A HREF="a3_2.htm">[2]</A>
+<A HREF="a3_3.htm">[3]</A>
+<A HREF="a3_4.htm">[4]</A>
+[5]
+<A HREF="a3_6.htm">[6]</A>
+<A HREF="a3_7.htm">[7]</A>
+<A HREF="a3_8.htm">[8]</A>
+
+<A HREF="a3_6.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2008
+</BODY>
+</HTML>
+

@@ -1,0 +1,120 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE> Multiplexers </TITLE>
+</HEAD>
+<BODY>
+<P><CENTER><H2>Multiplexers</H2>the tactical Nuke of Logic Design</CENTER>
+<HR>
+
+<P>Multiplexers.
+
+<P>Mainly used for routing two, four, or eight data_inputs to one output,<BR>
+according to the binary value of the Bits at the select lines.
+
+<P><IMG SRC="a1_mux2.png">
+
+<P><PRE><B>
+B,A=00 // Q=I0 
+B,A=01 // Q=I1 
+B,A=10 // Q=I2 
+B,A=11 // Q=I3 
+</B></PRE>
+
+<P><IMG SRC="a1_mux1.png">
+
+<P>
+Cute, innocent looking little boxes.<BR>
+<B>But they aren't.</B>
+
+<P>Set the data_inputs to fixed logic levels (constants),<BR>
+use the select Bits as address lines, and what we finally get<BR>
+is a small ROM.
+
+<P>Remember, when we used lookup tables in EPROMs<BR>
+to evaluate logic gates ?<BR>
+Now an example for abusing the 74151, 8:1 Multiplexer.
+
+<P><IMG SRC="a1_logic2.png">
+
+<P>Configurated with this lookup table,<BR>
+the Multiplexer will behave exactly as the gates mentioned above,<BR>
+but with a smaller propagation delay.<BR>
+<B>In other words: faster.</B>
+
+<P>Want to put another Inverter into the C line ?<BR>
+Just swap Bit 0..3 with Bit 4..7 in the lookup table.
+
+<P>If we have a (combinatoral) schematic with logic gates,<BR>
+three inputs and one output, one 74151 can replace it.
+
+<P>And that's why some FPGAs seem to contain plenty of<BR>
+multiplexers, that are basically used in the same way.
+
+<HR>
+
+<P>Now we take a 4:1 Multiplexer, and "turn" the box<BR>
+counterclockwise by 90 degrees.
+
+<P>The trick is to use the select_inputs as data,<BR>
+and the data_inputs as select.
+
+<P>What comes out is a configurable logic gate.<BR>
+According to the Bit pattern at the four select_inputs I0..3,<BR>
+we can perform any logic operation between the data_inputs<BR>
+A and B.
+
+<P><PRE><B>
+0000 = 0x0 // Q=0x00  
+1111 = 0xf // Q=0xff  
+
+1010 = 0xa // Q=A     
+1100 = 0xc // Q=B     
+
+0101 = 0x5 // Q=/A    
+0011 = 0x3 // Q=/B    
+
+1110 = 0xe // Q= A| B 
+1101 = 0xd // Q=/A| B 
+1011 = 0xb // Q= A|/B 
+0111 = 0x7 // Q=/A|/B 
+
+1000 = 0x8 // Q= A& B 
+0100 = 0x4 // Q=/A& B 
+0010 = 0x2 // Q= A&/B 
+0001 = 0x1 // Q=/A&/B 
+
+0110 = 0x6 // Q=  A^B 
+1001 = 0x9 // Q=/(A^B)
+</B></PRE>
+
+<P>
+And if we use eight 4:1 Multiplexers in parallel,<BR>
+with data_inputs A7..0, B7..0, Outputs Q7..0,<BR>
+and the select_inputs I3..0 tied together<BR>
+to all multiplexers, it works as a <B>Logic Unit.</B>
+
+<P><IMG SRC="a1_lu1.png">
+<P><IMG SRC="a1_lu2.png">
+
+<P>The Arithmetic Part will be attached later.
+
+<HR>
+
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="a1_0.htm">[UP]</A>/
+<A HREF="a1_3.htm">[BACK]</A>
+<A HREF="a1_1.htm">[1]</A>
+<A HREF="a1_2.htm">[2]</A>
+<A HREF="a1_3.htm">[3]</A>
+[4]
+<A HREF="a1_5.htm">[5]</A>
+<A HREF="a1_6.htm">[6]</A>
+<A HREF="a1_7.htm">[7]</A>
+<A HREF="a1_8.htm">[8]</A>
+<A HREF="a1_5.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2004
+</BODY>
+</HTML>

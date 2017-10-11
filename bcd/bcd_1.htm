@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Basics</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Basics</H2></CENTER>
+<P><CENTER><B>BCD</B>, <U>B</U>inary <U>C</U>oded <U>D</U>ecimal</CENTER>
+<HR>
+
+<P><B>Once upon a time,</B><BR>
+when engineers enjoyed fair working contracts that lasted longer than
+twelve weeks,<BR>
+microprocessors featured three supply voltages at a 4 Bit word length,<BR>
+and were mostly used in calculators or cash registers.
+
+<P>With only a few thousand transistors a chip, program memory for applications
+was limited.
+
+<P>Problem is, that microprocessors and end users seem to run on different
+numeric formats.<BR>
+Some simple applications only required to add/subtract fixed point decimal
+numbers.<BR>
+<I>So converting large numbers from decimal to binary (hexadecimal)<BR>
+and back had a tendency to create an overhead in software.</I>
+
+<P>But there is a trick to make the microprocessor calculate in decimal.
+
+<P><PRE>
+decimal <I>binary</I> <B>hexadecimal</B>
+    0   <I> 0000 </I> <B> 0         </B>
+    1   <I> 0001 </I> <B> 1         </B>
+    2   <I> 0010 </I> <B> 2         </B>
+    3   <I> 0011 </I> <B> 3         </B>
+    4   <I> 0100 </I> <B> 4         </B>
+    5   <I> 0101 </I> <B> 5         </B>
+    6   <I> 0110 </I> <B> 6         </B>
+    7   <I> 0111 </I> <B> 7         </B>
+    8   <I> 1000 </I> <B> 8         </B>
+    9   <I> 1001 </I> <B> 9         </B>
+   10   <I> 1010 </I> <B> A         </B>
+   11   <I> 1011 </I> <B> B         </B>
+   12   <I> 1100 </I> <B> C         </B>
+   13   <I> 1101 </I> <B> D         </B>
+   14   <I> 1110 </I> <B> E         </B>
+   15   <I> 1111 </I> <B> F         </B>
+</PRE>
+
+<P><IMG SRC="bcd_wheels.png">
+
+<P>Left: decimal. 0..9, Base 10.<BR>
+Right: 4 Bit hexadecimal. 0..F (decimal 0..15), Base 16.
+
+<P>
+When calculating decimal numbers in binary/hexadecimal,<BR>
+the trick is to skip/avoid numbers between 10..15 (A..F),<BR>
+and it is called <B>decimal correction</B>.
+
+
+<P>From the <B>decimal</B> point of view, we may call such numbers<BR>
+illegal values, or invalid 4 Bit codes...<BR>
+or, to make it sound more complicated: <I>pseudo_tetrades.</I>
+
+<P>
+When <I>incrementing 9</I>, the result would be 10 (hexadecimal A).<BR>
+<B>Adding 6</B> gives us 0, and a carry that increments the next higher
+digit.<BR>
+So the result would be 10.
+
+
+<P>
+When <I>decrementing 0</I>, we would have 15 (hexadecimal F).<BR>
+<B>Subtracting 6</B> gives us 9 as a result.
+<P>
+
+<P>Now to describe, how to build our own decimal correction
+circuitry in hardware.
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="bcd_0.htm">[UP]</A>/
+<A HREF="bcd_0.htm">[BACK]</A>
+[1]
+<A HREF="bcd_2.htm">[2]</A>
+<A HREF="bcd_3.htm">[3]</A>
+<A HREF="bcd_4.htm">[4]</A>
+<A HREF="bcd_5.htm">[5]</A>
+<A HREF="bcd_6.htm">[6]</A>
+<A HREF="bcd_7.htm">[7]</A>
+
+<A HREF="bcd_2.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2006
+</BODY>
+</HTML>
+
+

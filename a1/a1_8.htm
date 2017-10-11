@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE> ALU, build with Multiplexers </TITLE>
+</HEAD>
+<BODY>
+
+<P><CENTER><H2>Alu with Multiplexers</H2></CENTER>
+<HR>
+
+<P>Our latest ALU design:
+
+<P><IMG SRC="a1_adalu.png">
+
+<P>And a close look to the Adder.
+
+<P><IMG SRC="a1_radder.png">
+
+<P>The latest ALU design featured two Logic Units,<BR>
+set between the Adder and the inputs.<BR>
+Funny thing is, that when we set one Logic Unit to AND,<BR>
+and the other to OR, the Adder performs out of the results<BR>
+from the Logic Units a normal addition.<BR>
+Can we replace the (red marked) Propagate/Generate<BR>
+OR/AND gates with Multiplexers ?<BR>
+Or better, with the two Logic Units mountet<BR>
+in front of the Adder ?
+
+<P>Example. One Bit shown.
+
+<P><IMG SRC="a1_malu.png">
+
+<P>It works well.
+
+<P>Logic:<BR>
+the Generate LU (Logic Unit) produces Zero,<BR>
+and the Propagate LU is set to the desired logic function.<BR>
+The Propagate signals are routed to Q.<BR>
+Carry_input has to be forced to 0.<BR>
+Not much difference to our previos ALU design.
+
+<P>Left shift:<BR>
+the Generate LU is set to the desired logic function,<BR>
+while the Propagate LU is set to the same function or to zero.<BR>
+The Carry chain will multiply the value by two.
+
+<P>For right shift, we still need a 2:1 multiplexer.<BR>
+To make the ALU faster, we take the right shift MUX away<BR>
+from the ALU output, and put it in the Propagate signal path,<BR> 
+between the Propagate LU and the circuitry that forms up Q. <BR>
+(The Multiplexer will always be faster than the carry chain.)
+
+<P>
+Arithmetic functions are different:<BR>
+(Left to right: Generate Control 3..0, Propagate Control 3..0)<BR>
+<BR>
+<B>1</B>000.111<B>0</B> // Q=A+B + carry_in  <BR>
+0<B>1</B>00.11<B>0</B>1 // Q=B-A - /carry_in <BR>
+00<B>1</B>0.1<B>0</B>11 // Q=A-B - /carry_in <BR>
+<BR>
+1010.1111 // Q=A - /carry_in <BR>
+1100.1111 // Q=B - /carry_in <BR>
+
+<P>We have to ensure, that we don't unintentionally<BR>
+increment while shifting right.<BR>
+When using two different carry_in multiplexers,<BR>
+one for right shift and one for the carry chain<BR>
+(74151 recommended), we can replace the circuitry<BR>
+that generates Q by one 74151 per Bit,<BR>
+set to a fixed configuration.
+
+<P>Note, that, if you build an 8 Bit CISC CPU,<BR>
+your status register may end up with two carry flags:<BR>
+one for data calculation, and one for address calculation<BR>
+(probably not visible to the "end user").
+
+<P>The low-active 74151 /Q7..0 outputs can be used<BR>
+together with a 7430 eight_input NAND gate,<BR>
+for detecting Zero_condition.
+
+<P>When building the carry chain as 8 Bit parallel carry,<BR>
+using two GAL22V10/7ns, this ALU design could become<BR>
+faster than the 74F181/74S181.
+
+<P>But we still can simplify this design.<BR>
+On to <A HREF="../a2/a2_0.htm"> part 2.</A>
+
+<HR>
+
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="a1_0.htm">[UP]</A>/
+<A HREF="a1_7.htm">[BACK]</A>
+<A HREF="a1_1.htm">[1]</A>
+<A HREF="a1_2.htm">[2]</A>
+<A HREF="a1_3.htm">[3]</A>
+<A HREF="a1_4.htm">[4]</A>
+<A HREF="a1_5.htm">[5]</A>
+<A HREF="a1_6.htm">[6]</A>
+<A HREF="a1_7.htm">[7]</A>
+[8]
+
+
+<P>(c) Dieter Mueller 2004
+</BODY>
+</HTML>

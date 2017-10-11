@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>JMP versus JSR</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>JMP versus JSR</H2></CENTER>
+<HR>
+
+<P>For the CPU, there is no difference between JMP and JSR,<BR>
+it's only a software thing.
+
+<P>Each time a value is written into PC, the old PC contents<BR>
+are saved into LR, thand e software has to take care of LR <BR>
+from there on.
+
+<HR>
+
+<P><B>Now an example:</B>
+
+<P>If Bit 31 of a 32 Bit instruction word is zero, said 32 Bit word<BR>
+is written into PC.<BR>
+Let's suppose, that our code is in the "lower half" of the <B>four<BR>
+Giga_longword</B> Address range of the CPU, and that our assembler<BR>
+places the <B>address</B> of a label (or subroutine) straight into the<BR>
+machine code of our program as a constant, if a label (or subroutine)<BR>
+doesn't stand on the left side of the screen:
+
+<P><PRE>
+LOOP
+     FOO  ;//call first  subroutine
+     BAR  ;//call second subroutine
+     LOOP ;//then start again.
+;
+FOO
+     SP--, [SP]=LR, nop; //save LR
+     ;
+     ;//do some stuff
+     ;
+     PC=[SP], SP++, nop; //RETURN
+;
+BAR
+     SP--, [SP]=LR, nop; //save LR
+     ;
+     ;//do some stuff
+     ;
+     PC=[SP], SP++, nop; //RETURN
+;
+</PRE>
+
+<P>Pretty neat, isn't it ?<BR>
+This way, the address of a label (or a subbroutine) actually <B>becomes</B><BR>
+an instruction, pretty much as in a Forth environment.
+
+<P>Looks like we are getting a nice/efficient support for massive use<BR>
+of subroutines.<P>
+
+<HR>
+
+<P>Of course, immediate addressing also causes a JMP/JSR:<BR>
+<PRE>
+ PC=[PC++], nop, nop;
+ .word ADDRESS;
+</PRE>
+
+<P>But as you can see, it's less efficient than the JMP/JSR in our first<BR>
+example, which did not resort to instruction triples.
+
+<P>Now an example for a relative branch/call:
+<PRE>
+ R6=[PC++], PC+=R6, nop;
+ .word OFFSET; 
+</PRE>
+
+<HR>
+
+<P>So far, so good.<BR>
+But for writing some software, we also need a conditional jump/branch.
+
+<P>So we just make use of the SKIP instruction:<BR>
+<PRE>
+ R6=[PC++], SKIP C, PC=R6; //JNC, jump if C=0.
+ .word ADDRESS;
+</PRE>
+
+<P>The example above loads a literal value into R6, stops execution of<BR>
+instruction triples in this 32 Bit word, if the C Flag is set, skipping<BR>
+the instruction in the last triple which writes R6 into PC.
+
+<P>So basically, the example is a "jump if C=0" instruction.
+
+<P>BNC, branch if C=0:<BR>
+<PRE>
+ R6=[PC++], SKIP C, PC+=R6; //BNC, branch if C=0.
+ .word OFFSET;
+</PRE>
+
+<HR>
+
+<P>Last example: a conditional return from a subroutine:<BR>
+<PRE>
+ SKIP C, PC=[SP], SP++; //RETNC, return if C=0.
+</PRE>
+
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="tinst_0.htm">[UP]</A>/
+<A HREF="tinst_4.htm">[BACK]</A>
+<A HREF="tinst_1.htm">[1]</A>
+<A HREF="tinst_2.htm">[2]</A>
+<A HREF="tinst_3.htm">[3]</A>
+<A HREF="tinst_4.htm">[4]</A>
+[5]
+<A HREF="tinst_6.htm">[6]</A>
+<A HREF="tinst_7.htm">[7]</A>
+<A HREF="tinst_8.htm">[8]</A>
+
+<A HREF="tinst_6.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2007, 2008
+</BODY>
+</HTML>
+

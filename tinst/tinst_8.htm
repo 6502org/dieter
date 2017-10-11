@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Conclusion</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Conclusion</H2></CENTER>
+<HR>
+
+<P>Examining code did show, that three instructions per 32 Bit word<BR>
+seem to be not too efficient, five instructions would be better.
+
+<P>Also, the absence of pre_increment/post_decrement addressing modes<BR>
+bloats the code for stack operations.
+
+<P>For a RISC CPU like this, 8 registers are the absolute minimum,<BR>
+16 or more registers would be better, especially when toying with<BR>
+pipeline and/or VLIW concepts.
+
+<P>It also would have been nice to add a literal move/add to the<BR>
+instruction set, which might take two or three slots...<BR>
+For loading/adding a sign extended 10 or 20 Bit literal word to<BR>
+a register, what could have made the code more compact.<BR>
+<I>when using short branch/call instructions, for instance.</I>
+
+<P><B>Of course, all the things mentioned above won't fit into<BR>
+a 32 Bit instruction word.</B>
+
+<P>But we are not the first who tried to pack several instructions<BR>
+into a word, it looks like Charles Moore and Seymour Cray<BR>
+already did similar things.
+
+<HR>
+
+<P>Using ADD, SUB, INC, DEC and shift operations together with the<BR>
+status register doesn't make much sense, so it might be possible<BR>
+to add six additional single_operand instruction to this design,<BR>
+one of them maybe related to "shift left" with carry.
+
+<P>If the instruction in the first Slot is an "always true SKIP",<BR>
+the rest of the 32 Bit instruction word is dropped/discarded by the CPU.<BR>
+Which means that the CPU will ignore the lower 26 Bits of said word,<BR>
+so we either could define some new CPU instructions (maybe DSP related<BR>
+stuff), or try to add something like a "coprocessor", maybe for memory<BR>
+management/protection, vector graphics or floating point support.<BR>
+<I>(It's just an idea.)</I>
+
+<P>I wish we would have integrated the interrupt controller into the CPU...
+
+<HR>
+
+<P>As the name indicates, elegance, speed and the use of modern components<BR>
+was no concern when defining this instruction set and architecture.
+
+<P>Nevertheless, we think that the design has some potential, even when<BR>
+porting it to FPGAs.
+
+<P>If you had success in building an "open hardware" project with one<BR>
+(or multiple) TREX cores inside an FPGA, please write a few articles<BR>
+about it.
+
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="tinst_0.htm">[UP]</A>/
+<A HREF="tinst_7.htm">[BACK]</A>
+<A HREF="tinst_1.htm">[1]</A>
+<A HREF="tinst_2.htm">[2]</A>
+<A HREF="tinst_3.htm">[3]</A>
+<A HREF="tinst_4.htm">[4]</A>
+<A HREF="tinst_5.htm">[5]</A>
+<A HREF="tinst_6.htm">[6]</A>
+<A HREF="tinst_7.htm">[7]</A>
+[8]
+
+
+
+<P>(c) Dieter Mueller 2007, 2008
+</BODY>
+</HTML>
+

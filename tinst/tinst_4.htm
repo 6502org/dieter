@@ -1,0 +1,120 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Addressing modes</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Addressing modes</H2></CENTER>
+<P><CENTER>...or the lack thereof.</CENTER>
+<HR>
+
+<P>So far, the TREX CPU only supports <I>indirect addressing</I>,<BR>
+<I>immediate addressing</I> is just a special form which uses PC<BR>
+as address register (and increments PC after fetching the word).
+
+<P>For the rest of the addressing modes, you would have to define<BR>
+some assembler macros...
+
+<P><I>To simplify things, the examples in this articles don't make<BR>
+use of the "don't modify Flags" option. Take care !</I>
+<HR>
+
+<P><B>Immediate/literal addressing:</B><BR>
+<PRE>
+ R2=[PC++], nop, nop;          //R2=#
+ .word LITERAL_VAL_FOR_R2;
+</PRE>
+
+<P>The example above loads a 32 Bit word into R2.<BR>
+You could modify it for adding a value to R2:<BR>
+<PRE>
+ R6=[PC++], R2+=R6, nop;       //R2+=#
+ .word LITERAL_VAL_ADDED_TO_R2;
+</PRE>
+
+<P>Loading three literal values:<BR>
+<PRE>
+ R2=[PC++], R3=[PC++], R4=[PC++]; //R2=#, R3=#, R4=#
+ .word LITERAL_VAL_FOR_R2;
+ .word LITERAL_VAL_FOR_R3;
+ .word LITERAL_VAL_FOR_R4;
+</PRE>
+
+<P>Pushing a literal value on stack:<BR>
+<PRE>
+ R6=[PC++], SP--, [SP]=R6;  //[--SP]=#
+ .word LITERAL;
+</PRE>
+
+<P>since we are at it, you could pop the value<BR>
+from stack like this:<BR>
+<PRE>
+ R2=[SP], SP++, nop; //R2=[SP++]
+</PRE>
+
+<HR>
+
+<P><B>Absolute addressing:</B><BR>
+<PRE>
+ R6=[PC++], R2=[R6], nop; //R2=[ABSOLUTE_ADDRESS]
+ .word ABSOLUTE_ADDRESS;
+</PRE>
+
+<P><B>Indirect addressing:</B><BR>
+<PRE>
+ R6=[PC++], R6=[R6], R2=[R6]; //R2=[[ABSOLUTE_ADDRESS]]
+ .word ABSOLUTE_ADDRESS;   
+</PRE>
+
+<P><B>Base register with offset:</B><BR>
+<PRE>
+ R6=[PC++], R6+=R2, R3=[R6]; //R3=[R2+OFFSET]
+ .word OFFSET;
+</PRE>
+(This also works for stack relative or PC relative addressing.)
+
+<P><B>Al of the above:</B><BR>
+<PRE>
+ R6=[PC++], R4=[PC++], R6+=R3;  //R2=[[ABSOLUTE_ADDRESS+R3]+OFFSET]
+ R6=[R6],   R6+=R4,    R2=[R6]; //(uses R4 as scratchpad)
+ .word ABSOLUTE_ADDRESS;
+ .word OFFSET;
+</PRE>
+
+<HR>
+
+<P><I>From here on, you should be able to build/define your own<BR>
+"addressing modes".</I>
+
+<P>So it's possible to "emulate" high level CISC addressing modes<BR>
+as known from the 68000 with one to three 32 Bit instruction words,<BR>
+plus parameters.
+
+<P>68k would need one to two 16 Bit words for the instruction,<BR>
+plus one or two 16 Bit words for addres or data.
+
+<P>Since TREX has a 32 Bit data bus, performance compared to the<BR>
+68000 doesn't look too bad.
+
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="tinst_0.htm">[UP]</A>/
+<A HREF="tinst_3.htm">[BACK]</A>
+<A HREF="tinst_1.htm">[1]</A>
+<A HREF="tinst_2.htm">[2]</A>
+<A HREF="tinst_3.htm">[3]</A>
+[4]
+<A HREF="tinst_5.htm">[5]</A>
+<A HREF="tinst_6.htm">[6]</A>
+<A HREF="tinst_7.htm">[7]</A>
+<A HREF="tinst_8.htm">[8]</A>
+
+<A HREF="tinst_5.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2007, 2008
+</BODY>
+</HTML>
+

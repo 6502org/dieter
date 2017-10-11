@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Implementing a Stack</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Implementing a Stack</H2></CENTER>
+<HR>
+
+<P><B>Now to describe, how to emulate a stack with assembler macros:</B><BR>
+<PRE>
+pha     MACRO
+        dec&  SP  ;SP--
+        sta@  SP  ;*SP=ACC
+        ENDM
+
+pla     MACRO
+        lda@  SP  ;ACC=*SP
+        inc&  SP  ;SP++    //WARNING: take care of the Flags.
+        ENDM
+
+</PRE><BR>
+It works well, but it's obvious that the inc& command in pla better<BR>
+<B>should not</B> modify the status register.<BR>
+<I>Better define another inc& macro with OpCode Bit 6 = 0.</I>
+
+<P>Note: when a word is pushed on top of the stack, it could be used<BR>
+as a "scratchpad" by lda@/sta@ etc.<BR>
+<I>It is possible to write an ALU result to that location without<BR>
+modifying ACC.</I>
+
+<HR>
+
+<P><B>Now for some more stacked mayhem: subroutines.</B>
+<P>To keep the instruction decoder simple, MT15 does not feature things<BR>
+like jsr/rts (also known as call/return).
+
+<P>So we have to implement this with some software macros.
+
+<P><B>WARNING:</B> PC points to the argument (d16) of an instruction during<BR>
+data calculation, so we have to set ALU C_in to 1 for a compensation.
+
+<P>Example:<BR>
+<PRE>
+jsr#    MACRO  addr
+        ;
+        dec&   SP       ;SP--
+        set1@  SP       ;write $0001 on Stack                       
+        slm@   SP       ;set word on Stack to $0002 by shifting it left
+        add1@  PC to SP ;add PC+1 to word on Stack
+        jmp#   addr
+        ;
+        ;<-return address
+        ;
+        inc&   SP       ;SP--, take return address from Stack
+        ;
+        ENDM
+
+</PRE>
+Or, to be more specific:
+<PRE>
+jsr#    MACRO  addr
+        ;
+        dc.w   %0001100110000110 ; $1986 //SP--
+        dc.w   SP
+        ;
+        dc.w   %0001110110111000 ; $1db8 //write $0001 on Stack
+        dc.w   SP
+        ;
+        dc.w   %0001110110001111 ; $1d8f //shift left word on stack
+        dc.w   SP
+        ;
+        dc.w   %0001111110111001 ; $1fb9 //ADD PC to word on Stack
+        dc.w   SP
+        ;
+        dc.w   %0000000100000101 ; $0105 //write next word immediate into PC
+        dc.w   addr
+        ;
+        ;<- POINT OF RE_ENTRY
+        ;
+        dc.w   %0001100110110101 ; $19b5 //SP++
+        dc.w   SP
+        ;
+        ENDM
+</PRE><BR>
+Returning from a subroutine can simply be done with jmp@ SP.<BR>
+Nevertheless, take care <B>not</B> to modify the Flags in the status
+register.
+
+<P>I know, that this isn't a good/efficient solution.<BR>
+In fact, MT15 wasn't designed to have subroutines.<BR>
+
+<I>It just works.</I>
+
+<P>By the way, it's possible to build conditional returns.
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="mt15i_0.htm">[UP]</A>/
+<A HREF="mt15i_5.htm">[BACK]</A>
+<A HREF="mt15i_1.htm">[1]</A>
+<A HREF="mt15i_2.htm">[2]</A>
+<A HREF="mt15i_3.htm">[3]</A>
+
+<A HREF="mt15i_4.htm">[4]</A>
+<A HREF="mt15i_5.htm">[5]</A>
+[6]
+<A HREF="mt15i_7.htm">[7]</A>
+<A HREF="mt15i_8.htm">[8]</A>
+
+<A HREF="mt15i_7.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2005
+</BODY>
+</HTML>

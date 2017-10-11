@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Clock generation</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Clock generation</H2></CENTER>
+<HR>
+
+<P>MT15 uses a 4_phase (non_overlapping) clock.
+
+<P>It appeared to be the most reliable approach for driving<BR>
+master/slave_flipflops, built from transparent latches.
+
+<P><IMG SRC="mt15a_clk.png">
+
+<P>Instruction sequencer uses a three Bit counter,<BR>
+build with master/slave_flipflops.
+
+<P>First step (PHI10) is, to update those slave_flipflops,<BR>
+advancing the instruction sequencer to the next step.<BR>
+The decoder logic is build with fast CTL gates, so the<BR>
+control signals are supposed to be stable for the next step.
+
+<P>Next step (PHI11) is, to write ACC, PC, or memory.<BR>
+Also, the carry master flipflop is updated<BR>
+(we are discussing that part later).
+
+<P>Then (PHI20), the ALU performs an operation between<BR>
+a register (ACC, PC) and memory, while the master<BR>
+flipflops of the instruction sequencer are loaded<BR>
+for preparing the next machine cycle.
+
+<P>Finally (PHI21), temporary registers (T0, T1) and flags<BR>
+will be written.<BR>
+OpCode may also be transferred into the Instruction Register<BR> 
+during PHI21 is active.
+
+<HR>
+
+<P>Clock generation with TTL logic, using 74164/7427:
+
+<P><IMG SRC="mt15a_clk2.png">
+
+<P>Did use a 74245 for buffering the 74164 outputs.
+
+<P><I>74164 input clock is 2MHz, so MT15 runs with 500 kHz.</I>
+
+<P>So much for the clock signals.
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="mt15a_0.htm">[UP]</A>/
+<A HREF="mt15a_1.htm">[BACK]</A>
+<A HREF="mt15a_1.htm">[1]</A>
+[2]
+<A HREF="mt15a_3.htm">[3]</A>
+<A HREF="mt15a_4.htm">[4]</A>
+<A HREF="mt15a_5.htm">[5]</A>
+<A HREF="mt15a_6.htm">[6]</A>
+<A HREF="mt15a_7.htm">[7]</A>
+<A HREF="mt15a_8.htm">[8]</A>
+
+<A HREF="mt15a_3.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2005
+</BODY>
+</HTML>

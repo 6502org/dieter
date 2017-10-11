@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Improvements</TITLE>
+</HEAD>
+<BODY>
+
+<P><CENTER><H2>Improvements</H2></CENTER>
+
+<HR>
+
+<P>
+The assembler seems to have some interesting/useful features.
+
+<P><PRE>
+        DC.B     R2 | G1              
+        DC.B     R2 | G1              
+        DC.B     R2 | G1              
+</PRE>
+could simply be replaced with
+<PRE>
+        DC.B [3] R2 | G1              
+</PRE>
+
+<HR>
+<P>
+It's also possible to pass parameters into macros.
+<PRE>
+SEQ9    MACRO   red,redyellow
+        DC.B    [red      ] R2
+        DC.B    [redyellow] R2 | Y2
+        ENDM
+
+        SEQ9 4,2
+</PRE>
+would do the same as four lines of "DC.B R2",<BR>
+followed by two lines of "DC.B R2 | Y2".
+
+<HR>
+<P>
+We could as well pass the constants for the colour through:
+<PRE>
+SEQ8    MACRO   col1,num1,col2,num2
+        DC.B    [num1] col1
+        DC.B    [num2] col2
+        ENDM
+
+        SEQ8    R2, 4, R2|Y2, 2
+</PRE>
+
+<HR>
+<P>
+Now for something peculiar/weird:
+<PRE>
+SEQ7    MACRO   col1,col2,total,num2percent
+        DC.B    [100-(total/100)*num2percent] col1
+        DC.B    [    (total/100)*num2percent] col2
+        ENDM
+
+        SEQ7    R2, R2|Y2, 200, 5
+</PRE>
+What gives us 200 Bytes:<BR>
+First 190 Bytes (95 percent) are set to $08 (190 times "DC.B R2"), <BR>
+followed by 10 Bytes (5 percent) that are set to $18 ("DC.B R2 | Y2").<BR>
+<I>Keep in mind, that there seems to be a size limit.</I>
+
+
+<HR>
+
+<P>
+Only one output Bit left.<BR>
+What, if we need another traffic light ?
+<P>
+DC.W defines a 16 Bit constant (Word),<BR>
+DC.L defines a 32 Bit constant (Long).
+
+<P>
+But when using them, we have to be aware,<BR>
+what end of the egg the assembler opens for breakfast... just kidding.
+<P>
+<B>"Little endian format"</B> means, the little end of a value in memory<BR>
+is at the lowest memory address (as known from 80x86).<BR>
+A 32 Bit constant like $12345678 would end up as $78 $56 $34 $12 in memory.
+
+<P>
+<B>"Big endian format"</B> means, that the big end of a value in memory<BR>
+is at the lowest memory address (as known from 68000).<BR>
+$12345678 would give $12 $34 $56 $78 in memory.
+
+<P>
+At the moment, we are using big endian.<BR>
+Some EPROM programming tools support Byte splitting, some don't.<BR>
+In that case, we have to write our own tool to split 32 Bit values into 4
+Bytes.<BR>
+A little C program that uses fgetc() and fputc() should do it.<BR>
+Just be aware of the Byte_order/endianess.
+
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="mpd_0.htm">[UP]</A>/
+<A HREF="mpd_4.htm">[BACK]</A>
+<A HREF="mpd_2.htm">[2]</A>
+<A HREF="mpd_2.htm">[2]</A>
+<A HREF="mpd_3.htm">[3]</A>
+<A HREF="mpd_4.htm">[4]</A>
+[5]         
+<A HREF="mpd_6.htm">[6]</A>
+<A HREF="mpd_7.htm">[7]</A>
+<A HREF="mpd_8.htm">[8]</A>
+<A HREF="mpd_6.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2005
+
+</BODY>
+</HTM>

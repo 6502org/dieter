@@ -1,0 +1,56 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>NMOS 6502 ALU</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>NMOS 6502 ALU</H2></CENTER>
+<HR>
+
+<P>Thanks to Beregnyei Balazs for his reverse_engineering attempts.
+
+<P><IMG SRC="a2_6502alu.png">
+
+<P>(Open_collector/open_drain output inverters can be used<BR>
+to build NOR_gates.)
+
+<P>The input_multiplexers look as described two pages ago,<BR>
+so I didn't draw them again.<BR>
+What we called A is the special bus (SB), a bidirectional bus<BR>
+that is used to read/write registers.<BR>
+B would be the internal data bus (DB), it's mostly used<BR>
+to read the external data bus through the data input latch.<BR>
+The ALU output can connect through switches to the special bus,<BR>
+and to the internal address bus A7..0.<BR>
+(There are additional switches between special bus and internal<BR>
+address bus A15..A8.<BR>
+The ALU output also feds the BCD_correction_circuitry,<BR>
+to write into the accumulator.
+
+<P>Note, that in the 6502 the pullup_resistors we had<BR>
+at the ALU_inputs seem to be MOS transistors working<BR>
+as current source during PHI2=1.
+
+<P>That's all for now.<BR>
+On to <A HREF="../a3/a3_0.htm"> part 3.</A>
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="a2_0.htm">[UP]</A>/
+<A HREF="a2_7.htm">[BACK]</A>
+<A HREF="a2_1.htm">[1]</A>
+<A HREF="a2_2.htm">[2]</A>
+<A HREF="a2_3.htm">[3]</A>
+<A HREF="a2_4.htm">[4]</A>
+<A HREF="a2_5.htm">[5]</A>
+<A HREF="a2_6.htm">[6]</A>
+<A HREF="a2_7.htm">[7]</A>
+[8]                           
+
+
+<P>(c) Dieter Mueller 2005
+</BODY>
+</HTML>
+
+

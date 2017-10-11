@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Turning circles</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Turning circles</H2></CENTER>
+<HR>
+
+<P>Since we have an orthogonal instruction set, the increment/decrement<BR>
+instruction also works for the PC, but keep in mind that the old contents<BR>
+of PC are saved into LR.
+
+<P>Example: if C=1, call the subroutines FOO and BAR.<BR>
+<PRE>
+ SKIP C, PC++, PC++;                     
+ FOO;
+ BAR;
+</PRE>
+
+<P>Of course, this also works for jumping backwards:<BR>
+<PRE>
+ SKIP I4, PC--, nop;                    
+</PRE>
+
+<P>The example above waits, until the I4 input line is 1.
+
+<P>Another example: call the subroutine BAR, until C=1.<BR>
+<PRE>
+ FOO;
+ BAR;
+ SKIP C, PC--, PC--;                     
+</PRE>
+
+<P>Nevertheless, the practical use for PC++ and PC-- seems to be limited.<BR>
+
+<HR>
+
+<P>Now to explain the CONT instruction, which basically is a counterpart<BR>
+to "continue", as known from C programming.
+
+<P>Example: shift R2 left "n" times, "n" is defined in R3:<BR>
+<PRE>
+ LA=PC,  nop,  nop;     //LA points to the next instruction
+ R2+=R2, R3--, CONT !Z; //shift R2 right until R3 is zero.
+</PRE>
+
+<P>In the example above, the CPU fetches the first 32 Bit instruction word,<BR>
+then increments PC to point to the next 32 Bit instruction word.<BR>
+So LA is loaded with the address of the next instruction word...
+
+<P>which shifts R2 left, decrements R3, and writes LA into PC if the result<BR>
+from decrementing R3 wasn't zero.<BR>
+Which means, that the second instruction word is fetched from the CPU again<BR>
+and again, until R3 finally reached zero.
+
+<HR>
+
+<P>Now for the main reason, why we wanted to have a CONT instruction:<BR>
+block move.<BR>
+<PRE>
+        R2=[PC++], R3=[PC++], R4=[PC++];
+        .word FROM;  
+        .word TO;
+        .word COUNT;
+
+        LA=PC,     nop,       nop;
+        R6=[R2],   [R3]=R6,   R2++;
+        R3++,      R4--,      CONT !Z;
+</PRE>
+
+<P>First, R2, R3, R4 are loaded with source address, destination address,<BR>
+and the number of longwords to be moved.
+
+<P>Second, LR is initialised to point at the head of the block move loop.
+
+<P>Third, we have the block move loop, consisting of two 32 Bit instruction<BR>
+words, which is terminated when R4 was decremented down to zero.
+
+<HR>
+
+<P>Maybe you're finding some more neat tricks about how to use the CONT<BR>
+instruction when experimenting a little bit...
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="tinst_0.htm">[UP]</A>/
+<A HREF="tinst_5.htm">[BACK]</A>
+<A HREF="tinst_1.htm">[1]</A>
+<A HREF="tinst_2.htm">[2]</A>
+<A HREF="tinst_3.htm">[3]</A>
+<A HREF="tinst_4.htm">[4]</A>
+<A HREF="tinst_5.htm">[5]</A>
+[6]
+<A HREF="tinst_7.htm">[7]</A>
+<A HREF="tinst_8.htm">[8]</A>
+
+<A HREF="tinst_7.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2007, 2008
+</BODY>
+</HTML>
+

@@ -1,0 +1,143 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>PAL16L8</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>PAL16L8</H2>a different use of EPROMs</CENTER>
+<HR>
+
+<P><I><B>
+Engineering: the art of performing miracles every day,<BR>
+at nearly no cost, never witnessed/rewarded<BR>
+by the people around or above you.</B></I>
+
+<P><I>Of course, if an elevator, an aircraft, or a space station<BR>
+should decide to unintentionally fall from the sky<BR>
+while your electronics is somehow part of the game,<BR>
+everybody will instantly blame you.</I>
+
+<P>Got stuck with a logic design, too big for a PAL/GAL,<BR>
+but too small for a FPGA/CPLD ? <BR>
+<BR>Indecisive about installing another licence managing thing on your PC ?<BR>
+Fed up with colourful user interfaces, that show all the important buttons<BR>
+at different places while refusing to open your old project files after<BR>
+each software update ? <BR>
+Want to have a data retention time > 20 years ? <BR>
+And most important: are you aware, that sometimes the definition of words<BR>
+such as "mature" and "reliable" by marketing and engineering department<BR>
+sometimes does not overlap ?
+<P>
+If you don't fear the "propagation delay", try EPROMs.<BR>
+Quite reliable, versatile, cheap, can be bought at nearly every corner,<BR>
+and every now and then a faster and bigger version goes into production.<BR>
+<B>[2012: Edit: things are starting to look a bit different now...]</B><BR>
+Best of all: no vendor specific/special hardware/software is required for<BR>
+logic design and programming.
+
+
+<P>Enough of pointless ranting. Example:
+
+<P><IMG SRC="a1_logic.png">
+
+<P><PRE>
+/*                                                                       
+ *                                                                       
+ * pal16l8.c V1.0 (c) Dieter Mueller 08/2004                             
+ *                                                                       
+ * example: using a 64kB EPROM as programmable logic device.             
+ * 27512, gives 16 Input_Pins and 8 Output_Pins.                         
+ *                                                                       
+ * Note: unlike with PALs/GALS, the number/complexity of                 
+ * product_terms/equations is only limited by the Pin count              
+ * of the EPROM... and the abilities of your compiler.                   
+ *                                                                       
+ * Not much memory used, generating 1MB files for 27080                  
+ * should be possible under DOS.                                         
+ *                                                                       
+ */                                                                      
+                                                                         
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+                                                                         
+int main(void);                                                          
+char do_rom(long addr);                                                  
+                                                                         
+int main(void)                                                           
+{                                                                        
+  FILE *outstream;                                                       
+                                                                         
+  long i;                                                                
+                                                                         
+  outstream=fopen("pal16l8.bin","wb");                                   
+  if(outstream==NULL)                                                    
+  {                                                                      
+    printf("\nFile open error.\n");                                      
+    return(-1);                                                          
+  }                                                                      
+                                                                         
+  for(i=0; i&lt;0x10000; i++) //try all possible input patterns, 64 kBytes   
+  {                                                                      
+    fputc(do_rom(i),outstream); //write one EPROM Byte                   
+  }                                                                      
+                                                                         
+  fclose(outstream);                                                     
+  return(0);                                                             
+}                                                                        
+                                                                         
+char do_rom(long addr) //do one Byte                                     
+{                                                                        
+  char out;                                                              
+  char a,b,c;                                                            
+  char q0,q1,q2;                                                         
+                                                                         
+ //default = Zero.                                                       
+  a=0; b=0; c=0; q0=0; q1=0; q2=0;                                       
+                                                                         
+ //scan input_pins. //WARNING: casting HAS to be, avoiding funny results.
+  if((long)addr & 0x01) a=-1;                                            
+  if((long)addr & 0x02) b=-1;                                            
+  if((long)addr & 0x04) c=-1;                                            
+                                                                         
+ //equations. //WARNING: thou shalt not use ! to negate.                 
+  q0=a|b;                                                                
+  q1=a&b;                                                                
+  q2=(~a&b)^c; //((NOT A) AND B) XOR C //last stage of a full adder      
+                                                                         
+ //now to throw all the results together.                                
+  out=0; //default = Zero.                                               
+  if(q0) out|=0x01;                                                      
+  if(q1) out|=0x02;                                                      
+  if(q2) out|=0x04;                                                      
+                                                                         
+ //done.                                                                 
+  return(out);                                                           
+}                                                                        
+</PRE>
+
+<HR>
+
+<P>
+Is it possible to implement an ALU using EPROMs ?<BR>
+Yes, it is, and a few hobbyists already successfully did.
+
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="a1_0.htm">[UP]</A>/
+<A HREF="a1_0.htm">[BACK]</A>
+[1]
+<A HREF="a1_2.htm">[2]</A>
+<A HREF="a1_3.htm">[3]</A>
+<A HREF="a1_4.htm">[4]</A>
+<A HREF="a1_5.htm">[5]</A>
+<A HREF="a1_6.htm">[6]</A>
+<A HREF="a1_7.htm">[7]</A>
+<A HREF="a1_8.htm">[8]</A>
+<A HREF="a1_2.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2004
+</BODY>
+</HTML>

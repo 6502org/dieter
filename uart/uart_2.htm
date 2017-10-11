@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Level translator</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Level translator</H2></CENTER>
+<HR>
+
+<P>We are connecting our UART 1:1 to the 9 pin male connector at the PC,<BR>
+maybe with an extention cord.<BR>
+No Null_Modem_cables, gender_changers etc.
+
+<P><IMG SRC = "uart_max232.png">
+
+<P>The <B>MAX232</B> contains a charge pump to convert the +5V supply voltage<BR>
+into ca. +10V and ca. -10V.
+
+<P>It also contains two level translators for converting TTL level signals<BR>
+into ca. +8V/-8V for sending them from the UART into the RS232 connector.
+
+<P>And another two level translators (basically Schmitt triggers)<BR>
+for converting signals from the connector to TTL level and sending<BR>
+them back to the UART.
+
+<P>Note, that all the level converters are <B>inverting</B> the signal.
+
+<P>Typical values for the capacitors connected to the charge pump are<BR>
+2.2 to 10 uF.<BR>
+(There also is a version of the MAX232 that runs with 100 nF capacitors.)
+
+<P>The four 100 Ohm resistors between MAX232 and the connector are added<BR>
+for paranoia only, to be on the safe side when something goes wrong<BR> 
+when wiring the signals to the RS232 connector.
+
+<P>Another good idea might be to add some jumpers into the TX line,<BR>
+to disconnect it from the UART circuitry and feed it from the RX line,<BR>
+what would allow a 'loop_back' test mode between PC and MAX232<BR>
+to check that the wiring between them is correct so far.
+
+<P>Note, that MAX232 might be limited to ca. 120 kBaud.<BR>
+And: the faster the Baud Rate, the shorter the RS232 cable.
+
+<P><I>There also are a few other (faster) level converter ICs,<BR>
+like the MC1488/MC1489, but they probably would require more<BR>
+than just one single +5V supply voltage...</I>
+
+<HR>
+
+<P>To know what we are doing here, we remember back what a 9 pin<BR>
+male RS232 connector at a PC looks like:
+
+<P><IMG SRC = "uart_db9.png">
+
+<P>Now to describe the signals as seen from the PC:<BR>
+<PRE>
+<B>DCD</B> <- <I>Data carrier detect.</I> Modem to PC: there is something comming down the phone line...
+<B>RXD</B> <- <I>Serial data in.     </I> Modem to PC: Data.
+<B>TXD</B> -> <I>Serial Data out.    </I> PC to Modem: Data.
+<B>DTR</B> -> <I>Data terminal ready.</I> PC to Modem: 'Hi, I'm there.'
+<B>DSR</B> <- <I>Data set ready.     </I> Modem to PC: 'Hi, I'm there.'
+<B>RTS</B> -> <I>Request to send     </I> PC to Modem: 'I have Data ready to transmit.'
+<B>CTS</B> <- <I>Clear to send.      </I> Modem to PC; 'I am ready to receive Data from you.'
+<B>RI </B> <- <I>Ring indicator.     </I> Modem to PC: 'rrring ...somebody called me.'
+</PRE> 
+
+<P>In our example, DTR, DSR, DCD are wired together to make the Terminal<BR>
+program (running on the PC) think that we have a modem up and running.
+
+<P>CTS is set active by the MAX232, telling the PC 'Hi, I'm ready to receive
+Data.'
+
+<P>Nevertheless: better turn off all hardware/software handshake/flow_control<BR>
+in your terminal program for the first test runs...
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="uart_0.htm">[UP]</A>/
+<A HREF="uart_1.htm">[BACK]</A>
+<A HREF="uart_1.htm">[1]</A>
+[2]
+<A HREF="uart_3.htm">[3]</A>
+<A HREF="uart_4.htm">[4]</A>
+<A HREF="uart_5.htm">[5]</A>
+<A HREF="uart_6.htm">[6]</A>
+<A HREF="uart_7.htm">[7]</A>
+<A HREF="uart_8.htm">[8]</A>
+<A HREF="uart_9.htm">[9]</A>
+
+<A HREF="uart_3.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2007
+</BODY>
+</HTML>

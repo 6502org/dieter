@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Logic mode</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Logic mode</H2></CENTER>
+<HR>
+
+<P>First: later on this page, you may ask:<BR>
+<I>how to get OR gates with that much inputs ?</I>
+
+<P>Answer: you could connect NAND gates together<BR>
+like this:
+
+<P><IMG SRC="a6_andor.png">
+
+<P>But for better readability of those pictures,<BR>
+I'll stick with AND OR combination gates<BR>
+for the rest of this article.
+
+<HR>
+
+<P>Now to build the part of the ALU, that performs<BR>
+all the logic operations:
+
+<P><IMG SRC="a6_lu.png">
+
+<P>And yes, that's all.
+
+<P>B is a temporary storage register to hold the operand,<BR>
+A is the accumulator.<BR>
+One Bit bitslice shown in the picture.
+
+<P>The blue marked control signals U and V select,<BR>
+if B' is 0, 1, B or /B.
+
+<P>The control signals X and Y select, what to do with the<BR>
+accumulator Bit A.
+
+<P>To be more exact: if A should be set, reset or toggled<BR>
+always at the rising edge of CLK, or only if B'=1.
+
+<P><IMG SRC="a6_lu1.png">
+
+<HR>
+
+<P>So the control lines give us a neat list of logic<BR>
+operations for our ALU:
+
+<P><IMG SRC="a6_lu2.png">
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="a6_0.htm">[UP]</A>/
+<A HREF="a6_1.htm">[BACK]</A>
+<A HREF="a6_1.htm">[1]</A>
+[2]
+<A HREF="a6_3.htm">[3]</A>
+<A HREF="a6_4.htm">[4]</A>
+<A HREF="a6_5.htm">[5]</A>
+<A HREF="a6_6.htm">[6]</A>
+<A HREF="a6_7.htm">[7]</A>
+<A HREF="a6_8.htm">[8]</A>
+
+<A HREF="a6_3.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2012
+</BODY>
+</HTML>                            

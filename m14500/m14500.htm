@@ -1,0 +1,194 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE> EmZeh14500 </TITLE>
+</HEAD>
+<BODY>
+
+<P>
+<CENTER><H2>The famous/infamous MC14500</H2></CENTER>
+
+<HR>
+
+<P><PRE><I>
+ ---------------------------------------------------
+| The engineer explains/presents his plans          |
+| to a large audience. At some point,               |
+| people are starting to get a bit anxious,         |
+| until eventually one in the audience dares        |
+| asking the question:                              |
+|                                                   |
+| "But how to get the crew back from the Moon       |
+| after they landed there ?"                        |
+|                                                   |
+| The engineer is getting upset:                    |
+| "The request for bids only was about bringing     |
+| a man to the Moon. There never was any discussion |
+| about bringing him back !"                        |
+ ---------------------------------------------------
+</I></PRE>
+<HR>
+
+<P>Once upon a time, when industrial control of machinery<BR>
+was done by big/clumsy cabinets/switchboards, people soon<BR>
+discovered that changing the (manually) wired functionallity<BR>
+was not easy.
+
+<P>Electricians/Engineers spent more than eight hours a day<BR>
+inside cramped cabinets, between all that wires and components,<BR>
+and tried to fix one (unforseen) problem, without causing the next.
+
+<P><B>
+Actually, there even whas a joke, that control cabinets<BR>
+were sold together with an integrated Technician.
+</B><BR>
+
+<P>Would have been nice to have something versatile, programmable...<BR>
+
+Those, who did not believe in computers/processors built sequencers.<BR>
+Basically a counter, connected to the address lines of some kind of ROM,<BR> 
+that gave out the control signals at the data outputs.
+
+<P>In some cases, it was necessary to test the status of some<BR>
+input signals from the machinery (limit switches, for instance)<BR> 
+and to alter the sequence of control words.
+
+<P>With a few tricks, and some additional circuitry between<BR> 
+status inputs and counter, it was possible to jump to a given<BR>
+counter location, or to skip the next control word.
+
+<P>However, said circuitry could become a little bit complicated.
+
+<P>An alternative was the MC14500. It was able to control<BR>
+the counter, to read inputs, and to write outputs.
+
+<HR>
+<P><IMG SRC="14500.jpg">
+<HR>
+
+<P>The MC14500 is an odd/unique design, that can't be categorized easy.<BR>
+It shows program flow control like a simple RISC (skip next Opcode<BR>
+if result is zero, JMP, JSR, RTS), combined wit a one Bit Logic Unit<BR>
+(no arithmetic at all !)<BR>
+Still undecided, if it's a processor or not.<BR>
+4 Bit Opcode, 1 Bit Databus, Program memory and Data memory<BR>
+are separated.
+
+<P><PRE>
+RR,  or Result Register, was used as accumulator.<BR>
+O_EN enabled/disabled write access to data memory.<BR>
+I_EN was used to force a read value from data memory to Zero.
+</PRE>
+
+<P>This way, it was easy to emulate flipflops, and to save<BR>
+a few conditional jumps.
+
+<P><PRE><B>
+Opcodes:
+
+0x0 Flag 0 // Emit pulse on FLAG_0 Pin
+0x1 LD     // RR =  (D_IN & I_EN)
+0x2 LDC    // RR = !(D_IN & I_EN)
+0x3 OR     // RR = RR |  (D_IN & I_EN)
+0x4 ORC    // RR = RR | !(D_IN & I_EN)
+0x5 AND    // RR = RR &  (D_IN & I_EN)
+0x6 ANDC   // RR = RR & !(D_IN & I_EN)
+0x7 XNOR   // RR = RR ^ !(D_IN & I_EN)
+0x8 STO    // Write  RR to data memory, if O_EN = 1
+0x9 STOC   // Write !RR to data memory, if O_EN = 1
+0xa IEN    // I_EN = RR
+0xb OEN    // O_EN = RR
+0xc JMP    // jump
+0xd RTN    // return from subroutine (ignore next opcode)
+0xe SKZ    // skip next opcode, if RR is Zero
+0xf Flag F // Emit Pulse on Flag_F Pin
+</B>
+
+</PRE>
+Decided to use Flag 0 as NOP, and Flag F as JSR.<BR>
+
+Note: setting I_EN to 1 is a bit tricky, since we don't know, if it's 0 or 1.<BR>
+The simplest way to go is reading twice from the same address:
+
+<PRE>
+LD  0 // RR   =        I_EN & DIN
+ORC 0 // RR   = RR | !(I_EN & DIN) = 1
+IEN   // I_EN = RR
+</PRE>
+
+<P>
+Tried to build something binary compatible with NAND gates.<BR>
+It turned out to be not so useful at all, but it gave me a few<BR>
+inspirations for ALU design and timing.
+
+<P><B>
+WARNING: the design had a few bugs.<BR>
+Fixed them in layout and schematic, but didn't build<BR>
+this version for verification.<BR>
+Do not expect it to work at all.<BR>
+Better go with GAL22V10 than with NANDs.
+</B>
+
+<P>
+28 ICs: 14*7400, 6*7410 7*7420, 1*7430.<BR>
+Decided to use low_active outputs, most of them not pulsed,<BR>
+because the PC was done with syncronous counters.
+
+
+<P><I>
+Note, that this schematic/layout does not contain I/O,<BR>
+program/data memory, program counter, or return stack.<BR>
+<B>It's only the "CPU".</B>
+</I>
+
+<HR>
+
+<P>The CPU:
+<P>
+<TABLE cellPadding=3 border=1>
+  <TBODY>
+  <TR>
+    <TD bgColor=#9ec1fc><STRONG>Datei // File</STRONG></TD>
+    <TD bgColor=#9ec1fc><STRONG>Beschreibung // Description</STRONG></TD></TR>
+  <TR>
+    <TD><A href="m14500v1.brd">m14500v1.brd</A></TD>
+    <TD>Layout (Eagle 3.55) 
+  </TD></TR>
+  <TR>
+    <TD><A 
+    href="m14500v1.sch">m14500v1.sch</A></TD>
+    <TD>Schematics (Eagle 3.55)</TD>
+  </TR>
+</TBODY></TABLE>
+<HR>
+
+<P>Schematics in JPG format: 
+<UL>
+  <LI><A href="14500jpg.htm">view schematics online (large pictures.)</A></LI>
+</UL>
+
+
+<HR>
+<P><IMG SRC="m14500_small.jpg">
+<HR>
+<P><PRE>
+[2016: Edit:                                           ]
+[                                                      ]
+[ And this also was proof that building a 'Logic Unit' ]
+[ with multiplexers actually works.                    ]
+
+</PRE>
+<HR>
+<P>More technical details in the "articles" section:
+<UL>
+ <LI><A href="../a1/a1_4.htm">ALU design, part 1</A></LI>
+ <LI><A href="../a3/a3_5.htm">ALU design, part 3</A></LI>
+</UL>
+
+<HR>
+<P><A href="../index.htm">[HOME]</A>
+
+<HR>
+<P>(c) Dieter Mueller 2004,2005
+
+</BODY>
+</HTML>

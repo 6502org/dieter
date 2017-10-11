@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Decimal correction</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Decimal correction</H2></CENTER>
+<P><CENTER>How to add/subtract 6</CENTER>
+<HR>
+
+<P>When using 74xx TTL, decimal correction could be done with a 74283
+binary adder.
+
+<P>Adding 6 (binary 0110) is easy.
+
+<P>For 4 Bit, subtracting 6 would be the same as adding its two's
+complement<BR> <B>decimal 10</B> (binary 1010).
+
+<P><IMG SRC="bcd_cor1.png">
+
+<P>The OR gate could be removed/eliminated by using the carry input:<BR>
+we're simply adding 5+1 instead of 6.
+
+<P><IMG SRC="bcd_cor2.png">
+
+<HR>
+
+<P>When using transistors or logic gates, it isn't necessary to
+rebuild a complete 74283.<BR>
+We could build some half adders instead, and invert the Bits that
+have to be corrected:
+
+<P><IMG SRC="bcd_cor3.png">
+
+<P><B>Now to describe, how it works.</B><BR>
+
+
+<P>
+<B>For A+B</B>, the positive maximum is 9+9+1 (when C_IN = 1), or decimal
+19.
+
+<P>Q0..3 is the ALU result <I>before</I>, Q0..3' <I>after</I> decimal
+correction.<BR>
+X is Q0..3 XOR Q0..3'.
+
+<P>Now a list for what hapens, if Q is (decimal) 10..19:
+
+<P><PRE>
+   binary binary binary
+   Q3..0  Q3..0' X3..0
+10  1010   0000   1010
+11  1011   0001   1010
+12  1100   0010   1110
+13  1101   0011   1110
+14  1110   0100   1010
+15  1111   0101   1010
+16  0000   0110   0110
+17  0001   0111   0110
+18  0010   1000   1010
+19  0011   1001   1010
+</PRE>
+
+<P>
+Well.<BR>
+X0 is always 0,<BR>
+X1 is always 1,<BR>
+X2 is equal to !Q1,<BR>
+X3 is zero, when Q1=0 and Q2=0.
+
+
+<P>
+<B>For A-B</B>, the negative maximum is 0-9-1 (when C_IN = 0, active borrow),
+or decimal -10.
+
+<P>As above, Q0..3 is the ALU result <I>before</I>, Q0..3' <I>after</I>
+decimal correction.
+<BR>X is Q0..3 XOR Q0..3'.
+
+<P><PRE>
+   binary binary binary
+   Q3..0  Q3..0' X3..0
+-1  1111   1001   0110
+-2  1110   1000   0110
+-3  1101   0111   1010
+-4  1100   0110   1010
+-5  1011   0101   1110
+-6  1010   0100   1110
+-7  1001   0011   1010
+-8  1000   0010   1010
+-9  0111   0001   0110
+-10 0110   0000   0110
+</PRE>
+
+<P>
+X0 is always 0,<BR>
+X1 is always 1.<BR>
+X2 is equal to Q1,<BR>
+X3 is zero, when Q1=1 and Q2=1.
+
+
+<P>
+<B>So Q0..3 XOR X0..3 gives us Q0..3'</B>, and that's all.
+
+<P><I>The NMOS 6502 seems to use the same approach.</I>
+
+<P>[2016: edit: this article was written before there was Visual6502.]
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="bcd_0.htm">[UP]</A>/
+<A HREF="bcd_3.htm">[BACK]</A>
+<A HREF="bcd_1.htm">[1]</A>
+<A HREF="bcd_2.htm">[2]</A>
+<A HREF="bcd_3.htm">[3]</A>
+[4]
+<A HREF="bcd_5.htm">[5]</A>
+<A HREF="bcd_6.htm">[6]</A>
+<A HREF="bcd_7.htm">[7]</A>
+
+<A HREF="bcd_5.htm">[NEXT]</A>
+
+
+
+<P>(c) Dieter Mueller 2006
+</BODY>
+</HTML>
+
+

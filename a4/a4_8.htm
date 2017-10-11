@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Two majority gates adder</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Two majority gates adder</H2></CENTER>
+<HR>
+
+<P>Journal of applied sciences, ISSN1812-5654, 2007:
+
+<P><IMG SRC="a4_add3.png">
+
+<P>Two majority gates and one inverter.<BR>
+<I>But building this thing with the knowledge<BR>
+we have by now may give you a few grey<BR>
+hairs...</I>
+
+<P>Problem is, that the second majority gate<BR>
+has five inputs...<BR>
+and maybe you would want to use a fast<BR>
+comparator instead of a CMOS logic gate<BR>
+to build said majority gate.
+
+<P><I>The obsolete MC14530 is a five_input majority<BR>
+gate, but this IC is supposed to be extinct.</I>
+
+<HR>
+
+<P>We already know, that when taking a three_input<BR>
+majority gate and setting one of the<BR>
+inputs to 0 or 1, it can be configurated<BR>
+to work as a two_input AND, or a two_input<BR>
+OR gate.
+
+<P><B>Same thing, when taking a five_input<BR>
+majority gate, and wiring two inputs<BR>
+together while setting them to 0 or 1.<BR>
+It will be configurated as a three_input<BR>
+AND or OR gate.</B>
+
+<P>To control the functionality of our<BR>
+configurable three_input AND/OR gate,<BR>
+we take the output of the carry chain.
+
+<P><IMG SRC="a4_add3_sw.png">
+
+<P>Blue entries in the table:<BR>
+the five_input majority gate turns<BR>
+into a three_input OR gate.
+
+<P>Red entries:<BR>
+the five_input majority gate turns<BR>
+into a three_input AND gate.
+
+<P><IMG SRC="a4_add3_table.png">
+
+<HR>
+
+<P><B>And that's exactly the problem:<BR>
+the three_input AND gate.</B>
+
+<P>To make use of the AND functionality<BR>
+of a hypothetical ALU, we would have to<BR>
+force the outputs of the carry chain to 1,<BR>
+to make the three_input AND work.
+
+<P>We also would have to force it to 0<BR>
+to make the three_input OR work.
+
+<P>And don't forget to add another multiplexer in<BR>
+front of your ALU to force the carry input of<BR>
+the ALU to 0 or 1...
+
+<P>To make things worse: if we would tie the<BR>
+control input of our three_input AND/OR gate<BR>
+directly to the carry chain, me have to take<BR>
+care not to loose/void the XOR functionality.
+
+<P>Now you know, why this approach may give you<BR>
+a few grey hairs, and why I won't recommend<BR>
+using it.
+
+<P><IMG SRC="a4_add3_alu.png">
+
+<HR>
+
+<P><I>If you now say:<BR>
+Nice, let's build CMOS inverters with logic level<BR>
+FETs and wire them together with resistors to have<BR>
+a set of neat majority gates...<BR>
+you should be aware, that in 2009, the capacitances<BR>
+of logic level FETs like BSS138 are still a bit high,<BR>
+and that your inverter may take 50 mA from the<BR>
+power supply when running at 3 MHz...<BR>
+resistors not counted.</I>
+
+<P><I>Better try less power hungry things instead...<BR>
+like building ECL based currend mode adders.</I>
+
+<P>That's all for now.<BR>
+On to <A HREF="../a5/a5_0.htm"> part 5.</A>
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="a4_0.htm">[UP]</A>/
+<A HREF="a4_7.htm">[BACK]</A>
+<A HREF="a4_1.htm">[1]</A>
+<A HREF="a4_2.htm">[2]</A>
+<A HREF="a4_3.htm">[3]</A>
+<A HREF="a4_4.htm">[4]</A>
+<A HREF="a4_5.htm">[5]</A>
+<A HREF="a4_6.htm">[6]</A>
+<A HREF="a4_7.htm">[7]</A>
+[8]
+
+
+
+<P>(c) Dieter Mueller 2009
+</BODY>
+</HTML>
+

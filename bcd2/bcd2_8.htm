@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Excess 3 adder</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Excess 3 adder</H2></CENTER>
+<HR>
+
+<P>Excess 3 adder/subtractor:
+
+<P><IMG SRC="bcd2_xas.png">
+
+<P>Notation:<BR>
+<B>A bold number</B> means 'as seen from a logic probe',<BR>
+so <B>3</B> says that the bus lines have 0011 at hardware level.
+
+<P>The adder on the right corrects the result<BR>
+by adding or subtracting <B>3</B>,<BR>
+according to the carry output C_OUT.
+
+
+<P>Example:<BR>
+BCD 0 + BCD 0  is BCD 0.<BR>
+The Excess 3 code for BCD 0 is <B>3</B>.<BR>
+So the adder in the middle of the picture<BR>
+who does A+B' will say '<B>3</B>+<B>3</B>=<B>6</B>'.<BR>
+C_OUT=0, so the second adder corrects<BR>
+this result by subtracting <B>3</B> (by adding <B>13</B>),<BR>
+and our Q outputs emit the correct value of <B>3</B>,<BR>
+which means 0 when converting it<BR>
+from Excess 3 back into BCD code.
+
+<P><I>(Sorry, if hopping around between different<BR>
+number systems confuses you.)</I>
+
+<P>Another example:<BR>
+BCD 9 + BCD 3 is BCD 12.<BR>
+When representing those BCD codes in Excess 3,<BR>
+what we are getting at hardware level is<BR>
+<B>12</B> at A and <B>6</B> at A,<BR>
+and the adder in the middle says A+B=<B>18</B>,<BR>
+which means it passes on <B>2</B> to the second adder<BR>
+and sets the C_OUT signal to 1.<BR>
+So the second adder adds <B>3</B> to the result,<BR>
+what sets the end result at Q to <B>5</B>.<BR>
+What means 12 when converting C_OUT and Q<BR>
+back into BCD code.
+
+<HR>
+
+<P>Now for the little box which turns B into B'.
+
+<P><IMG SRC="bcd2_xat.png">
+
+<P>Like with binary adders in some ALU design articles,<BR>
+the box turns B' to B, /B, 0, or -1.
+
+<P>But because Excess 3 zero means binary <B>0011</B>,<BR>
+things are a little bit more complicated.
+
+<P><IMG SRC="bcd2_xc1.png">
+
+<P>An alternative version:
+
+<P><IMG SRC="bcd2_xc2.png">
+
+<HR>
+
+<P>And if you really happen to have too much time on your hands,<BR>
+please dig into the innards of old calculators,<BR>
+and write some articles about your discoveries.
+
+<P>When trying to build your own calculator,<BR>
+dig for Digi-Cal by R.W. Coles,<BR>
+Practical Electronics, February 1973<BR>
+(available at Bitsavers).
+
+<P>...Or take a look at what John Peterson has at saccade.com<BR>
+(CS427/CS428).
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="bcd2_0.htm">[UP]</A>/
+<A HREF="bcd2_7.htm">[BACK]</A>
+<A HREF="bcd2_1.htm">[1]</A>
+<A HREF="bcd2_2.htm">[2]</A>
+<A HREF="bcd2_3.htm">[3]</A>
+<A HREF="bcd2_4.htm">[4]</A>
+<A HREF="bcd2_5.htm">[5]</A>
+<A HREF="bcd2_6.htm">[6]</A>
+<A HREF="bcd2_7.htm">[7]</A>
+[8]
+
+
+
+<P>(c) Dieter Mueller 2012
+</BODY>
+</HTML>
+

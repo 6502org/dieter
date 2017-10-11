@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Test setup</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Test setup</H2></CENTER>
+<HR>
+
+<P><IMG SRC="a4_test.png">
+<P><IMG SRC="a4_maj_out.jpg">
+<P>(100 ns / 5 V div.)
+
+<P><I>Another planet conquered by Spaceman Spiff.</I>
+
+<HR>
+
+<P>Now to describe the test setup:<BR>
+A 16 MHz oscillator clocks a 74163 binary counter.<BR>
+The three counter outputs QA, QB and QC are fed<BR>
+to the resistors of our majority gate.
+
+<P>Because I only had a 74LS163 in the drawer, a<BR>
+74HCT245 had to be placed in between to have<BR>
+the correct logic levels for the inputs A, B, C<BR>
+of our majority gate.
+
+<P><B>There are resistor networks available in a<BR>
+5 pin SIL package, which contain 4 resistors.</B><BR>
+For this test, I didn't solder them directly into<BR>
+the PCB, but plugged them into a precision<BR>
+DIP socket instead.
+
+<P>The only 74HC IC I had in the drawer was a<BR>
+74HC32, so it became a part of my contraption.
+
+<HR>
+
+<P><B>Warning:</B><BR>
+Be aware, that a CMOS logic gate has an input<BR>
+capacitance of up to 10 pF, and when placing a<BR>
+resistor in front of the input of said gate,<BR>
+the resistor and the capacitor will form up<BR>
+<B>a low pass filter.</B>
+
+<P>Now some pictures, of what the signal at the<BR>
+input of the CMOS gate may look like for<BR>
+different resistor values.
+
+<P><I>Note, that I hooked a passive 10:1 probe to the<BR>
+input of the gate, which probably had a 20 pF<BR>
+input capacitance...<BR>
+so the signals may be better than shown<BR>
+in the pictures.</I>
+
+<P>470 Ohm resistors: a very nice signal.<BR>
+(100 ns / 1 V div.)
+
+<P><IMG SRC="a4_maj_470.jpg">
+<HR>
+
+<P>1 kOhm resistors still would be ok...
+<P><IMG SRC="a4_maj_1k.jpg">
+<HR>
+
+<P>2.2 kOhm resistors:
+<P><IMG SRC="a4_maj_2k2.jpg">
+<HR>
+
+<P>But at 4.7 kOhm, the signal stops looking nice.
+<P><IMG SRC="a4_maj_4k7.jpg">
+<HR>
+
+<P>Propagation delay of such a 74HC32 based<BR>
+majority gate for different resistor values:
+
+<P><PRE>
+470  Ohm -> 10 ns
+1   kOhm -> 12 ns
+2.2 kOhm -> 16 ns
+4.7 kOhm -> 22 ns
+</PRE>
+
+<HR>
+
+<P>If you build a majority gate that way, it is highly<BR>
+recommended that you study the datasheets of<BR>
+the ICs first.<BR>
+And always be aware about the current you<BR>
+sink/source with the outputs of the gates<BR>
+which drive your majority gate...<BR>
+especially when such an output has to drive<BR>
+more than one majority gate input.
+
+<P>Place your resistors as close to the CMOS<BR>
+gate input as possible, and try to go with<BR>
+resistor values between<BR>
+<B>470 Ohm and 4.7 kOhm.</B>
+
+<HR>
+
+<P>Our example showed a 74HC32 two input OR<BR>
+logic gate, but it also should work with logic gates<BR>
+which have more than two inputs...<BR>
+with multiplexers...<BR>
+with 74HC245 buffers...<BR>
+<B>But not with Schmitt triggers, of course.</B>
+
+<HR>
+
+<P>Now for the boring part of the story.
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="a4_0.htm">[UP]</A>/
+<A HREF="a4_2.htm">[BACK]</A>
+<A HREF="a4_1.htm">[1]</A>
+<A HREF="a4_2.htm">[2]</A>
+[3]
+<A HREF="a4_4.htm">[4]</A>
+<A HREF="a4_5.htm">[5]</A>
+<A HREF="a4_6.htm">[6]</A>
+<A HREF="a4_7.htm">[7]</A>
+<A HREF="a4_8.htm">[8]</A>
+
+<A HREF="a4_4.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2009
+</BODY>
+</HTML>
+

@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Traffic Lights</TITLE>
+</HEAD>
+<BODY>
+
+<P><CENTER><H2>Traffic Lights</H2></CENTER>
+
+<HR>
+<P>
+Traffic lights, an unpleasent thematic.
+<P>
+Controlling traffic lights usually takes part at beginner classes,<BR>
+to teach the basics of programming or digital design.<BR>
+It is known to have bored generations of pupils/students<BR>
+out of their minds.
+<P>
+Unfortunately, I don't have a better example.
+
+
+<HR>
+
+<P>
+To start simple:<BR>
+One road, a narrow spot (maybe roadworks), two traffic lights<BR>
+(each one with three different colours).
+
+
+<P><IMG SRC="mpdroad1.png">
+
+<P>
+Obviously, two cars driving in different directions won't fit<BR>
+through at the same time.<BR>
+Only one traffic light can be green, while the other is red.
+
+<P>
+Now to define, what one traffic light should do.
+
+
+<P><IMG SRC="mpd_phas.png">
+
+<P><PRE>
+<B>green:          </B>drive through.
+<B>yellow:         </B>prepare to stop, or hurry up. deceide !
+<B>red:            </B>stop.
+<B>red and yellow: </B>prepare to start racing.
+</PRE>
+<P>
+We could imagine one complete 360 degree cylinder rotation to happen<BR>
+within 6 minutes (360 seconds), <BR>what would make one degree per second.<BR>
+To be independend of rotating speed, the axis is labeled with graduations.
+
+<P><I>
+(Phases are not to scale with a "real" traffic light, but drawings look<BR>
+nicer that way.)
+</I>
+<P>
+After 360 degrees of rotation, the cylinder will start again at 0 degrees.<BR>
+We can imagine to take the blue axis, and to bend it to form a circle.<BR>
+Then we draw our colours into that circle...
+
+
+<P><IMG SRC="mpd_circ.png">
+
+<P>
+We imagine a disc, rotating counterclockwise.<BR>
+For the three lightbulbs of one traffic light, we place the switches<BR>
+at 0 degrees.<BR>
+Switches for the tree light bulbs of the other traffic light are placed<BR>
+180 degrees away.<BR>
+Note the red arrows, marking the positions of the switches.
+
+<P>
+And now, we know what to do.
+
+
+<P><IMG SRC="mpd_disc.png">
+
+<P>
+We just build tree metal discs (one per colour), and cut away anything<BR>
+that is not marked blue (ignore the lines used for construction).<BR>
+Since we have a big hole in the center of every disc, we turn them<BR>
+90 degrees to the left, and stick trough our cylinder.
+
+<P>
+Now to add switches, wires, light bulbs, motor and gear.
+
+<P><IMG SRC="mpd_rot.png">
+
+<P>
+Coming to mind, that the sequencer of the washing machine <B>had</B> two rows<BR>
+of switches, 180 degrees apart.<BR>
+All we have to do, is to replace the gear (for a faster rotation speed),<BR>
+and the cylinder (for another "program").
+
+
+<P>But what, if we have two roads ?
+
+<P><IMG SRC="mpdroad2.png">
+
+<P>
+For a crossing, we first connect two traffic lights (blue marked casting)<BR>
+with our sequencer.<BR>
+The left and the right traffic light show always the same color.<BR>
+Same thing for the upper and lower traffic light.<BR>
+Looks like we can use our sequencer without modifications,<BR> 
+when connecting two light bulbs in parallel.
+
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="mpd_0.htm">[UP]</A>/
+<A HREF="mpd_1.htm">[BACK]</A>
+<A HREF="mpd_1.htm">[1]</A>
+[2]
+<A HREF="mpd_3.htm">[3]</A>
+<A HREF="mpd_4.htm">[4]</A>
+<A HREF="mpd_5.htm">[5]</A>
+<A HREF="mpd_6.htm">[6]</A>
+<A HREF="mpd_7.htm">[7]</A>
+<A HREF="mpd_8.htm">[8]</A>
+<A HREF="mpd_3.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2005
+
+</BODY>
+</HTM>

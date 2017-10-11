@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Data path block diagram</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Data path block diagram</H2></CENTER>
+<HR>
+
+<P><B>First a short foreword:</B><BR>
+<I>I am aware,</I> that the idea of building a transistorised CPU<BR>
+may look a little bit strange/weird/eccentric.
+
+<P>If I want to do battle with FPGAs and RISC microcontrollers,<BR>
+I could enjoy this every single day at work.
+
+<P>But imagine a time, far away in the future...<BR>
+When CPLDs, FPGAs and microcontrollers would not have<BR>
+any practical value for the hobbyist, and 74LSxx in DIP<BR>
+package would be out of production.<BR>
+<I>(Or of too low/poor quality to be used in hobby projets.)</I>
+
+<P>Would be nice, if we could build our own CPU<BR>
+without proprietary hard/software.
+
+<P><B>Problem is:</B><BR>
+When all you expect to have in the future would be<BR>
+low_frequency transistors, model_railway transformers<BR>
+and christmas_tree illuminations,<BR>
+<I>building your own CPU is going to be quite a challenge.</I>
+
+<HR>
+
+<P>Comparing apples with pears may give incorrect results,<BR>
+what also counts for comparing dynamic MOS circuitry<BR>
+with a fully static bipolar design.
+
+<P>Nevertheless, transistor count for some CPUs<BR>
+(found this in the internet):<BR>
+<PRE>
+4004 <I>( 4 Bit)</I>: <B> 2300</B>
+8008 <I>( 8 Bit)</I>: <B> 3300</B>
+8085 <I>( 8 Bit)</I>: <B> 6200</B>
+8086 <I>(16 Bit)</I>: <B>29000</B>
+</PRE>
+
+<P>MT15 <I>(16 Bit)</I>, after some optimising, would contain<BR>
+ca. <B>2800</B> transistors, LED drivers not counted.<BR>
+<I>So don't expect too much from this CPU, it may<BR>
+never run any coloured windows.</I>
+
+<P>Now a block diagram of the MT15 data path.
+
+<P><IMG SRC="mt15a_path.png">
+
+<P>MT15 data path is, basically, one big master/slave<BR>
+flipflop, with multiple masters and slaves.
+
+<P>ACC, PC and program/data memory working as "master",<BR>
+T0, T1 and flags working as "slave".
+
+<P>The grey box on the left represents program/data memory.<BR>
+It isn't part of the CPU, address and date lines are<BR>
+buffered with 74HCT245.
+
+<P><B>ACC</B> is, basically, the "scratch_pad area",<BR>
+<P><B>PC</B> is the program counter, pointing to the<BR>
+next instruction to be fetched.
+
+<P>So far for the "masters". Now for the "slaves".
+
+<P>IR, instruction register, a 16 Bit transparent latch,<BR>
+holding the OpCode during instruction execution.
+
+<P><B>T0,T1</B> are temporary registers, working as<BR>
+ALU anti_race_latch for loading ACC,PC.<BR>
+They also could connect to address and data bus.
+
+<P><I>While constructing the instruction set, it appeared<BR>
+that data bus doesn't need to be written by T1</I>.<BR>
+
+<P>Now to describe the clock circuitry.
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="mt15a_0.htm">[UP]</A>/
+<A HREF="mt15a_0.htm">[BACK]</A>
+[1]
+<A HREF="mt15a_2.htm">[2]</A>
+<A HREF="mt15a_3.htm">[3]</A>
+<A HREF="mt15a_4.htm">[4]</A>
+<A HREF="mt15a_5.htm">[5]</A>
+<A HREF="mt15a_6.htm">[6]</A>
+<A HREF="mt15a_7.htm">[7]</A>
+<A HREF="mt15a_8.htm">[8]</A>
+
+<A HREF="mt15a_2.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2005
+</BODY>
+</HTML>
+

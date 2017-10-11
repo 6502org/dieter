@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Details</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Details</H2></CENTER>
+<HR>
+
+<P>Now a few words, how this V_Flag stuff could look like,
+when building your own.<BR>
+First an example, how A+B and A-B are done in hardware:
+
+<P><IMG SRC="v_addsub.png">
+
+<P>A+B is easy.<BR>
+The simplest approach to A-B is to invert B, and to keep the rest like with
+A+B.
+
+<P>Inverting B would make B' the <B>one's complement</B> of B.<BR>
+So for A-B, we have a low_active borrow... but now back on topic.
+
+<P>A close look to the inputs/outputs of the uppermost Bit in our
+8 Bit adder:
+
+<P><IMG SRC="v_add1.png">
+
+<P>C7 is the carry input for the uppermost Bit, C8 is the carry output.
+
+<P>Now a list, to define what happens on those signals:
+
+<P>
+<div align="left"><left>
+<table border="1" cellpadding="3">
+ <tr>
+  <td bgcolor="#9EC1FC"><strong>C7= </strong></td>
+  <td bgcolor="#9EC1FC"><strong>B7'=</strong></td>
+  <td bgcolor="#9EC1FC"><strong>A7 =</strong></td>
+  <td bgcolor="#9EC1FC"><strong>C8 =</strong></td>
+  <td bgcolor="#9EC1FC"><strong>Q7 =</strong></td>
+  <td bgcolor="#9EC1FC"><strong>V  =</strong></td>
+ </tr>
+ <tr><td>0</td> <td>0</td> <td>0</td> <td>0</td><td>0</td><td>0</td></tr>
+ <tr><td>0</td> <td>0</td> <td>1</td> <td>0</td><td>1</td><td>0</td></tr>
+ <tr><td>0</td> <td>1</td> <td>0</td> <td>0</td><td>1</td><td>0</td></tr>
+ <tr><td bgcolor="#9EFCC1">0</td> <td bgcolor="#C19EC1">1</td> <td bgcolor="#C19EC1">1</td> <td>1</td><td>0</td><td bgcolor="#00C1FC">1</td></tr>
+ <tr><td bgcolor="#9EFCC1">1</td> <td bgcolor="#C19EC1">0</td> <td bgcolor="#C19EC1">0</td> <td>0</td><td>1</td><td bgcolor="#00C1FC">1</td></tr>
+ <tr><td>1</td> <td>0</td> <td>1</td> <td>1</td><td>0</td><td>0</td></tr>
+ <tr><td>1</td> <td>1</td> <td>0</td> <td>1</td><td>0</td><td>0</td></tr>
+ <tr><td>1</td> <td>1</td> <td>1</td> <td>1</td><td>1</td><td>0</td></tr>
+</table>
+</left></div>
+
+
+<P>
+When the V_Flag is active, three conditions are true:<BR>
+1) A7=B7' <B>and</B> A7<>Q7 <BR>
+2) C7<>C8 <BR>
+3) ( Q7=0 <I>and</I> A7=B7=1 ) <B>or</B> ( Q7=1 <I>and</I> A7=B7=0 )
+
+
+<P>1) <B>XOR/AND:</B><BR>
+A fast/good thing when writing emulators.<BR>
+The VICE for instance uses something like that.
+<P><IMG SRC="v_vice.png">
+
+<P>2) <B>XOR</B><BR>
+An XOR between Carry input and output from the uppermost Bit in the adder.<BR>
+The simplest way to go, when you have access to those signals.<BR>
+<I>Promlem is, when using adder/ALU chips, like 74283 or 74181,<BR>
+you do not have access to C7.</I>
+
+<P><IMG SRC="v_7486.png">
+
+<P>3) <B>AND/OR</B><BR>
+When you don't have a carry input/output from the uppermost Bit,<BR>
+there is a third approach:
+<P><IMG SRC="v_andor.png">
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="v_0.htm">[UP]</A>/
+<A HREF="v_2.htm">[BACK]</A>
+<A HREF="v_1.htm">[1]</A>
+<A HREF="v_2.htm">[2]</A>
+[3]
+<A HREF="v_4.htm">[4]</A>
+
+<A HREF="v_4.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2005
+</BODY>
+</HTML>
+   

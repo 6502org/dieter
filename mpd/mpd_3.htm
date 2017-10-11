@@ -1,0 +1,160 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Counter and ROM</TITLE>
+</HEAD>
+<BODY>
+
+<P><CENTER><H2>Counter and ROM</H2></CENTER>
+
+<HR>
+
+<P>
+The 4017 (also known as CD4017, HEF4017 and MC14017) is a decimal counter<BR>
+with decoded outputs.<BR>
+Only one output (Q0..Q9) can be 1 at a time, while all other outputs are 0.<BR>
+CO is used to cascade such counters, we won't need it for that example.<BR>
+RES=1 resets the counter to Q0=1, regardless of the signals on CLK and !ENA<BR>
+(could come in handy, when counting from 0 to something less than 9).<BR>
+!ENA=0 enables the clock, the counter advances/increments with the rising<BR>
+edge (transition from 0 to 1) at the clock signal on CLK.<BR>
+(What could be used to stop the counter, when connected to one of the outputs.<BR>
+Remember our washing machine sequencer ?)<BR>
+To generate such a clock, reading the datasheet of the NE555 timer may help.
+
+
+<P><IMG SRC="mpd_4017.png">
+
+<P>
+The outputs of the 4017 can't be directly connected together, so each one<BR>
+of them big/strange_looking dots represents a diode (maybe 1N4148). <BR>
+For this example we only use coloured LEDs, but you sure can imagine<BR>
+optocouplers or transistors for driving light bulbs instead.
+
+<P>
+Coming to mind, that the resolution of the counter isn't that good.<BR>
+There are plenty of ruthless drivers out there, ready to slam the gas pedal<BR>
+if the traffic light <B>gives the imagination</B> of soon turning into green,<BR>
+and they also show no fear of breaking through the crossing after one<BR>
+second of red light.<BR>
+One of our traffic lights tells "decide to stop, or hurry up", while the<BR>
+other says "prepare to start racing."<BR>
+You sure can imagine, what will happen, when two of them racing drivers<BR>
+enter the crossing at such a moment.<BR>
+Both of them will climb out of their wrecked vehicles, and instantly send<BR>
+you their lawyers: because it's all your fault.
+
+<P>
+Now to build a traffic light sequencer with components, that we may meet<BR>
+again when building a processor.
+<P>
+The 74163 (74LS/F/HCT/ACT163) is a synchronous counter,<BR>
+with synchronous control inputs.<BR>
+Synchronous to a rising edge at the clock input CLK.<BR>
+ENP=1 and ENT=1 enables the counter to increment.<BR>
+!CLR=0 resets the counter to zero.<BR>
+!LD=0 sets the counter to the value present at the inputs A..D.<BR>
+On the 74163, all those things happen only at the rising edge on CLK.
+<P>
+The 74161 has an identical pinout, but resets to zero whenever !CLR=0,<BR>
+regardless of the signals on all the other control pins.<BR>
+<I>
+What means, that if we tie A,B,C,D to 0, !CLR to 1, and use !LD to reset<BR>
+the counter, we could plug the 74161 or the 74163 into the same socket.</I><BR>
+When the counter reached the value 15, and ENT=1, the RCO output is set to 1.<BR>
+What allows us to connect such counters together to reach multible lengths<BR>
+of 4 Bit, for a more detailed description read the 74163 datasheet.<BR>
+The trick would be to allow Bit 4..7 to increment, when Bit 0..3 flips<BR>
+over to zero.
+
+
+<P>
+27C512 (or 27512) is a 64 kB EPROM: 16 address lines, a 0_active chip select<BR>
+!CS, a 0_active output_enable, <BR>and 8 data outputs that switch to high<BR>
+impedance if !CS and/or !OE are not 0.
+
+
+<P>
+Both components are a little bit overdosed, since we don't need all the<BR>
+counter functions and all the EPROM memory, but it's just an examle.
+
+
+<P><IMG SRC="mpd_rom1.png">
+
+<P>
+The counter runs from 0..15, but note the line from the EPROM output O7<BR>
+that passes through the inverter, to reset the counter to zero if we have
+to.
+
+
+<P>
+Now we take the diode matrix from the 4017 example, and turn it into a<BR>
+list of binary values: replace all the dots with 1 (and all the crosspoints<BR>
+without a dot with 0).<BR>
+The LEDs are connected to O0..O5, and O6 is unused (so we set it to 0).<BR>
+To maintain compatibility with the 4017 example, we can use O7 to mark<BR>
+an entry as the end of our list, to reset the counter at the start of the<BR>
+next clock cycle.<BR>
+(we don't have to count up to 15 as supported by the 74163).
+
+
+<P><IMG SRC="mpd_matr.png">
+
+<P><PRE>
+00001100 // 0x0c
+00001100 // 0x0c
+00001100 // 0x0c
+00001010 // 0x0a
+00011001 // 0x19
+00100001 // 0x21
+00100001 // 0x21
+00100001 // 0x21
+00010001 // 0x11
+10001011 // 0x8b
+</PRE>
+
+<P>
+After converting the binary values into hexadecimal, we can burn them<BR>
+into the EPROM.<BR>
+And if we did everything right, it should work as with the 4017.<BR>
+You sure can imagine, how to enlarge/work_over this list for a better<BR>
+red phase, to keep the lawyers away from you.
+
+
+<HR>
+
+<P>
+Problem is, that, when building a processor, the microcode may become<BR>
+a lot bigger.
+<P>
+Can you imagine the horrors of manually typing 256 kB of hexadecimal numbers ?<BR>
+Or the effort for correcting all the typing errors ?<BR>
+And what, if we unintentionally skipped one single Byte somewhere ?<BR>
+How to modify such a monstrousity after discovering a design error ?
+
+
+<P>
+To prevent enervated programmers from mutating into creatures known<BR>
+from "Mars Attacks", people built/invented software tools...<BR>
+Assemblers, for instance.
+
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="mpd_0.htm">[UP]</A>/
+<A HREF="mpd_2.htm">[BACK]</A>
+<A HREF="mpd_1.htm">[1]</A>
+<A HREF="mpd_2.htm">[2]</A>
+[3]
+<A HREF="mpd_4.htm">[4]</A>
+<A HREF="mpd_5.htm">[5]</A>
+<A HREF="mpd_6.htm">[6]</A>
+<A HREF="mpd_7.htm">[7]</A>
+<A HREF="mpd_8.htm">[8]</A>
+<A HREF="mpd_4.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2005
+</BODY>
+</HTM>

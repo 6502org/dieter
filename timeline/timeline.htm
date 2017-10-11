@@ -1,0 +1,205 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD><TITLE>Timeline</TITLE></HEAD>
+<BODY>
+
+<P><CENTER>Some of Dieter's old stuff.</CENTER>
+
+<HR>
+
+<P><PRE><I>
+ ----------------------------------
+| "Send me a message in the past   |
+| to prevent this from happening." |
+ ----------------------------------
+</I></PRE>
+
+<P><HR><!---------------------------------------------------------------------->
+<P><B>1983</B><BR>
+Did build my own keyboard.<BR>
+Keyboard layout was similar to the CBM 3016,<BR>
+added a few keys when connecting it to a C64 some years later.<BR>
+Stopped any attempts of etching PCBs at home after this project...
+
+<P><IMG SRC="keyboard.jpg">
+
+<P><HR><!---------------------------------------------------------------------->
+<P><B>1987</B><BR>
+Did build a tiny 6502 computer inside a metal box,<BR>
+which once was a tuner from an old TV.<BR>
+6532, 8 kB RAM, 2* 8 kB EPROM, 7 segment display.<BR>
+(No, it wasn't compatible to the Junior Computer. In 2008, it still worked.)
+
+<P><IMG SRC="box_1.jpg">
+<P><IMG SRC="box_2.jpg">
+
+<P>Did build a big 6502 computer with 32 kB RAM and 32 kB EPROM.<BR>
+It did run with a heavily modified C64 Kernal + Basic.<BR>
+It also did have 512*512 vector graphics (8 colors / 192 kB DRAM),<BR>
+featuring the EF9367 CRT controller.<BR>
+It was a single sided PCB layout, done with knive and tape on transparent<BR>
+paper and such... I wouldn't recommend this approach.<BR>
+<I>Unfortunately, wiring the outputs of the graphics card directly into<BR>
+the video amplifiers of an old TV (without separated mains) turned out<BR>
+to be a bad idea, and at some point the computer died.</I>
+<P>
+
+<P><IMG SRC="toast_1.jpg">
+
+<P>CRT controller PCB isn't shown in this picture, it's behind this CPU<BR>
+PCB and has nearly the same size.<BR>
+If you wonder about all those modifications on the PCB, it's because I<BR>
+did upgrade from a 1 MHz 6502 to a 4 MHz 65816, and tried to run<BR>
+the CPU at 4 MHz.
+
+<P><HR><!---------------------------------------------------------------------->
+<P><B>1988</B><BR>
+Did want more computing power (and address range) as with the 6502.<BR>
+From the addressing modes and the architecture, the 68k family looked interesting.<BR>
+So I did buid a small 68000 based computer with a 7 segment display,<BR>
+based on an article from the "Elektronik" magazine.<BR>
+(In 2008, it still worked.)
+
+<P><IMG SRC="68000_3.jpg">
+<P><IMG SRC="68000_1.jpg">
+<P><IMG SRC="68000_2.jpg">
+
+<P>Later, I did solder/wire an adapter, so I was able to use that computer<BR>
+for playing with the 68020.<BR>
+And the 68020 did offer a (by that time) incredible computing power...<BR>
+compared with PCs at that time frame.<BR>
+Unfortunately, the adapter soon started falling apart, due to cheap PCB material<BR>
+and a homebrew PGA144 socket which was improvised from precision DIP sockets.<BR>
+Another problem was, that the cheap DIP64 socket inside the computer<BR>
+didn't make reliable contact to a 68000 IC anymore after a few adapter<BR>
+plugging/unplugging cycles.<BR>
+Replacing it by a precision socket on a soldered/wired PCB wasn't fun.<BR>
+<I>That was the moment, when I did decide never to use cheap IC sockets again.</I>
+
+<P><HR><!---------------------------------------------------------------------->
+<P><B>1993</B><BR>
+Did some experiments with 80535 and 80537, like attaching a DRAM<BR>
+memory module from an 80386 motherboard with only a few 74xx TTL ICs.<BR>
+Or controlling 24 RC servos with one 80535...
+
+<P>But because of my 6502/68k heritage, programming those microcontrollers<BR>
+in raw machine code wasn't fun.<BR>
+At some point, I decided to throw away my 8031 based stuff,<BR>
+and to make another try with the 68000.<BR>
+<I>Anyhow, it looks like Infineon later axed the 80535 and 80537.<BR>
+So what.</I>
+
+<P><IMG SRC="80535.jpg">
+
+<P>(Did pull out a few ICs, which went into other experiments...)
+
+<P><HR><!---------------------------------------------------------------------->
+<P><B>1995</B><BR>
+Did solder/wire a 68020/68881 based processor card, (double Eurocard size),<BR>
+with 32 Bit DataBus and fast SRAM. <BR>
+
+<P><IMG SRC="68020_top.jpg">
+<P><IMG SRC="68020_bot.jpg">
+
+<P>It really worked (at 29 MHz it stopped to work reliable), but then I felt a<BR>
+strange need to buy the full version of the Eagle PCB layout software after<BR>
+soldering all those wires.
+
+<P><HR><!---------------------------------------------------------------------->
+<P><B>1996</B><BR>
+Did solder/wire board some smaller PCBs (including a 16 Bit 68020 processor card).<BR>
+Also some double Euro sized peripheral stuff... like a PCB with eight 6522,<BR>
+able to trigger a vectored interrupt.
+
+<P>Also did start to play with CPLDs: the ispLSI1016.<BR>
+The design software was nice: each logic block was visible on the screen,<BR>
+you could click one with the mouse and then 'haxxor' your equations into it.<BR>
+Felt pretty much like having a few GALs tied together inside of one IC<BR>
+package, and for a year, I was happy...
+
+<P><IMG SRC="68020_2.jpg">
+
+<P><HR><!---------------------------------------------------------------------->
+<P><B>1997</B><BR>
+...and did spend some more time playing with 68k related hardware/software.<BR>
+Like interfacing to stepper motors...
+
+<P><IMG SRC="motor_1.jpg">
+<P><IMG SRC="motor_2.jpg">
+
+<P><HR><!---------------------------------------------------------------------->
+<P><B>1999</B><BR>
+Did decide to build an Eurocard sized 68HC000 / 16 MHz single board computer,<BR>
+with all ICs plugged into in precision DIP sockets.<BR>
+1 MB SRAM, 1 MB Flash, a 68901, a PIC16C84 to connect a PC keyboard...<BR>
+and so on.<BR>
+It was a cute multilayer PCB, and the prototype worked with only a few<BR>
+minor changes.
+
+<P><IMG SRC="68000_m.jpg">
+
+<P><HR><!---------------------------------------------------------------------->
+<P><B>2001</B><BR>
+Did build a 6502 based single board computer.<BR>
+Buying UARTs turned out to be difficult, so I did decide to integrate two<BR>
+PIC16C65 into the design... to work as UART, keyboard interface and such.<BR>
+Also modified the C64 Kernal + Basic, to make it work with the 6522<BR>
+instead of the 6526 (which seemed to be out of production).
+
+<P><IMG SRC="6502.jpg">
+
+<P>(Sorry for the bad quality of the picture.)
+
+<P>The 6845 also appeared to be out of production, so I did decide to<BR>
+build my own CRT controller with 74xx TTL and an EPROM.
+
+<P>Also connected to the internet, which turned out the be a strange new world.<BR>
+Until that time, I was all on my own for building my hardware/software,<BR>
+equipped with inapprobiate tools, and with ancient datasheets/articles<BR>
+printed on paper... the 'lone wolf' approach.<BR>
+Wouldn't have started a 6502 related project without the existence of 6502.org.
+
+<P><HR><!---------------------------------------------------------------------->
+<P><B>2002</B><BR>
+Incident ! My supply chain of 6502 ICs went disrupted.<BR>
+They disappeared out of all the cataloges here in Germany, and it looked <BR>
+like there was no distributor left selling 6502 related parts.<BR>
+Ordering things from "abroad" wasn't an option, and WDC had no minimum<BR>
+order policy back then.
+
+<P><B>[Edit: The 6502 showed up at Mouser/Germany in 2012 again.]</B><P>
+
+<P>So I stumbled into the world of hobby TTL CPU design, what resulted in the<BR>
+M01 prototype, which still had quite a few serious bugs. It was intended to be<BR>
+a 180*100mm sized single board CPU. A high density layout...
+
+<P><IMG SRC="m01_bot.jpg">
+<P><IMG SRC="m01_top.jpg">
+
+<P>(Some ICs were salvaged out of the corpse and recycled for building M02.)
+
+<P>While fixing the bugs, I realised that I would like to have a 24 Bit<BR>
+address bus, and it turned out that it wouldn't have fit into one PCB anymore.<BR>
+So I did a complete redesign, resulting in the M02 CPU.<BR>
+Finding most of the bugs inside the microcode took me six months,<BR>
+and there really were quite a few strange effects.<BR>
+But in the end, I was able to run 6502 machine code with my first TTL CPU.
+
+<P>Also did build some peripheral PCBs... like a CRT controller,<BR>
+able to display text and graphics at the same time.
+
+<P>Did write a M02 emulator for PIC16C65, then ported it to PIC18F452.<BR>
+Unfortunately, it did turn out to be ca. 3 times slower than M02.
+
+<P><HR><!---------------------------------------------------------------------->
+<P><A href="../index.htm">[HOME]</A>
+<HR>
+
+<P><CENTER>"Every grain of dust<BR>
+carries a long forgotten story<BR>
+about an epic battle in the middle of the void<BR>
+that nobody wanted to listen to."</CENTER>
+
+<HR>
+<P>(c) Dieter Mueller 1980..2015
+
+</BODY></HTML>

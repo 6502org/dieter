@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Details</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Details</H2></CENTER>
+<HR>
+
+<P>Execution of all OpCodes is conditional:<BR>
+<B>Bit 15..13</B> <I>are used to control a 74151_like multiplexer<BR>
+for Flag testing.</I><BR>
+If the selected condition is <I>TRUE</I>, the OpCode will be executed.<BR>
+If the condition is <I>FALSE</I>, the CPU will reject/skip the OpCode,<BR>
+and execute a NOP instead.<BR>
+000 (Default) means, the OpCode will always be executed.<BR>
+001 is used to test a signal from a periphal device outside the CPU<BR>
+(and may be used for emulating an Interrupt).<BR>
+The six combinations left can be used to test, if one of the three Flags<BR>
+N, Z, C are 0 or 1, allowing us to implement things like conditional<BR>
+jumps, branches, and returns.<BR>
+<I>Note, that MT15 doesn't have a V_Flag</I><BR>
+(for detecting overflow in signed integer calculations).
+
+<P><B>Bit 12..10</B> <I>selects the addressing mode.</I><BR>
+MT15 instructions always take two words (4 Bytes) of program memory.<BR>
+The first word contains the OpCode, while the second word may contain<BR>
+a parameter (immediate value, address, etc.).<BR>
+<I>Regardless if the second word is used or not:<BR>
+all OpCodes have the same size in memory.</I><BR>
+000 and 001 indicate immediate addressing, means that the second word<BR>
+is passed directly into the ALU (together with a register like ACC or PC),<BR>
+skipping all further steps of address calculation.<BR>
+110 indicates absolute addressing, means that the second word points<BR>
+to a location in memory, that contains the data to be read/written.<BR>
+111 selects indirect adressing, the second word points to a location in<BR>
+memory, that contains the address of the memory lacation to be read/written<BR>
+(we will need this when implementing a stack.)<BR>
+It's also possible to select a location in memory by adding a register<BR>
+with the second word, allowing us the use of PC relative code (or data<BR>
+or pointers), or to use ACC as an offset for fetching a new value to be<BR>
+written into PC from a table.
+
+<P><B>Bit 9</B> <I>is used for selecting the register to be connected<BR>
+to the ALU during data calculation:</I><BR>
+0 selects ACC, 1 PC.
+
+<P><B>Bit 8..7</B> <I>select, what to do with the ALU result after data<BR>
+calculation.</I><BR>
+00 means, the result isn't stored (although it will modify the Flags).<BR>
+This is useful for comparing a register with memory, or to test a word<BR>
+in memory for 0 or negative (0x8000..0xffff).<BR>
+The result could also be written to ACC (mostly used), into PC (for jumps,<BR>
+branches and returns), or back to memory.<BR>
+Yes, it is possible to increment/decrement/clear/shift a location in memory<BR>
+without modifying ACC !
+
+<P><B>Bit 6</B> <I>indicates, that Flags should be modified by the result of<BR>
+the data calculation.</I><BR>
+When implementing a stack, there may be a need to increment or decrement<BR>
+a location in memory (used as a stack_pointer), without affecting the<BR>
+Flag status.
+
+<P><B>Bit 5..4</B> <I>control the ALU carry_input during data calculation.</I><BR>
+The input can be forced to 0 (as for ADD), or to 1 (what will increment<BR>
+a word passed through the ALU).<BR>
+It's also possible to connect the Carry_Flag (C_Flag) to the ALU input,<BR>
+for things like ADC and SBC.<BR>
+
+<P><B>Bit 3..0</B> <I>are used to control the ALU during data calculation.</I><BR>
+Like to select, if the word from a register or the word from memory<BR>
+should be passed through, incremented/decremented, shifted etc.<BR>
+Warning: Bit 3=1 indicates an arithmetic operation, means the Flags<BR>
+N,Z,C are modified. Bit 3=0 may affect only the Flags N and Z.<BR>s
+So take care when using CLR... better use SET with c_in=1.
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="mt15i_0.htm">[UP]</A>/
+<A HREF="mt15i_2.htm">[BACK]</A>
+<A HREF="mt15i_1.htm">[1]</A>
+<A HREF="mt15i_2.htm">[2]</A>
+[3]
+<A HREF="mt15i_4.htm">[4]</A>
+<A HREF="mt15i_5.htm">[5]</A>
+<A HREF="mt15i_6.htm">[6]</A>
+<A HREF="mt15i_7.htm">[7]</A>
+<A HREF="mt15i_8.htm">[8]</A>
+
+<A HREF="mt15i_4.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2005
+</BODY>
+</HTML>
+

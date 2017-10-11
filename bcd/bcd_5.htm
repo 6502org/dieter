@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Detection with propagate/generate_signals</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Detection with propagate/generate_signals</H2></CENTER>
+<HR>
+
+<P>Thanks to Beregnyei Balazs, who tried to dissect the NMOS 6502
+at transistor level.
+
+<P>Tried to redraw the pseudo_tetrade detection at gate level.<BR>
+
+<P><IMG SRC="bcd_pg1.png">
+
+<P>Implementation is a little bit different inside the 6502,<BR>
+because it makes use of NOR, NAND, XNOR gates.
+
+<P>The grey marked box could be a part of the carry chain,<BR>
+because C1 is the output carry from ALU Bit 0.<BR>
+<I>(But in the NMOS 6502, it isn't.)</I>
+
+<P>Note the red marked 4_input_OR gate.<BR>     
+If the ALU uses OR based propagate_signals (P1=A1|B1),<BR>
+<I>like in the 6502,</I> the G1 input of this gate isn't necessary.
+
+<HR>
+
+<P>
+Wiring the carry_outputs together by using open_collector NANDs,<BR>
+for building a faster/simpler variant:
+
+<P><IMG SRC="bcd_pg2.png">
+
+<P><I>Note: carry output is low_active.</I>
+
+<P><B>Basically, we are building up two carry chains:</B>
+
+<P>One mostly for binary arithmetic, that detects results > (decimal) 15.<BR>
+<I>Note the logic gates in the green marked box, that are part of the
+ALU carry chain.</I>
+
+<P>And another one to be used in decimal mode only, that detects results from
+(decimal) 10..15.
+
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="bcd_0.htm">[UP]</A>/
+<A HREF="bcd_4.htm">[BACK]</A>
+<A HREF="bcd_1.htm">[1]</A>
+<A HREF="bcd_2.htm">[2]</A>
+<A HREF="bcd_3.htm">[3]</A>
+<A HREF="bcd_4.htm">[4]</A>
+[5]
+<A HREF="bcd_6.htm">[6]</A>
+<A HREF="bcd_7.htm">[7]</A>
+
+<A HREF="bcd_6.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2006
+</BODY>
+</HTML>
+
+

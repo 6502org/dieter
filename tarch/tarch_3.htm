@@ -1,0 +1,113 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Building registers</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Building registers</H2></CENTER>
+<HR>
+
+<P>Building a register file isn't easy.
+
+<P>Chances to get hands on 74172 or AM29705 are low, same thing for synchronous<BR>
+bi_port RAM.
+
+<P>Speaking of RAM, I did use a RAM in my M02 project for implementing the<BR>
+registers, but nowadays buying fast SRAMs in DIP package would be going to<BR>
+be tough. Also, correct timing for controlling 10nS RAM with 20ns TTL might<BR>
+have its pitfalls. For more details, consult/dissect the schematics of my M02<BR>
+project.
+
+<P>First a version with one RAM.<BR>
+A multiplexer selects, what register to write, and what register to read into<BR>
+the CPU internal address and data bus. The multiplexer is connected to the address<BR>
+lines of the RAM. Also, we would need three 74573 buffers to handle the data while<BR>
+reading/writing the RAM.
+
+<P><IMG SRC="tarch_ram1.png">
+
+<HR>
+
+<P>To make things faster, it's possible to run two RAMs in parallel.<BR>
+(Writing into both RAMs happens simultaneously, so both RAMs will have the<BR>
+same contents.)
+
+<P><IMG SRC="tarch_ram2.png">
+
+<P>Since there are fast 512 kB RAMs, one could implement large register windows<BR>
+like with SPARC or AM29k. When going for a pipelined CPU, another idea<BR>
+would be trying to run threads by hardware in parallel, for more details<BR>
+consult/dissect the Innovasic Fido 1100 datasheet.<BR>
+(Might give you some ideas for the FPGA implementation as well...)
+
+<P>Another idea might be integrating 512 kB memory into the CPU, with "data address<BR>
+generators" like in SHARC DSPs to index the memory... and a third RAM that<BR>
+contains the instructions.
+
+<P>All nice and fascinating ideas, but for our TREX CPU, we did decide to go with<BR> 
+things available in DIP package, what excludes the use of fast RAMs.<BR>
+<I>Now back to forming building blocks from premordeal slime...</I>
+
+<HR>
+
+<P>Another idea would have been using the 74LS670, a 4 * 4 Bit RAM with separate<BR>
+read/write ports. Building a fast 32 Bit register file with eight registers and<BR>
+two separate data output ports would require 32 such ICs, but it's hard to tell<BR>
+what the availability of the 74670 might look like in the future.
+
+<P>Well, there still is the 74574 8 Bit latch, which is supposed to stay in production<BR>
+for a while. Imagine to have a "stack" of 74574s, with 18 of the 20 pins soldered<BR>
+together: data inputs and outputs, GND and VCC. Control signals (load and output<BR>
+enable) would be separate for each IC, of course.<BR>
+You sure can imagine, that it might be possible to build sort of a "RAM" from such<BR>
+devices.
+
+<P>...but we want to have two outputs for our "RAM".<BR>
+One approach would be to attach two 74245 buffers to the outputs of each 74574,<BR>
+so building a 32 Bit register file in the way we want would take 4 * 8 = 32 <B>74574</B><BR>
+and 4 * 8 * 2 = 64 <B>74245</B>, that's 192 ICs in total.
+
+<P><IMG SRC="tarch_reg1.png">
+
+<P>But since the 74574 has an output enable like the 74245 buffer, there would<BR>
+be another approach:
+
+<P><IMG SRC="tarch_reg2.png">
+
+<P>It would take 64 74574, and we did decide to take this approach.<BR>
+It's funny, how the price for ICs goes down when ordering large quantities,<BR>
+isn't it ?
+
+<P>Load factor issues (fan_in/fan_out) sure are important when building something<BR>
+like that with 74LS parts, so we went for 74HCT instead.
+
+<P>Note, that this trick of connecting 74574s together also would work when using<BR>
+counters. Having counters as registers sure would speed up post_increment or <BR>
+pre_decrement addressing modes, but 74ALS869 counters are very expensive<BR>
+and hard to get, and using GAL22V10 in large numbers will drain plenty of<BR>
+current from the power supply.
+
+<P>Steve Chamberlin did a nice implementation for GAL22V10 based 8 Bit<BR>
+up/down counters in his BMOW hobby CPU project.
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="tarch_0.htm">[UP]</A>/
+<A HREF="tarch_2.htm">[BACK]</A>
+<A HREF="tarch_1.htm">[1]</A>
+<A HREF="tarch_2.htm">[2]</A>
+[3]
+<A HREF="tarch_4.htm">[4]</A>
+<A HREF="tarch_5.htm">[5]</A>
+<A HREF="tarch_6.htm">[6]</A>
+<A HREF="tarch_7.htm">[7]</A>
+<A HREF="tarch_8.htm">[8]</A>
+
+<A HREF="tarch_4.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2007, 2008
+</BODY>
+</HTML>
+

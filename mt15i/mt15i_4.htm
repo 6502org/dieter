@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Flag tricks</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Flag tricks</H2></CENTER>
+<HR>
+
+<P>Now for a better description of some side effects,<BR>
+when playing with Bit 4..6.
+
+<P>Testing a Word in memory for zero or negative would<BR>
+(for instance) encode as:<BR>
+always, absoute_addressing, don't write result, modify_Flags, move_memory<BR>
+<PRE>
+<B>tst&</B>    <I>MACRO</I>   addr
+        dc.w    %0001100001000101 ; $1845
+        dc.w    addr
+        <I>ENDM</I>
+</PRE>
+<P>In 68000 assembly language, dc.w defines a 16 Bit constant.
+<P><I>MACRO</I> means, that the assembler will replace every <B>tst&</B><BR>
+found in the source code with those two 16 Bit constants. <BR>
+End of the macro is marked with <I>ENDM</I>.
+
+<HR>
+<P>For comparing ACC with an immediate value:<BR>
+always, immediate, don't write result, modify_Flags, c_in=1, SUB<BR>
+Basically a subtraction, but we throw away the result and only modify Flags.
+<BR><PRE>
+cmp#    MACRO   val
+        dc.w    %0000000001111010 ; $007a
+        dc.w    val
+        ENDM
+
+Result:
+ACC< val: C_Flag=0
+ACC>=val: C_Flag=1
+</PRE>
+<BR>Note: for ADD, force c_in to 0. For SUB, force c_in to 1.<BR>
+<I>That's because ADD uses a high_active carry, while SUB uses a low_active
+borrow...</I><BR>
+as with the 6502.<BR>
+For ADD/SUB/cmp with more than 16 Bit, connect ALU c_in to the C_Flag.
+
+<HR>
+<P>When incrementing/decrementing ACC, add# 1 or sub# 1 can be used.
+
+<P>There isn't a dedicated "increment" OpCode, but incrementing a word<BR>
+in memory can be done by using MVM, with c_in=1:<BR>
+always, absolute_addressing, write to memory, modify_Flags, c_in=1, MVM.<BR>
+<PRE>
+inc&    MACRO   addr
+        dc.w  %0001100111110101 ; $19f5
+        dc.w  addr
+        ENDM
+</PRE>
+
+<HR>
+<P>Now some words for shifting and rotating:<BR>
+<PRE>
+c_in=0     : shifts the word, filling empty locations with 0
+c_in=C_Flag: rotates the word through the C_Flag.
+</PRE><BR>
+There is a trick for shifting words to the right (means, divide by 2),<BR>
+containing 16 Bit signed integer:<BR>
+First, we read the word from memory, shift it left, and throw away <BR>
+the result, so the C_Flag contains the sign Bit.<BR>
+Second, we shift the word in memory right with c_in=C_Flag,<BR>
+filling empty locations with said sign Bit.
+
+<HR>
+<P>Now another trick: MT15 can't directly read/write the status register.<BR>
+Nevertheless, it is possible to read/restore Flag status.<BR>
+<PRE>
+SaveFlg MACRO
+        ;
+        dc.w  %0000000010001000 ; set ACC to $0000, don't modify Flags
+        dc.w  0
+        ;
+        dc.w  %1100000010000010 ; $e082 if_c,  ora# $8000, don't mod. Flg.
+        dc.w  $8000
+        ;
+        dc.w  %0110000010000010 ; $6082 if_n,  ora# $4000, don't mod. Flg.
+        dc.w  $4000
+        ;
+        dc.w  %1000000010000010 ; $a082 if_nz, ora# $2000, don't mod. Flg.
+        dc.w  $2000
+        ;
+        ENDM
+</PRE><BR>
+Note, that all those commands don't modify the Flags.<BR>
+Basically, we now transferred the Flags C,N,Z into ACC Bit 15,14,13.
+
+<P>Restoring the Flags is easy:<BR>
+all we have to do is shifting the value in ACC left, with c_in=0.<BR>
+<PRE>
+RestoreFlg MACRO        ;restore_Flags
+           ;
+           dc.w  %0000000001001110 ; $004E cin=0, SLR, modify Flags
+           dc.w  0
+           ;
+           ENDM
+</PRE>
+<P>Saving/Restoring ACC without modifying the Flags is basically a "move"
+with OpCode Bit 6 = 0.
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="mt15i_0.htm">[UP]</A>/
+<A HREF="mt15i_3.htm">[BACK]</A>
+<A HREF="mt15i_1.htm">[1]</A>
+<A HREF="mt15i_2.htm">[2]</A>
+<A HREF="mt15i_3.htm">[3]</A>
+[4]
+<A HREF="mt15i_5.htm">[5]</A>
+<A HREF="mt15i_6.htm">[6]</A>
+<A HREF="mt15i_7.htm">[7]</A>
+<A HREF="mt15i_8.htm">[8]</A>
+
+<A HREF="mt15i_5.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2005
+</BODY>
+</HTML>
+

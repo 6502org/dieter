@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Status Register</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Status Register</H2></CENTER>
+<HR>
+
+<P>Now to describe the R0, the Status Register.
+
+<P>As in other CPUs, we have the Flags N,V,Z,C which are located in Bit 3..0<BR>
+of the status register (actually two 7474).<BR>
+Since we might want to load the status register with a value, there is a 74157<BR>
+multiplexer in the inputs of those flipflops to load them from the bus in that case.
+
+<P><IMG SRC="tarch_sr1.png">
+
+<P>N,Z are always loaded simultaneously, so there is only one control signal LNZ<BR>
+for both flags.
+
+<HR>
+
+<P>A simplified block diagram of the Status Register:
+
+<P><IMG SRC="tarch_sr2.png">
+
+<P>At the bottom of the box, we have the Flags N,V,Z,C as described above.
+
+<P>I4..I15 are signals from outside the CPU, latched into a 74574 while fetching<BR>
+the next 32 Bit instruction word.
+
+<P>Then we have two 74273, which are cleared during reset.<BR>
+They both can be written by software, and the outputs are available outside<BR>
+the CPU (not shown in this block diagram).<BR>
+There are two control signals available outside the CPU to disable a software<BR>
+write to this latches, you might need that when implementing sort of a "memory<BR>
+management unit" or a "user/supervisor mode" like with 68k.
+
+<P>Then we have a 16:1 multiplexer for testing the status of the N,V,Z,C Flag<BR>
+and the inputs I4..15. Bit 3..0 from the 10 Bit instruction word controls the<BR>
+multiplexer.<BR>
+Buying a 74150 turned out to be very difficult, so we wired three 74151<BR>
+together to work as a 74150.
+
+<P>The 32 Bit Status Register can be read by the CPU...<BR>
+and this is, where trouble starts.
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="tarch_0.htm">[UP]</A>/
+<A HREF="tarch_4.htm">[BACK]</A>
+<A HREF="tarch_1.htm">[1]</A>
+<A HREF="tarch_2.htm">[2]</A>
+<A HREF="tarch_3.htm">[3]</A>
+<A HREF="tarch_4.htm">[4]</A>
+[5]
+<A HREF="tarch_6.htm">[6]</A>
+<A HREF="tarch_7.htm">[7]</A>
+<A HREF="tarch_8.htm">[8]</A>
+
+<A HREF="tarch_6.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2007, 2008
+</BODY>
+</HTML>
+

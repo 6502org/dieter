@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Wang 700 BCD correction</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Wang 700 BCD correction</H2></CENTER>
+<HR>
+
+<P>...But now back to the Wang 700.<BR>
+<A HREF="../a5/a5_5.htm">Which went mentioned in ALU design, part 5</A>.
+
+<P><IMG SRC="bcd2_wang1.png">
+
+<P>The multiplexer at the left selects, if the adder B input is fed<BR>
+by the <I>1s complement</I> of B (for binary A-B),<BR>
+by the <I>9s complement</I> of B (for BCD A-B),<BR>
+or by B (for binary/BCD A+B).
+
+<P>Actually, the multiplexer output is labeled TB<BR>
+in the original schematic...
+and I'm leaving out a few little details.
+
+<HR>
+
+<P>To make the set complete, I'm showing you the Wang 700<BR>
+9s complementer again:
+
+<P><IMG SRC="bcd2_9c_wang.png">
+
+<HR>
+
+<P>And now for the BCD correction.
+
+<P><IMG SRC="bcd2_cor_wang.png">
+
+<P>(I'm simplifying quite a few things here).<BR>
+The AND OR combination gates at the right side of the<BR>
+schematic (connected to the blue marked control signals)<BR>
+are a multiplexer, which either bypasses the BCD correction<BR>
+(by feeding Z3..0 and C_OUT' from the adder outputs), or which<BR>
+puts the BCD correction circuitry between the adder outputs<BR>
+and Z3..0 / C_OUT'.
+
+<P>The basic idea behind this BCD correction circuitry is simple:<BR>
+if the adder result isn't greater than 9<BR>
+(and the adder output carry C_OUT = 0),<BR>
+the result is a valid BCD number,<BR>
+so it is passed through unchanged.
+
+<P>If the adder result is greater than 9<BR>
+(or the adder output carry C_OUT is 1),<BR>
+the result isn't a valid BCD number.<BR>
+So the BCD correction circuitry sets C_OUT' to 1,<BR>
+and adds +6 to the adder result.
+
+<HR>
+
+<P>For instance: if the adder output is decimal 11<BR>
+(binary 1011, hexadecimal 0x0b), adding 6 will give us<BR>
+decimal 17 (hexadecimal 0x11, binary 10001).
+
+<P>So if the adder result is decimal 11, the BCD correction<BR>
+circuitry places decimal 1 on the Z3..0 outputs, and sets the C_OUT'<BR>
+output carry to 1 (because the adder output was greater than 9).
+
+<P>That's all there is to it.
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="bcd2_0.htm">[UP]</A>/
+<A HREF="bcd2_2.htm">[BACK]</A>
+<A HREF="bcd2_1.htm">[1]</A>
+<A HREF="bcd2_2.htm">[2]</A>
+[3]
+<A HREF="bcd2_4.htm">[4]</A>
+<A HREF="bcd2_5.htm">[5]</A>
+<A HREF="bcd2_6.htm">[6]</A>
+<A HREF="bcd2_7.htm">[7]</A>
+<A HREF="bcd2_8.htm">[8]</A>
+
+<A HREF="bcd2_4.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2012
+</BODY>
+</HTML>
+

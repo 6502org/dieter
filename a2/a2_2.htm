@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Multiplexer_ALU: implementation</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Multiplexer_ALU: implementation</H2></CENTER>
+<HR>
+
+<P>Now to describe, how to build such an ALU with<BR>
+logic gates.<BR>
+Open_collector_NANDs are a good choice, when using<BR>
+PNP/NPN_transistors.<BR>
+(Open collector means, that the output of the logic gate<BR>
+is the collector of a NPN transistor that switches to GND.)
+
+<P>First, we focus at the XOR at the ALU output:
+
+<P><IMG SRC="a2_xor.png">
+
+<P>For the AND/XOR_example, an active AND gate (all inputs 1)<BR>
+will turn the ALU output to 0.<BR>
+When connecting the outputs of open_collector_NANDs together<BR>
+to one pullup_resistor, they also work as some sort of<BR>
+AND/XOR_combination.
+
+<P>Would be nice, if we could integrate the shift_right_multiplexer<BR>
+into the ALU_output.
+
+<P>Now an example, how to build this ALU with AND/XOR<BR>
+(Without the unused GS0 gate):
+
+<P><IMG SRC="a2_aluan.png">
+
+<P>Another example with open_collector_NANDs:
+
+<P><IMG SRC="a2_aluocn.png">
+
+<P>Note the SHR and !SHR control signal at the ALU output.<BR>
+Looks like we could give the ALU an output_enable,<BR>
+if we want to.
+
+<P>Yes, 10 open_collector_NANDs and 4 inverters<BR>
+(two of them in front of the ALU to produce !A, !B).<BR>
+That's all.
+
+<P>Can't optimize this design any further at gate level.
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="a2_0.htm">[UP]</A>/
+<A HREF="a2_1.htm">[BACK]</A>
+<A HREF="a2_1.htm">[1]</A>
+[2]
+<A HREF="a2_3.htm">[3]</A>
+<A HREF="a2_4.htm">[4]</A>
+<A HREF="a2_5.htm">[5]</A>
+<A HREF="a2_6.htm">[6]</A>
+<A HREF="a2_7.htm">[7]</A>
+<A HREF="a2_8.htm">[8]</A>
+
+<A HREF="a2_3.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2005
+</BODY>
+</HTML>
+

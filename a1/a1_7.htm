@@ -1,0 +1,115 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE> Inside the Adder </TITLE>
+</HEAD>
+<BODY>
+
+<P><CENTER><H2>Inside the Adder</H2></CENTER>
+<HR>
+
+<P>A simple 1 Bit binary full adder with ripple carry.
+
+<P><IMG SRC="a1_adder.png">
+
+<P>Not much to say.
+<BR>
+If A=1 or B=1, Carry C_IN is <B>propagated</B> (P=1) to C_OUT.<BR>
+If A=1 and B=1, a Carry is <B>generated</B> (G=1), setting C_OUT to 1.<BR>
+<BR>
+When A=1 or B=1, but not both of them, and C_IN=0, Q=1.<BR>
+Q gets inverted, if C_IN=1.
+
+<P><IMG SRC="a1_add1.png" >
+
+<P>Now to optimize for speed and size.
+
+<P><IMG SRC="a1_nadder.png">
+
+<P>For more speed, we could use two 74151, both of them<BR>
+connected to C_IN, A, B at the select lines.<BR>
+One generates Q, the other C_OUT.<BR>
+If we draw the multiplexers at gate level,<BR>
+and optimize for size, the result<BR>
+may look a bit like the obsolete 7483.
+
+<P>Connecting four 1 Bit adders together:
+<P><IMG SRC="a1_4bitadd.png">
+
+<P>Unfortunately, carry has to pass through a lot of gates.<BR>
+For a faster speed, we have to use parallel carry, as in the 74283.<BR>
+We just take P0..3 and G0..3 from the AND/OR gates<BR>
+(that are connected to A0..3, B0..3)<BR>
+Then we calculate C0..3 and give it to the circuitry<BR>
+that is responsible for Q0..3.<BR>
+To make things simpler, we call C_IN C0, an C_OUT C4.
+
+<P><PRE><B>
+C1 = G0 | C0 & P0                                             
+C2 = G1 | C0 & P0 & P1           | G0 & P1                            
+C3 = G2 | C0 & P0 & P1 & P2      | G0 & P1 & P2      | G1 & P2              
+C4 = G3 | C0 & P0 & P1 & P2 & P3 | G0 & P1 & P2 & P3 | G1 & P2 & P3 | G2 & P3   
+</B></PRE>
+
+<P>You should recognize some kind of pattern in there.<BR>
+And if we have low_active P0..3 and G0..3 signals,<BR>
+and add a P and G output for cascading this structure<BR>
+to multible lengths of 4 Bit, it is called a 74182.
+
+<HR>
+
+<P>What, if 74283 and 74182 are no longer available<BR>
+for the mere hobbyist ?<BR>
+Time for another 74151 8:1 Multiplexer trick. <BR>
+We are not limited to three inputs when evaluating<BR>
+logic functions on the 74151, because it has a low_active<BR>
+output enable.<BR>
+Also, who said that the lookup table has to be<BR>
+only made up with constants ?
+
+<P>A carry chain for 2 Bits, consisting of two AND/OR gate,<BR>
+to be crammed into one 74151.
+
+<P><IMG SRC="a1_chain1.png">
+
+<P>Note, that carry_in is low_active, because we have<BR>
+to abuse the low_active output enable as OR_term.
+
+<P><IMG SRC="a1_chain2.png">
+
+<P>And now an example how to use it.
+
+<P><IMG SRC="a1_chain3.png">
+
+<P><I>Note, that 74151 has two outputs:<BR>
+one inverted, the other non_inverted.</I>
+
+<P>Could be three times faster than the NAND version,<BR>
+but not quite as fast as the 74F182/74S182.
+
+<P>Done with dissecting the Adder.
+
+<P>One question comes to mind:<BR>
+we have an ALU, built around an Adder.<BR>
+Can we modify the adder structure to form a faster ALU ?<BR>
+Yes, certainly, we can.
+
+<HR>
+
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="a1_0.htm">[UP]</A>/
+<A HREF="a1_6.htm">[BACK]</A>
+<A HREF="a1_1.htm">[1]</A>
+<A HREF="a1_2.htm">[2]</A>
+<A HREF="a1_3.htm">[3]</A>
+<A HREF="a1_4.htm">[4]</A>
+<A HREF="a1_5.htm">[5]</A>
+<A HREF="a1_6.htm">[6]</A>
+[7]
+<A HREF="a1_8.htm">[8]</A>
+<A HREF="a1_8.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2004
+</BODY>
+</HTML>

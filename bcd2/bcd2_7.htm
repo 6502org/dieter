@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+<TITLE>Excess 3, BCD, binary</TITLE>
+</HEAD>
+
+<BODY>
+<P><CENTER><H2>Excess 3, BCD, binary</H2></CENTER>
+<HR>
+
+From the Fairchild Fast Applications Handbook, 1987, page 5-38:<BR>
+Converting an 8 Bit BCD number into a 7 Bit binary number:
+
+<P><IMG SRC="bcd2_bcd2bin.png">
+
+<P>The BCD inputs are weighted like this:<BR>
+10=2+8<BR>
+20=4+16<BR>
+40=8+32<BR>
+80=16+64
+
+<P>Since 2,4,8,16,32,64 are pretty straight binary numbers,<BR>
+it's easy to see why one BCD input signal connects to two<BR>
+adder inputs in the schematic above... at least for me.
+
+<P>For 8 Bit binary to BCD conversion, you better use EPROMs,<BR>
+sorry.
+
+<HR>
+
+<P>Found some neat schematics in:<BR>
+TTL Kochbuch, TI Germany, 1980,<BR>
+ISBN 3-88078-002-1.
+
+<P>Once there was another concept, called Excess 3.<BR>
+
+<P><IMG SRC="bcd2_x3t.png">
+
+<P>Basically it looks like adding 3 to the BCD code.<BR>
+Point is, that the book claims, that using this sort<BR>
+of code simplifies decimal adder circuits.
+
+<P>If you happen to have 4 Bit binary adders,<BR>
+converting BCD to Excess 3 and back is simple:
+
+<P><IMG SRC="bcd2_xbc.png">
+
+<HR>
+
+<P>We could draw the Excess 3 to BCD conversion a bit different:
+
+<P><IMG SRC="bcd2_xcb.png">
+
+<HR>
+
+<P>Converting BCD to Excess 3 by using logic gates:
+
+<P><IMG SRC="bcd2_b2x.png">
+
+<HR>
+
+<P>Unfortunately, I had no example for converting<BR>
+Excess 3 back to BCD by using logic gates.
+
+<P>Here we go:
+
+<P><IMG SRC="bcd2_xbt.png">
+
+<P>Schematic for converting Excess 3 to BCD:
+
+<P><IMG SRC="bcd2_x2b.png">
+
+<P>An alternative version for generating the B2 signal:
+
+<P><IMG SRC="bcd2_x2ba.png">
+
+<HR>
+<P>
+<A HREF="../index.htm">[HOME]</A>
+<A HREF="bcd2_0.htm">[UP]</A>/
+<A HREF="bcd2_6.htm">[BACK]</A>
+<A HREF="bcd2_1.htm">[1]</A>
+<A HREF="bcd2_2.htm">[2]</A>
+<A HREF="bcd2_3.htm">[3]</A>
+<A HREF="bcd2_4.htm">[4]</A>
+<A HREF="bcd2_5.htm">[5]</A>
+<A HREF="bcd2_6.htm">[6]</A>
+[7]
+<A HREF="bcd2_8.htm">[8]</A>
+
+<A HREF="bcd2_8.htm">[NEXT]</A>
+
+
+<P>(c) Dieter Mueller 2012
+</BODY>
+</HTML>
+
